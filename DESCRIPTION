@@ -1,0 +1,28 @@
+Package: pakEducationDashboard
+Title: Pakistan Education Dashboard
+Version: 0.0.0.9000
+Authors@R: person('Tony', 'Fujs', email = 'tonyfujs@gmail.com', role = c('cre', 'aut'))
+Description: Provides interactive visualization of Pakistan education data.
+License: MIT + file LICENSE
+Encoding: UTF-8
+LazyData: true
+Depends: 
+    R (>= 3.2.0)
+Imports: 
+    shiny,
+    golem,
+    processx,
+    attempt,
+    DT,
+    glue,
+    htmltools,
+    dplyr,
+    plotly,
+    ggthemes,
+    ggplot2,
+    cowplot,
+    shinythemes,
+    pkgload
+RoxygenNote: 7.0.1
+Suggests: 
+    testthat
