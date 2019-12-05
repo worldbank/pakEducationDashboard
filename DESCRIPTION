@@ -26,3 +26,5 @@ Imports:
 RoxygenNote: 7.0.1
 Suggests: 
     testthat
+URL: https://github.com/tonyfujs/pakEducationDashboard
+BugReports: https://github.com/tonyfujs/pakEducationDashboard/issues
