@@ -65,7 +65,7 @@ mod_country_visuals_server <- function(input,
         ggthemes::scale_color_colorblind() +
         cowplot::theme_cowplot(14) +
         ggplot2::facet_wrap(~indicator, ncol = 2, 
-                            labeller = labeller(indicator = indicator_choices_country_inv)) +
+                            labeller = ggplot2::labeller(indicator = indicator_choices_country_inv)) +
         ggplot2::theme(
           legend.title = ggplot2::element_blank(),
           legend.position = "none"
