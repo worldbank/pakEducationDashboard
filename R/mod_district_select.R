@@ -40,8 +40,13 @@ mod_district_select_ui <- function(id){
                 label = "Choose one or more survey(s)",
                 choices = sort(unique(pakeduc_district[["dataset"]])),
                 selectize = TRUE,
-                selected = c("aser", "hies", "mics", "pslm"),
-                multiple = TRUE)
+                selected = c("aser"),
+                multiple = TRUE),
+    sliderInput(inputId = ns("year"),
+                label = "Select a year",
+                min = min(pakeduc_district$year, na.rm = TRUE),
+                max = max(pakeduc_district$year, na.rm = TRUE),
+                value = max(pakeduc_district$year, na.rm = TRUE))
   
   )
 }
@@ -73,7 +78,8 @@ mod_district_select_server <- function(input, output, session){
       gender        = reactive({ input$gender }),
       dataset       = reactive({ input$dataset }),
       province      = reactive({ input$province }),
-      district      = reactive({ input$district })
+      district      = reactive({ input$district }),
+      year          = reactive({ input$year })
     )
   )
 }

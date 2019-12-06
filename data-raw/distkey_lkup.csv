@@ -1,0 +1,136 @@
+﻿dist_key,district,province
+1,ATTOCK,Punjab
+2,BAHAWALNAGAR  ,Punjab
+3,BAHAWALPUR  ,Punjab
+4,BHAKKAR  ,Punjab
+5,CHAKWAL  ,Punjab
+6,DERA GHAZI KHAN  ,Punjab
+7,FAISALABAD  ,Punjab
+8,GUJRANWALA  ,Punjab
+9,GUJRAT  ,Punjab
+10,HAFIZABAD  ,Punjab
+11,JHELUM  ,Punjab
+12,JHANG  ,Punjab
+13,KASUR  ,Punjab
+14,KHANEWAL ,Punjab
+15,KHUSHAB  ,Punjab
+16,LAHORE  ,Punjab
+17,LAYYAH  ,Punjab
+18,LODHRAN  ,Punjab
+19,MANDI BAHAUDDIN  ,Punjab
+20,MIANWALI  ,Punjab
+21,MULTAN  ,Punjab
+22,MUZAFFARGARH  ,Punjab
+23,NAROWAL  ,Punjab
+24,OKARA  ,Punjab
+25,PAKPATTAN  ,Punjab
+26,RAHIM YAR KHAN  ,Punjab
+27,RAJANPUR  ,Punjab
+28,RAWALPINDI  ,Punjab
+29,SAHIWAL  ,Punjab
+30,SARGODHA  ,Punjab
+31,SHEIKHUPURA  ,Punjab
+32,SIALKOT  ,Punjab
+33,TOBA TEK SINGH  ,Punjab
+34,VEHARI  ,Punjab
+35,NANKANA SAHIB  ,Punjab
+36,CHINIOT  ,Punjab
+37, ABBOTTABAD ," Khyber Pakhtunkhwa	"
+38, BANNU ," Khyber Pakhtunkhwa	"
+39, BATAGRAM ," Khyber Pakhtunkhwa	"
+40, BUNER ," Khyber Pakhtunkhwa	"
+41, CHARSADDA ," Khyber Pakhtunkhwa	"
+42, CHITRAL ," Khyber Pakhtunkhwa	"
+43, DERA ISMAIL KHAN ," Khyber Pakhtunkhwa	"
+44, HANGU ," Khyber Pakhtunkhwa	"
+45, HARIPUR ," Khyber Pakhtunkhwa	"
+46, KARAK ," Khyber Pakhtunkhwa	"
+47, KOHAT ," Khyber Pakhtunkhwa	"
+48, KOHISTAN ," Khyber Pakhtunkhwa	"
+49, LAKKI MARWAT ," Khyber Pakhtunkhwa	"
+50, LOWER DIR ," Khyber Pakhtunkhwa	"
+51, MALAKAND ," Khyber Pakhtunkhwa	"
+52, MANSEHRA ," Khyber Pakhtunkhwa	"
+53, MARDAN ," Khyber Pakhtunkhwa	"
+54, NOWSHERA ," Khyber Pakhtunkhwa	"
+55, PESHAWAR ," Khyber Pakhtunkhwa	"
+56, SHANGLA ," Khyber Pakhtunkhwa	"
+57, SWABI ," Khyber Pakhtunkhwa	"
+58, SWAT ," Khyber Pakhtunkhwa	"
+59, TANK ," Khyber Pakhtunkhwa	"
+60, TOR GHAR ," Khyber Pakhtunkhwa	"
+61, UPPER DIR ," Khyber Pakhtunkhwa	"
+124, BAJAUR AGENCY , Khyber Pakhtunkhwa
+127, FRONTIER REGION BANNU , Khyber Pakhtunkhwa
+128, FRONTIER REGION DERA ISMAIL KHAN , Khyber Pakhtunkhwa
+129, FRONTIER REGION KOHAT , Khyber Pakhtunkhwa
+130, FRONTIER REGION LAKKI MARWAT , Khyber Pakhtunkhwa
+131,  FRONTIER REGION PESHAWAR , Khyber Pakhtunkhwa
+132, FRONTIER REGION TANK , Khyber Pakhtunkhwa
+141, KHYBER AGENCY , Khyber Pakhtunkhwa
+143, KURRAM AGENCY , Khyber Pakhtunkhwa
+144, MOHMAND AGENCY , Khyber Pakhtunkhwa
+148, NORTH WAZIRISTAN AGENCY , Khyber Pakhtunkhwa
+149, ORAKZAI AGENCY , Khyber Pakhtunkhwa
+152, SOUTH WAZIRISTAN AGENCY , Khyber Pakhtunkhwa
+62, BADIN , Sindh 
+63, DADU , Sindh
+64, GHOTKI , Sindh
+65, HYDERABAD , Sindh
+66, JACOBABAD , Sindh
+67, JAMSHORO , Sindh
+68, KARACHI CITY , Sindh
+69, KASHMORE , Sindh
+70, KHAIRPUR , Sindh
+71, LARKANA , Sindh
+72, MATIARI , Sindh
+73, MIRPUR KHAS , Sindh
+74, NAUSHAHRO FEROZE , Sindh
+75, SANGHAR, Sindh
+76, QAMBAR SHAHDADKOT, Sindh
+77, SHAHEED BENAZIRABAD , Sindh
+78, SHIKARPUR , Sindh
+79, SUJAWAL , Sindh
+80, SUKKUR , Sindh
+81, TANDO ALLAH YAR , Sindh
+82, TANDO MUHAMMAD KHAN , Sindh
+83, THARPARKAR , Sindh
+84, TANK , Sindh
+85, THATTA , Sindh
+86, UMERKOT , Sindh
+87, MITHI , Sindh
+88, AWARAN , Balochistan
+89, BARKHAN , Balochistan
+90, KACHHI , Balochistan
+91, CHAGAI , Balochistan
+92, DERA BUGTI , Balochistan
+93, GWADAR , Balochistan
+94, HARNAI , Balochistan
+95, JAFFARABAD , Balochistan
+96, JHAL MAGSI , Balochistan
+97, KALAT , Balochistan
+98, KHARAN , Balochistan
+99, KHUZDAR , Balochistan
+100, KILLA ABDULLAH , Balochistan
+101, KILLA SAIFULLAH , Balochistan
+102, KOHLU , Balochistan
+103, LAS BELA , Balochistan
+104, LORALAI , Balochistan
+105, MASTUNG , Balochistan
+106, MUSAKHEL , Balochistan
+107, NASIRABAD, Balochistan
+108, NUSHKI , Balochistan
+109, PISHIN , Balochistan
+110, QUETTA , Balochistan
+111, SHEERANI , Balochistan
+112, SIBI , Balochistan
+113, WASHUK , Balochistan
+114, ZHOB , Balochistan
+115, ZIARAT , Balochistan 
+116, DUKI , Balochistan
+117, LEHRI ," Balochistan	 "
+118, KECH , Balochistan
+119, PANJGUR ," Balochistan	 "
+120, SOHBATPUR , Balochistan
+121, SURAB , Balochistan
+139, ISLAMABAD ,Federal Capital Territory
