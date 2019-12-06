@@ -12,7 +12,8 @@ golem::add_module( name = "country_visuals" )
 golem::add_module( name = "province_select" ) 
 golem::add_module( name = "province_visuals" ) 
 golem::add_module( name = "district_select" ) 
-golem::add_module( name = "district_visuals" ) 
+golem::add_module( name = "district_visuals" )
+golem::add_module( name = "district_map")
 
 ## 2.2 Add dependencies
 
