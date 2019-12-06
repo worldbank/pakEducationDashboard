@@ -1,5 +1,6 @@
 ## code to prepare `data` dataset goes here
 library(tidyverse)
+source("./data-raw/utils.R")
 
 
 # Load admin_level_lkup ---------------------------------------------------
@@ -25,6 +26,10 @@ pakeduc_country <- haven::read_stata("data-raw/pakeduc_data_country.dta")  %>%
   distinct() %>%
   pivot_wider(names_from = "measurement", values_from = "values")
 
+indicator_choices_country <- sort(unique(pakeduc_country$indicator)) 
+indicator_choices_country <- prepare_indicator_choices(indicator_choices_country)
+indicator_choices_country_inv <- names(indicator_choices_country)
+names(indicator_choices_country_inv) <- unname(indicator_choices_country)
 
 # Clean province level data -----------------------------------------------
 province_lkup <- admin_level_lkup %>%
@@ -56,7 +61,8 @@ pakeduc_province <- haven::read_stata("data-raw/pakeduc_data_province.dta") %>%
   distinct() %>%
   pivot_wider(names_from = "measurement", values_from = "values")
 
-  
+indicator_choices_province <- sort(unique(pakeduc_province$indicator)) 
+indicator_choices_province <- prepare_indicator_choices(indicator_choices_province)
 
 # Clean district level data -----------------------------------------------
 pakeduc_district <- haven::read_stata("data-raw/pakeduc_data_district.dta") 
@@ -81,12 +87,18 @@ pakeduc_district <- pakeduc_district %>%
   distinct() %>%
   pivot_wider(names_from = "measurement", values_from = "values")
 
+indicator_choices_district <- sort(unique(pakeduc_district$indicator)) 
+indicator_choices_district <- prepare_indicator_choices(indicator_choices_district)
 
 # Save data ---------------------------------------------------------------
 
-usethis::use_data(pakeduc_district,
+usethis::use_data(pakeduc_country,
+                  indicator_choices_country,
                   pakeduc_province,
-                  pakeduc_country,
+                  indicator_choices_province,
+                  pakeduc_district,
+                  indicator_choices_district,
+                  indicator_choices_country_inv,
                   overwrite = TRUE)
 
 

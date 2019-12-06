@@ -1,8 +1,14 @@
 #' @import shiny
 app_server <- function(input, output,session) {
   options(shiny.usecairo = TRUE)
-  # List the first level callModules here
-  selection_vars <- callModule(mod_main_ui_server, "main_ui_ui_1")
-  callModule(mod_line_charts_server, "line_charts_ui_1", selection_vars = selection_vars)
-  callModule(mod_line_charts_province_server, "line_charts_province_ui_1", selection_vars = selection_vars)
+  options(shiny.reactlog=TRUE) 
+
+  selection_vars_province <- callModule(mod_province_select_server, "province_select_ui_1")
+  callModule(mod_province_visuals_server, "province_visuals_ui_1", selection_vars = selection_vars_province)
+  
+  selection_vars_district <- callModule(mod_district_select_server, "district_select_ui_1")
+  callModule(mod_district_visuals_server, "district_visuals_ui_1", selection_vars = selection_vars_district)
+  
+  selection_vars_country <- callModule(mod_country_select_server, "country_select_ui_1")
+  callModule(mod_country_visuals_server, "country_visuals_ui_1", selection_vars = selection_vars_country)
 }
