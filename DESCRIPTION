@@ -23,7 +23,7 @@ Imports:
     cowplot,
     shinythemes,
     pkgload
-RoxygenNote: 7.0.1
+RoxygenNote: 7.0.2
 Suggests: 
     testthat
 URL: https://github.com/tonyfujs/pakEducationDashboard

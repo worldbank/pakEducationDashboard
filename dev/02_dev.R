@@ -7,10 +7,12 @@
 
 ## 2.1 Add modules
 ## 
-golem::add_module( name = "main_ui" ) # Name of the module
-golem::add_module( name = "line_charts" ) # Name of the module
-golem::add_module( name = "line_charts_province" ) # Name of the module
-golem::add_module( name = "maps" ) # Name of the module
+golem::add_module( name = "country_select" ) 
+golem::add_module( name = "country_visuals" ) 
+golem::add_module( name = "province_select" ) 
+golem::add_module( name = "province_visuals" ) 
+golem::add_module( name = "district_select" ) 
+golem::add_module( name = "district_visuals" ) 
 
 ## 2.2 Add dependencies
 
