@@ -50,7 +50,7 @@ mod_province_map_server <- function(input,
       dplyr::distinct()
     
     out <- pakgeo_province %>%
-      dplyr::left_join(out, by = "province_id")
+      dplyr::left_join(out, by = c("province_id" = "province_id"))
   })
   
   output$warning_message <- renderText({

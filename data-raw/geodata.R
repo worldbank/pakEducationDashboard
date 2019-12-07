@@ -28,10 +28,11 @@ pakgeo_province <- sf::read_sf("data-raw/pak_province_boundaries")
 provincekey_lkup    <- read_csv("data-raw/admin_level_lkup.csv") %>% 
   mutate(
     province = str_to_lower(province),
-    province = str_trim(province, side = "both"),
-    district = str_to_lower(district),
-    district = str_trim(district, side = "both"),
-  )
+    province = str_trim(province, side = "both")
+  ) %>%
+  # Remove districts
+  select(-district) %>%
+  distinct()
 
 pakgeo_province <- pakgeo_province %>%
   mutate(
@@ -45,13 +46,14 @@ pakgeo_province <- pakgeo_province %>%
                              str_to_lower(NAME_1) == "punjab" ~ 1,
                              str_to_lower(NAME_1) == "sind" ~  2,
                              str_to_lower(NAME_1) == "baluchistan" ~ 3,
-                             str_to_lower(NAME_1) == "n.w.f.p" ~ 4,
-                             str_to_lower(NAME_1) == "f.a.t.a." ~ 4))%>%
+                             str_to_lower(NAME_1) == "n.w.f.p." ~ 4,
+                             str_to_lower(NAME_1) == "f.a.t.a." ~ 4)) %>%
   
   left_join(provincekey_lkup, by = "province_id") %>%
   # TODO: Consult with Tony,
   ## removing NAME_1 AND NAME_0 which were present in Shape files
   select(-NAME_1, -NAME_0)
+
 # Save data ---------------------------------------------------------------
 
 usethis::use_data(pakgeo_district,
