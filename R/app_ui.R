@@ -15,7 +15,8 @@ app_ui <- function() {
                  tabPanel("Province level",
                           sidebarPanel(mod_province_select_ui("province_select_ui_1")),
                           mainPanel(
-                            mod_province_visuals_ui("province_visuals_ui_1")
+                            mod_province_visuals_ui("province_visuals_ui_1"),
+                            mod_province_map_ui("province_map_ui_1")
                           )
                  ),
                  tabPanel("District level",
@@ -25,6 +26,7 @@ app_ui <- function() {
                             mod_district_map_ui("district_map_ui_1")
                           )
                  )
+                 
       )
       
     )

@@ -35,7 +35,12 @@ mod_province_select_ui <- function(id){
                 choices = sort(unique(pakeduc_province[["dataset"]])),
                 selectize = TRUE,
                 selected = c("aser", "hies", "mics", "pslm"),
-                multiple = TRUE)
+                multiple = TRUE),
+    sliderInput(inputId = ns("year"),
+                label = "Select a year",
+                min = min(pakeduc_province$year, na.rm = TRUE),
+                max = max(pakeduc_province$year, na.rm = TRUE),
+                value = max(pakeduc_province$year, na.rm = TRUE))
   )
 }
     
@@ -48,12 +53,25 @@ mod_province_select_ui <- function(id){
 mod_province_select_server <- function(input, output, session){
   ns <- session$ns
   
+  province <- reactive({
+    dplyr::filter(pakeduc_province, province %in% input$province)
+  })
+
+  # observeEvent(province(), {
+  #   provinces <- unique(province()$province)
+  #   # choices_district <- unique(pakeduc_district$dist_nm[pakeduc_district$province %in% provinces])
+  #   updateSelectizeInput(session, "province",
+  #                        choices = choices_district,
+  #                        selected = input$district)
+  # })
+  
   return(
     list(
       indicator     = reactive({ input$indicator }),
       gender        = reactive({ input$gender }),
       dataset       = reactive({ input$dataset }),
-      province      = reactive({ input$province })
+      province      = reactive({ input$province }),
+      year          = reactive({ input$year })
     )
   )
 }
