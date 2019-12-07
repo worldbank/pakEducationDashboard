@@ -66,7 +66,11 @@ mod_province_map_server <- function(input,
         ggplot2::scale_fill_viridis_c() +
         ggplot2::theme_void()
       
-      plotly::ggplotly(p, tooltip = c("text", "fill"))
+      plotly::ggplotly(p, tooltip = c("text", "fill")) %>% plotly::style(hoveron = "fill")
+      
+      
+      
+      
     }
     # p
     
