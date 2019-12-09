@@ -19,10 +19,11 @@ Imports:
     dplyr,
     plotly,
     ggthemes,
-    ggplot2,
+    ggplot2 (>= 3.2.1),
     cowplot,
     shinythemes,
-    pkgload
+    pkgload,
+    sf (>= 0.8.0)
 RoxygenNote: 7.0.2
 Suggests: 
     testthat
