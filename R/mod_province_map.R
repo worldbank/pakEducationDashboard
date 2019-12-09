@@ -45,7 +45,10 @@ mod_province_map_server <- function(input,
                          dataset == max(!!selection_vars$dataset()),
                          gender == max(!!gender_selection),
                          year == !!selection_vars$year()) %>%
-      dplyr::distinct()
+      dplyr::distinct() %>%
+      dplyr::mutate(
+        pe_percent = sprintf("%.1f%%", point_estimate * 100)
+      )
     
     out <- pakgeo_province %>%
       dplyr::left_join(out, by = c("province_id" = "province_id"))
@@ -60,11 +63,17 @@ mod_province_map_server <- function(input,
       p <- ggplot2::ggplot(df()) +
         # TODO:: investigate
         # province.x and province.y are forming from the left join in df()
-        ggplot2::geom_sf( ggplot2::aes(fill = point_estimate, text = province.x)) +
-        ggplot2::scale_fill_viridis_c() +
-        ggplot2::theme_void()
+        ggplot2::geom_sf( ggplot2::aes(fill = point_estimate, 
+                                       text = paste("District:", province.x,
+                                                    "<br />Value:", pe_percent,
+                                                    "<br />Year:", year))) +
+        ggplot2::scale_fill_viridis_c(limits = c(0, 1), labels = scales::percent) +
+        ggthemes::theme_map() +
+        ggplot2::labs(
+          fill = ""
+        )
       
-      plotly::ggplotly(p, tooltip = c("text", "fill")) %>% plotly::style(hoveron = "fill")
+      plotly::ggplotly(p, tooltip = c("text")) %>% plotly::style(hoveron = "fill")
       
       
       
