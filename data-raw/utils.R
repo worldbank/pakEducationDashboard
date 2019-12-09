@@ -32,3 +32,35 @@ prepare_indicator_choices <- function(choices,
   
   return(choices)
 }
+
+
+# Function to combine geometries of sf data.frame
+combine_sf <- function(input_df, column_name, row_values, output_value){
+  
+  # Subset the rows according column and values
+  temp_df <- purrr::map(row_values, function(x)
+              {
+                    dplyr::filter(input_df, !!column_name == x)
+                             
+              }) 
+
+  # Merge to single sf data.frame
+  temp_df <- sf::st_as_sf(plyr::ldply(temp_df, data.frame))
+  
+  # Create combined geometry
+  combined_geometry <- sf::st_union(temp_df)
+  
+  # Account for KP
+  if(output_value == "kp"){
+    combined_geometry <- sf::st_cast(combined_geometry, "MULTIPOLYGON")
+  }
+  
+  # Create combined geom data.frame
+  combined_df <- data.frame(output_value, combined_geometry, stringsAsFactors = FALSE)
+  colnames(combined_df)[1] <- "NAME_1"
+  
+  # Filter out rows to replace with combined row
+  output_df <- dplyr::filter(input_df, !(!!column_name %in% row_values))
+
+  return(rbind(output_df, sf::st_as_sf(combined_df)))
+}

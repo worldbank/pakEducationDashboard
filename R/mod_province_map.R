@@ -40,8 +40,6 @@ mod_province_map_server <- function(input,
       "Both"
     }
     
-    # TODO: Mention to Tony that
-    ##  40/1900 rows have Unnamed provinces which will be excluded for visualizatin
     out <- dplyr::filter(pakeduc_province,
                          indicator == !!selection_vars$indicator(),
                          dataset == max(!!selection_vars$dataset()),
