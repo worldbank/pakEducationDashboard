@@ -1,6 +1,6 @@
 # Module UI
   
-#' @title   mod_district_map_ui and mod_district_map_server
+#' @title   mod_province_map_ui and mod_province_map_server
 #' @description  A shiny Module.
 #'
 #' @param id shiny id
@@ -8,42 +8,39 @@
 #' @param output internal
 #' @param session internal
 #'
-#' @rdname mod_district_map
+#' @rdname mod_province_map
 #'
 #' @keywords internal
 #' @export 
 #' @importFrom shiny NS tagList 
-mod_district_map_ui <- function(id){
+mod_province_map_ui <- function(id){
   ns <- NS(id)
   tagList(
-    plotly::plotlyOutput(outputId = ns("district_map"), height = "600px"),
-    #plotOutput(outputId = ns("district_map"), height = "600px"),
+    plotly::plotlyOutput(outputId = ns("province_map"), height = "600px"),
     textOutput(ns("warning_message"))
-  
   )
 }
     
 # Module Server
     
-#' @rdname mod_district_map
+#' @rdname mod_province_map
 #' @export
 #' @keywords internal
     
-mod_district_map_server <- function(input, 
+mod_province_map_server <- function(input, 
                                     output, 
                                     session,
                                     selection_vars){
   ns <- session$ns
   
   df <- reactive({
-
     gender_selection <- if(selection_vars$gender()) {
       c("Boy", "Girl")
     } else {
       "Both"
     }
-   
-    out <- dplyr::filter(pakeduc_district,
+    
+    out <- dplyr::filter(pakeduc_province,
                          indicator == !!selection_vars$indicator(),
                          dataset == max(!!selection_vars$dataset()),
                          gender == max(!!gender_selection),
@@ -52,22 +49,22 @@ mod_district_map_server <- function(input,
       dplyr::mutate(
         pe_percent = sprintf("%.1f%%", point_estimate * 100)
       )
-
-    out <- pakgeo_district %>%
-      dplyr::left_join(out, by = c("dist_key" = "dist_key"))
+    
+    out <- pakgeo_province %>%
+      dplyr::left_join(out, by = c("province_id" = "province_id"))
   })
-
+  
   output$warning_message <- renderText({
     if (nrow(df()) == 0) {"No data available. Please make a new selection"}
   })
-
-  output$district_map <- plotly::renderPlotly({
-  #output$district_map <- renderPlot({
+  
+  output$province_map <- plotly::renderPlotly({
     if (nrow(df()) > 0) {
       p <- ggplot2::ggplot(df()) +
-        #ggplot2::geom_sf( ggplot2::aes(fill = point_estimate)) +
+        # TODO:: investigate
+        # province.x and province.y are forming from the left join in df()
         ggplot2::geom_sf( ggplot2::aes(fill = point_estimate, 
-                                       text = paste("District:", DISTRICT,
+                                       text = paste("District:", province.x,
                                                     "<br />Value:", pe_percent,
                                                     "<br />Year:", year))) +
         ggplot2::scale_fill_viridis_c(limits = c(0, 1), labels = scales::percent) +
@@ -75,17 +72,21 @@ mod_district_map_server <- function(input,
         ggplot2::labs(
           fill = ""
         )
-
+      
       plotly::ggplotly(p, tooltip = c("text")) %>% plotly::style(hoveron = "fill")
+      
+      
+      
+      
     }
-    #p
-
+    # p
+    
   })
 }
     
 ## To be copied in the UI
-# mod_district_map_ui("district_map_ui_1")
+# mod_province_map_ui("province_map_ui_1")
     
 ## To be copied in the server
-# callModule(mod_district_map_server, "district_map_ui_1")
+# callModule(mod_province_map_server, "province_map_ui_1")
  
