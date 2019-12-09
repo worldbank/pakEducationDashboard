@@ -60,7 +60,7 @@ pakgeo_province <- pakgeo_province %>%
                              str_to_lower(NAME_1) == "kp" ~ 4)) %>%
   
   left_join(provincekey_lkup, by = "province_id") %>%
-  select(-NAME_1)
+  select(-NAME_1, -province)
 
 # Save data ---------------------------------------------------------------
 

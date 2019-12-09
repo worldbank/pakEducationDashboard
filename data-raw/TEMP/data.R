@@ -16,7 +16,7 @@ pakeduc_country <- haven::read_stata("data-raw/pakeduc_data_country.dta")  %>%
                values_to = "values") %>%
   mutate(
     indicator = str_replace_all(names, "_se$", ""),
-    indicator = str_replace_all(indicator, "boys_|girls_", ""),
+    indicator = str_replace_all(indicator, "_boys|_girls", ""),
     gender = if_else(!str_detect(names, "boys|girls"), "Both", NA_character_),
     gender = if_else(str_detect(names, "boys"), "Boy", gender),
     gender = if_else(str_detect(names, "girls"), "Girl", gender),
@@ -51,7 +51,7 @@ pakeduc_province <- haven::read_stata("data-raw/pakeduc_data_province.dta") %>%
                values_to = "values") %>%
   mutate(
     indicator = str_replace_all(names, "_se$", ""),
-    indicator = str_replace_all(indicator, "boys_|girls_", ""),
+    indicator = str_replace_all(indicator, "_boys|_girls", ""),
     gender = if_else(!str_detect(names, "boys|girls"), "Both", NA_character_),
     gender = if_else(str_detect(names, "boys"), "Boy", gender),
     gender = if_else(str_detect(names, "girls"), "Girl", gender),
@@ -77,7 +77,7 @@ pakeduc_district <- pakeduc_district %>%
                values_to = "values") %>%
   mutate(
     indicator = str_replace_all(names, "_se$", ""),
-    indicator = str_replace_all(indicator, "boys_|girls_", ""),
+    indicator = str_replace_all(indicator, "_boys|_girls", ""),
     gender = if_else(!str_detect(names, "boys|girls"), "Both", NA_character_),
     gender = if_else(str_detect(names, "boys"), "Boy", gender),
     gender = if_else(str_detect(names, "girls"), "Girl", gender),
@@ -88,7 +88,31 @@ pakeduc_district <- pakeduc_district %>%
   pivot_wider(names_from = "measurement", values_from = "values")
 
 indicator_choices_district <- sort(unique(pakeduc_district$indicator)) 
-indicator_choices_district <- prepare_indicator_choices(indicator_choices_district)
+indicator_choices_district <- prepare_indicator_choices(indicator_choices_district,
+                                                        expected_choices = c("division_9_11",
+                                                                            "in_school_11_16",
+                                                                             "in_school_6_10",
+                                                                             "literacy_12_18",
+                                                                             "numeracy_12_18",
+                                                                             "reading_9_11",
+                                                                             "share_private_11_16",
+                                                                             "share_private_6_10" ),
+                                                        choices_labels = c("Share of kids who can do division,  aged 9-11",
+                                                                           "Share of kids curently in school,  aged 11-16",
+                                                                           "Share of kids curently in school,  aged 6-10",
+                                                                           "Share of adolescent who are literate (self-reported),  aged 12-18",
+                                                                           "Share of adolescent who are numerate (self-reported),  aged 12-18",
+                                                                           "Share of kids who can read a basic paragraph,  aged 9-11",
+                                                                           "Share of kids in private schools, among those enrolled,  aged 11-16",
+                                                                           "Share of kids in private schools, among those enrolled,  aged 6-10"),
+                                                        labels_order = c("Share of kids who can do division,  aged 9-11",
+                                                                         "Share of kids curently in school,  aged 6-10",
+                                                                         "Share of kids curently in school,  aged 11-16",
+                                                                         "Share of kids who can read a basic paragraph,  aged 9-11",
+                                                                         "Share of kids in private schools, among those enrolled,  aged 6-10",
+                                                                         "Share of kids in private schools, among those enrolled,  aged 11-16",
+                                                                         "Share of adolescent who are literate (self-reported),  aged 12-18",
+                                                                         "Share of adolescent who are numerate (self-reported),  aged 12-18"))
 
 # Save data ---------------------------------------------------------------
 
