@@ -1,12 +1,10 @@
-library(tidyverse)
-library(sf)
-source("./data-raw/utils.R")
+
 
 # Distrist level shapefiles -----------------------------------------------
 
-pakgeo_district <- sf::read_sf("data-raw/pak_district_boundaries")
+pakgeo_district <- sf::read_sf("data-raw/data_input/pak_district_boundaries")
 
-distkey_lkup <- read_csv("data-raw/distkey_lkup.csv") %>%
+distkey_lkup <- read_csv("data-raw/data_input/distkey_lkup.csv") %>%
   mutate(
     province = str_to_lower(province),
     province = str_trim(province, side = "both"),
@@ -23,7 +21,7 @@ pakgeo_district <- pakgeo_district %>%
 
 
 # Province level shapefiles -----------------------------------------------
-pakgeo_province <- sf::read_sf("data-raw/pak_province_boundaries")
+pakgeo_province <- sf::read_sf("data-raw/data_input/pak_province_boundaries")
 
 # Have to union the geometries of KP & Other areas
 ## other areas
@@ -38,7 +36,7 @@ pakgeo_province <- combine_sf(input_df = pakgeo_province,
                               row_values = c("F.A.T.A.", "N.W.F.P.","Northern Areas"),
                               output_value = "kp")
 
-provincekey_lkup    <- read_csv("data-raw/admin_level_lkup.csv") %>% 
+provincekey_lkup    <- read_csv("data-raw/data_input/admin_level_lkup.csv") %>% 
   mutate(
     province = str_to_lower(province),
     province = str_trim(province, side = "both")
