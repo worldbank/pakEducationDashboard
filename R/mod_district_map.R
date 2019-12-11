@@ -43,14 +43,13 @@ mod_district_map_server <- function(input,
       "Both"
     }
    
-    out <- dplyr::filter(pakeduc_district,
+    out <- dplyr::filter(pakeduc_district_weighted,
                          indicator == !!selection_vars$indicator(),
-                         dataset == max(!!selection_vars$dataset()),
-                         gender == max(!!gender_selection),
+                         gender %in% !!gender_selection,
                          year == !!selection_vars$year()) %>%
       dplyr::distinct() %>%
       dplyr::mutate(
-        pe_percent = sprintf("%.1f%%", point_estimate * 100)
+        pe_percent = sprintf("%.1f%%", point_estimate_weighted * 100)
       )
 
     out <- pakgeo_district %>%
@@ -66,12 +65,13 @@ mod_district_map_server <- function(input,
     if (nrow(df()) > 0) {
       p <- ggplot2::ggplot(df()) +
         #ggplot2::geom_sf( ggplot2::aes(fill = point_estimate)) +
-        ggplot2::geom_sf( ggplot2::aes(fill = point_estimate, 
+        ggplot2::geom_sf( ggplot2::aes(fill = point_estimate_weighted, 
                                        text = paste("District:", DISTRICT,
                                                     "<br />Value:", pe_percent,
                                                     "<br />Year:", year))) +
         ggplot2::scale_fill_viridis_c(limits = c(0, 1), labels = scales::percent) +
         ggthemes::theme_map() +
+        ggplot2::facet_wrap(~gender) +
         ggplot2::labs(
           fill = ""
         )

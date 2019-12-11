@@ -41,10 +41,9 @@ mod_country_visuals_server <- function(input,
       "Both"
     }
     
-    dplyr::filter(pakeduc_country,
+    dplyr::filter(pakeduc_country_weighted,
                   indicator %in% !!selection_vars$indicator(),
-                  dataset %in% !!selection_vars$dataset(),
-                  !is.na(point_estimate),
+                  !is.na(point_estimate_weighted),
                   gender %in% !!gender_selection) 
   })
   
@@ -52,15 +51,29 @@ mod_country_visuals_server <- function(input,
     if (nrow(df()) == 0) {"No data available. Please make a new selection"}
   })
   
+  surveydf <- reactive({
+    gender_selection <- if(selection_vars$gender()) {
+      c("Boy", "Girl")
+    } else {
+      "Both"
+    }
+    
+    dplyr::filter(pakeduc_country,
+                  indicator %in% !!selection_vars$indicator(),
+                  gender %in% !!gender_selection, 
+                  dataset %in% !!selection_vars$dataset(),
+                  !is.na(point_estimate))
+  })
+  
+  
+  
   output$country_plot <- plotly::renderPlotly({
     if (nrow(df()) > 0) {
       
-      p <- ggplot2::ggplot(df(), ggplot2::aes(x = year, y = point_estimate, color = gender)) +
-        ggplot2::geom_line(ggplot2::aes(group = interaction(dataset, gender),
-                                        linetype = dataset),
+      p <- ggplot2::ggplot(df(), ggplot2::aes(x = year, y = point_estimate_weighted, color = gender)) +
+        ggplot2::geom_line(ggplot2::aes(group = gender),
                            size = ggplot2::rel(0.8)) +
-        ggplot2::geom_point(size = ggplot2::rel(2.8),
-                            ggplot2::aes(shape = dataset)) +
+        ggplot2::geom_point(size = ggplot2::rel(2.8)) +
         ggplot2::scale_y_continuous(limits = c(0, 1), labels = scales::percent) +
         ggthemes::scale_color_colorblind() +
         cowplot::theme_cowplot(14) +
@@ -74,8 +87,20 @@ mod_country_visuals_server <- function(input,
           x = "",
           y = "Share of population (%)\n "
         )
-      plotly::ggplotly(p)
     }
+    
+    if (nrow(surveydf()) > 0) {
+      p <- p +
+        ggplot2::geom_line(data = surveydf(),
+                           ggplot2::aes(y = point_estimate, 
+                                        group = interaction(dataset, gender), 
+                                        linetype = dataset),
+                           size = ggplot2::rel(0.6),
+                           alpha = .6
+        )
+    }
+    
+    plotly::ggplotly(p)
     #p
   })
 }
