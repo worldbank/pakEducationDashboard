@@ -40,7 +40,6 @@ mod_district_select_ui <- function(id){
                 label = "Choose one or more survey(s)",
                 choices = sort(unique(pakeduc_district[["dataset"]])),
                 selectize = TRUE,
-                selected = c("aser"),
                 multiple = TRUE),
     sliderInput(inputId = ns("year"),
                 label = "Select a year",

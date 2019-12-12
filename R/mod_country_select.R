@@ -30,7 +30,6 @@ mod_country_select_ui <- function(id){
                 label = "Choose one or more survey(s)",
                 choices = sort(unique(pakeduc_province[["dataset"]])),
                 selectize = TRUE,
-                selected = c("aser", "hies", "mics", "pslm"),
                 multiple = TRUE)
   )
 }

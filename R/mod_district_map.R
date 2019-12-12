@@ -43,18 +43,17 @@ mod_district_map_server <- function(input,
       "Both"
     }
    
-    out <- dplyr::filter(pakeduc_district,
+    out <- dplyr::filter(pakeduc_district_weighted,
                          indicator == !!selection_vars$indicator(),
-                         dataset == max(!!selection_vars$dataset()),
-                         gender == max(!!gender_selection),
+                         gender %in% !!gender_selection,
                          year == !!selection_vars$year()) %>%
       dplyr::distinct() %>%
       dplyr::mutate(
         pe_percent = sprintf("%.1f%%", point_estimate * 100)
       )
-
+    
     out <- pakgeo_district %>%
-      dplyr::left_join(out, by = c("dist_key" = "dist_key"))
+      dplyr::left_join(out, by = c("dist_key" = "dist_key")) 
   })
 
   output$warning_message <- renderText({
@@ -72,6 +71,7 @@ mod_district_map_server <- function(input,
                                                     "<br />Year:", year))) +
         ggplot2::scale_fill_viridis_c(limits = c(0, 1), labels = scales::percent) +
         ggthemes::theme_map() +
+        #ggplot2::facet_wrap(~gender) +
         ggplot2::labs(
           fill = ""
         )
