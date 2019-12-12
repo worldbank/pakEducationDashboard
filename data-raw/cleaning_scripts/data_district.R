@@ -47,13 +47,16 @@ pakeduc_district_weighted <- pakeduc_district %>%
   ungroup() %>%
   mutate(
     weight_var = inv_se / inv_se_sum,
-    point_estimate_weighted = point_estimate * weight_var 
+    point_estimate = point_estimate * weight_var 
   ) %>%
   group_by(year, province, dist_nm, indicator, gender) %>%
   mutate(
-    point_estimate_weighted = sum(point_estimate_weighted)
+    point_estimate = sum(point_estimate)
   ) %>%
   ungroup() %>%
+  mutate(
+    dataset = "Weighted mix"
+  ) %>%
   select(
     year,
     province_id,
@@ -62,7 +65,8 @@ pakeduc_district_weighted <- pakeduc_district %>%
     dist_nm, 
     indicator,
     gender,
-    point_estimate_weighted
+    point_estimate,
+    dataset
   ) %>%
   distinct()
 

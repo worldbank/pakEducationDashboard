@@ -43,8 +43,11 @@ mod_country_visuals_server <- function(input,
     
     dplyr::filter(pakeduc_country_weighted,
                   indicator %in% !!selection_vars$indicator(),
-                  !is.na(point_estimate_weighted),
-                  gender %in% !!gender_selection) 
+                  !is.na(point_estimate),
+                  gender %in% !!gender_selection) %>%
+      dplyr::mutate(
+        pe_percent = sprintf("%.1f%%", point_estimate * 100)
+      )
   })
   
   output$warning_message <- renderText({
@@ -62,7 +65,10 @@ mod_country_visuals_server <- function(input,
                   indicator %in% !!selection_vars$indicator(),
                   gender %in% !!gender_selection, 
                   dataset %in% !!selection_vars$dataset(),
-                  !is.na(point_estimate))
+                  !is.na(point_estimate)) %>%
+      dplyr::mutate(
+        pe_percent = sprintf("%.1f%%", point_estimate * 100)
+      )
   })
   
   
@@ -70,7 +76,12 @@ mod_country_visuals_server <- function(input,
   output$country_plot <- plotly::renderPlotly({
     if (nrow(df()) > 0) {
       
-      p <- ggplot2::ggplot(df(), ggplot2::aes(x = year, y = point_estimate_weighted, color = gender)) +
+      p <- ggplot2::ggplot(df(), ggplot2::aes(x = year, 
+                                              y = point_estimate, 
+                                              color = gender,
+                                              text = paste("Value:", pe_percent,
+                                                           "<br />Year:", year,
+                                                           "<br />Dataset:", dataset))) +
         ggplot2::geom_line(ggplot2::aes(group = gender),
                            size = ggplot2::rel(0.8)) +
         ggplot2::geom_point(size = ggplot2::rel(2.8)) +
@@ -92,15 +103,16 @@ mod_country_visuals_server <- function(input,
     if (nrow(surveydf()) > 0) {
       p <- p +
         ggplot2::geom_line(data = surveydf(),
-                           ggplot2::aes(y = point_estimate, 
-                                        group = interaction(dataset, gender), 
+                           ggplot2::aes(group = interaction(dataset, gender), 
                                         linetype = dataset),
                            size = ggplot2::rel(0.6),
-                           alpha = .6
-        )
+                           alpha = .6 ) +
+        ggplot2::geom_point(data = surveydf(),
+                            ggplot2::aes(shape = dataset),
+                            size = ggplot2::rel(2.2), alpha = .6)
     }
     
-    plotly::ggplotly(p)
+    plotly::ggplotly(p, tooltip = c("text")) %>% plotly::style(hoveron = "color")
     #p
   })
 }

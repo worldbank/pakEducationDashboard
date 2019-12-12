@@ -46,7 +46,7 @@ mod_province_map_server <- function(input,
                          year == !!selection_vars$year()) %>%
       dplyr::distinct() %>%
       dplyr::mutate(
-        pe_percent = sprintf("%.1f%%", point_estimate_weighted * 100)
+        pe_percent = sprintf("%.1f%%", point_estimate * 100)
       )
     
     out <- pakgeo_province %>%
@@ -60,7 +60,7 @@ mod_province_map_server <- function(input,
   output$province_map <- plotly::renderPlotly({
     if (nrow(df()) > 0) {
       p <- ggplot2::ggplot(df()) +
-        ggplot2::geom_sf( ggplot2::aes(fill = point_estimate_weighted, 
+        ggplot2::geom_sf( ggplot2::aes(fill = point_estimate, 
                                        text = paste("Province:", province,
                                                     "<br />Value:", pe_percent,
                                                     "<br />Year:", year))) +

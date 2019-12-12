@@ -42,19 +42,23 @@ pakeduc_country_weighted <- pakeduc_country %>%
   ungroup() %>%
   mutate(
     weight_var = inv_se / inv_se_sum,
-    point_estimate_weighted = point_estimate * weight_var 
+    point_estimate = point_estimate * weight_var 
   ) %>%
   group_by(year, indicator, gender) %>%
   mutate(
-    point_estimate_weighted = sum(point_estimate_weighted)
+    point_estimate = sum(point_estimate)
   ) %>%
   ungroup() %>%
+  mutate(
+    dataset = "Weighted mix"
+  ) %>%
   select(
     year,
     country,
     indicator,
     gender,
-    point_estimate_weighted
+    point_estimate,
+    dataset
   ) %>%
   distinct()
   
