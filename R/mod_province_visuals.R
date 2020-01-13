@@ -120,7 +120,10 @@ mod_province_visuals_server <- function(input,
                             size = ggplot2::rel(2.2), alpha = .6)
     }
     
-    plotly::ggplotly(p, tooltip = c("text")) %>% plotly::style(hoveron = c("color", "alpha"))
+    
+    #TODO revert
+    p
+    # plotly::ggplotly(p, tooltip = c("text")) %>% plotly::style(hoveron = c("color", "alpha"))
   })
 }
     
