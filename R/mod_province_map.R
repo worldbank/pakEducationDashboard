@@ -71,14 +71,15 @@ mod_province_map_server <- function(input,
           fill = ""
         )
       
-      #TODO REVERT
+      #TODO: TEST & REVERT
       # plotly::ggplotly(p, tooltip = c("text")) %>% plotly::style(hoveron = "fill")
-      p
       
-      
-      
-      
+      #TODO: REMOVE
+      browser()
+      plotly::partial_bundle(plotly::toWebGL(plotly::ggplotly(p)))
+      # partial_bundle(toWebGL(ggplotly(p)))
     }
+    
     # p
     
   })
