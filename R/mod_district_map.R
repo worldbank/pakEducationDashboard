@@ -16,7 +16,7 @@
 mod_district_map_ui <- function(id){
   ns <- NS(id)
   tagList(
-    plotly::plotlyOutput(outputId = ns("district_map"), height = "600px"),
+    ggiraph::ggiraphOutput(outputId = ns("district_map"), height = "600px"),
     #plotOutput(outputId = ns("district_map"), height = "600px"),
     textOutput(ns("warning_message"))
   
@@ -60,15 +60,17 @@ mod_district_map_server <- function(input,
     if (nrow(df()) == 0) {"No data available. Please make a new selection"}
   })
 
-  output$district_map <- plotly::renderPlotly({
+  output$district_map <- ggiraph::renderggiraph({
   #output$district_map <- renderPlot({
     if (nrow(df()) > 0) {
       p <- ggplot2::ggplot(df()) +
         #ggplot2::geom_sf( ggplot2::aes(fill = point_estimate)) +
-        ggplot2::geom_sf( ggplot2::aes(fill = point_estimate, 
-                                       text = paste("District:", DISTRICT,
-                                                    "<br />Value:", pe_percent,
-                                                    "<br />Year:", year))) +
+        ggiraph::geom_sf_interactive( ggplot2::aes(fill = point_estimate, 
+                                                     tooltip = paste(
+                                                       "District:",    DISTRICT,
+                                                       "<br />Value:", pe_percent,
+                                                       "<br />Year:",  year
+                                                       ))) +
         ggplot2::scale_fill_viridis_c(limits = c(0, 1), labels = scales::percent) +
         ggthemes::theme_map() +
         #ggplot2::facet_wrap(~gender) +
@@ -76,10 +78,8 @@ mod_district_map_server <- function(input,
           fill = ""
         )
 
-      plotly::ggplotly(p, tooltip = c("text")) %>% plotly::style(hoveron = "fill")
+      ggiraph::girafe(ggobj = p)
     }
-    #p
-
   })
 }
     
