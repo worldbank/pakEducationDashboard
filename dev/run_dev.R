@@ -9,5 +9,12 @@ golem::detach_all_attached()
 golem::document_and_reload()
 
 # Run the application
+#TODO: REVERT
+# profvis::profvis({
+#   print(
+#     pakEducationDashboard::run_app()
+#   )
+# })
+
 pakEducationDashboard::run_app()
 

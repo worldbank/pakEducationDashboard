@@ -16,7 +16,7 @@
 mod_province_map_ui <- function(id){
   ns <- NS(id)
   tagList(
-    plotly::plotlyOutput(outputId = ns("province_map"), height = "600px"),
+    ggiraph::ggiraphOutput(outputId = ns("province_map"), height = "600px"),
     textOutput(ns("warning_message"))
   )
 }
@@ -57,13 +57,15 @@ mod_province_map_server <- function(input,
     if (nrow(df()) == 0) {"No data available. Please make a new selection"}
   })
   
-  output$province_map <- plotly::renderPlotly({
+  output$province_map <- ggiraph::renderggiraph({
     if (nrow(df()) > 0) {
       p <- ggplot2::ggplot(df()) +
-        ggplot2::geom_sf( ggplot2::aes(fill = point_estimate, 
-                                       text = paste("Province:", province,
-                                                    "<br />Value:", pe_percent,
-                                                    "<br />Year:", year))) +
+        ggiraph::geom_sf_interactive(ggplot2::aes(fill = point_estimate,
+                                                  tooltip = paste("Province:", province,
+                                                                  "<br />Value:", pe_percent,
+                                                                  "<br />Year:", year),
+                                                  data_id = province
+                                                  )) +
         ggplot2::scale_fill_viridis_c(limits = c(0, 1), labels = scales::percent) +
         ggthemes::theme_map() +
         ggplot2::facet_wrap(~gender) +
@@ -71,14 +73,8 @@ mod_province_map_server <- function(input,
           fill = ""
         )
       
-      plotly::ggplotly(p, tooltip = c("text")) %>% plotly::style(hoveron = "fill")
-      
-      
-      
-      
+      ggiraph::girafe(ggobj = p)
     }
-    # p
-    
   })
 }
     
