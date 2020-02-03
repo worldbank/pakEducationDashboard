@@ -73,7 +73,7 @@ mod_province_map_server <- function(input,
           fill = ""
         )
       
-      ggiraph::girafe(ggobj = p)
+      ggiraph::girafe(ggobj = p, width_svg = 8, height_svg = 7)
     }
   })
 }
