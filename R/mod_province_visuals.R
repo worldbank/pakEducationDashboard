@@ -96,7 +96,7 @@ mod_province_visuals_server <- function(input,
         ggplot2::scale_y_continuous(limits = c(0, 1), labels = scales::percent) +
         ggthemes::scale_color_colorblind() +
         cowplot::theme_cowplot(14) +
-        ggplot2::facet_wrap(~province, nrow = 1) +
+        ggplot2::facet_wrap(~province, ncol = 2) +
         ggplot2::theme(
           legend.title = ggplot2::element_blank(),
           legend.position = "none"
@@ -107,17 +107,31 @@ mod_province_visuals_server <- function(input,
         )
       
     }
-    #p
+    
     if (nrow(surveydf()) > 0) {
-      p <- p +
-        ggplot2::geom_line(data = surveydf(),
-                           ggplot2::aes(group = interaction(dataset, gender), 
+      # When survey/dataset selected remove Weighted Mix
+      p <- ggplot2::ggplot(surveydf(), ggplot2::aes(x = year, 
+                                                    y = point_estimate, 
+                                                    color = gender,
+                                                    text = paste("Value:", pe_percent,
+                                                                 "<br />Year:", year,
+                                                                 "<br />Dataset:", dataset))) +
+        ggplot2::geom_line(ggplot2::aes(group = interaction(dataset, gender), 
                                         linetype = dataset),
                            size = ggplot2::rel(0.6),
-                           alpha = .6) +
+                           alpha = .6 ) +
         ggplot2::geom_point(data = surveydf(),
                             ggplot2::aes(shape = dataset),
-                            size = ggplot2::rel(2.2), alpha = .6)
+                            size = ggplot2::rel(2.2), alpha = .6) +
+        ggplot2::scale_y_continuous(limits = c(0, 1), labels = scales::percent) +
+        ggthemes::scale_color_colorblind() +
+        cowplot::theme_cowplot(14) +  
+        ggplot2::facet_wrap(~province, ncol = 2, 
+                            labeller = ggplot2::labeller(indicator = indicator_choices_country_inv)) +
+        ggplot2::theme(
+          legend.title = ggplot2::element_blank(),
+          legend.position = "none"
+        )
     }
     
     plotly::ggplotly(p, tooltip = c("text")) %>% plotly::style(hoveron = c("color", "alpha"))
