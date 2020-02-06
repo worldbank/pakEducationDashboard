@@ -45,7 +45,8 @@ mod_province_select_ui <- function(id){
                 label = "Select a year",
                 min = min(pakeduc_province$year, na.rm = TRUE),
                 max = max(pakeduc_province$year, na.rm = TRUE),
-                value = max(pakeduc_province$year, na.rm = TRUE))
+                value = max(pakeduc_province$year, na.rm = TRUE),
+                sep = "")
   )
 }
     
