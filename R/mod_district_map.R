@@ -17,9 +17,7 @@ mod_district_map_ui <- function(id){
   ns <- NS(id)
   tagList(
     ggiraph::ggiraphOutput(outputId = ns("district_map"), height = "600px"),
-    #plotOutput(outputId = ns("district_map"), height = "600px"),
     textOutput(ns("warning_message"))
-  
   )
 }
     

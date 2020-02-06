@@ -15,12 +15,17 @@
 #' @importFrom shiny NS tagList 
 mod_province_select_ui <- function(id){
   ns <- NS(id)
+  
+  # Reorder indicator_choices_province based on Koen input
+  important_inds              <-  c("reading_9_11", "share_private_6_10")
+  indicator_choices_province  <-  indicator_choices_province[order(match(indicator_choices_province, important_inds))]
+  
   tagList(
     selectInput(inputId = ns("indicator"),
                 label = "Choose an indicator",
                 choices = indicator_choices_province,
                 selectize = TRUE,
-                selected = "division_9_11"),
+                selected = "reading_9_11"),
     selectInput(inputId = ns("province"),
                 label = "Choose one or more province(s)",
                 choices = sort(unique(pakeduc_province[["province"]])),
