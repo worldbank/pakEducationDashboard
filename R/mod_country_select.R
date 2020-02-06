@@ -20,7 +20,11 @@ mod_country_select_ui <- function(id){
                 label = "Choose an indicator",
                 choices = indicator_choices_country,
                 selectize = TRUE,
-                multiple = TRUE,
+                
+                #TODO: Revert to Tony
+                ## had to comment to account for title not rendering
+                # multiple = TRUE,
+                # selected = c("reading_9_11", "share_private_6_10")),
                 selected = c("reading_9_11", "share_private_6_10")),
     checkboxInput(inputId = ns("gender"),
                   label = "Disaggregate by gender",

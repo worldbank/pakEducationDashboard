@@ -61,7 +61,8 @@ mod_province_visuals_server <- function(input,
   })
   
   output$warning_message <- renderText({
-    if (nrow(df()) == 0) {"No data available. Please make a new selection"}
+    # TODO: GET CONTACT EMAIL FROM KOEN
+    if (nrow(df()) == 0) {"No data available. Please make a new selection. Contact us at EMAIL_GOES_HERE"}
   })
   
   surveydf <- reactive({

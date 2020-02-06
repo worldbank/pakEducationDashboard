@@ -16,6 +16,7 @@
 mod_country_visuals_ui <- function(id){
   ns <- NS(id)
   tagList(
+    h3(textOutput(ns("country_title"))),
     plotly::plotlyOutput(outputId = ns("country_plot"), height = "600px"),
     textOutput(ns("warning_message"))
   )
@@ -32,6 +33,11 @@ mod_country_visuals_server <- function(input,
                                        session,
                                        selection_vars){
   ns <- session$ns
+
+  output$country_title <- renderText({
+    names(indicator_choices_country)[indicator_choices_country == selection_vars$indicator()]
+  })
+  
   
   df <- reactive({
     
@@ -51,7 +57,8 @@ mod_country_visuals_server <- function(input,
   })
   
   output$warning_message <- renderText({
-    if (nrow(df()) == 0) {"No data available. Please make a new selection"}
+    # TODO: GET CONTACT EMAIL FROM KOEN
+    if (nrow(df()) == 0) {"No data available. Please make a new selection. Contact us at EMAIL_GOES_HERE"}
   })
   
   surveydf <- reactive({
@@ -75,7 +82,6 @@ mod_country_visuals_server <- function(input,
   
   output$country_plot <- plotly::renderPlotly({
     if (nrow(df()) > 0) {
-      
       p <- ggplot2::ggplot(df(), ggplot2::aes(x = year, 
                                               y = point_estimate, 
                                               color = gender,
@@ -88,8 +94,7 @@ mod_country_visuals_server <- function(input,
         ggplot2::scale_y_continuous(limits = c(0, 1), labels = scales::percent) +
         ggthemes::scale_color_colorblind() +
         cowplot::theme_cowplot(14) +
-        ggplot2::facet_wrap(~indicator, ncol = 2, 
-                            labeller = ggplot2::labeller(indicator = indicator_choices_country_inv)) +
+        # ggplot2::facet_wrap(~indicator, ncol = 2) +
         ggplot2::theme(
           legend.title = ggplot2::element_blank(),
           legend.position = "none"
@@ -118,8 +123,7 @@ mod_country_visuals_server <- function(input,
         ggplot2::scale_y_continuous(limits = c(0, 1), labels = scales::percent) +
         ggthemes::scale_color_colorblind() +
         cowplot::theme_cowplot(14) +  
-        ggplot2::facet_wrap(~indicator, ncol = 2, 
-                             labeller = ggplot2::labeller(indicator = indicator_choices_country_inv)) +
+        ggplot2::facet_wrap(~indicator, ncol = 2) +
         ggplot2::theme(
           legend.title = ggplot2::element_blank(),
           legend.position = "none"
