@@ -49,8 +49,10 @@ mod_province_map_server <- function(input,
         pe_percent = sprintf("%.1f%%", point_estimate * 100)
       )
     
+    # Changed to right join, so that rows == 0 when out returns 0 rows
     out <- pakgeo_province %>%
       dplyr::left_join(out, by = c("province_id" = "province_id"))
+      # dplyr::right_join(out, by = c("province_id" = "province_id"))
   })
   
   output$warning_message <- renderText({
