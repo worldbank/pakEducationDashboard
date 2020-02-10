@@ -25,7 +25,7 @@ mod_country_select_ui <- function(id){
                 ## had to comment to account for title not rendering
                 # multiple = TRUE,
                 # selected = c("reading_9_11", "share_private_6_10")),
-                selected = c("reading_9_11", "share_private_6_10")),
+                selected = c("reading_9_11")),
     checkboxInput(inputId = ns("gender"),
                   label = "Disaggregate by gender",
                   value = FALSE),

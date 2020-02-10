@@ -131,7 +131,10 @@ mod_district_visuals_server <- function(input,
         )
     }
     
-    plotly::ggplotly(p, tooltip = c("text")) %>% plotly::style(hoveron = "color")
+    #Only return plot if filtered dataframe has rows
+    if(nrow(df()) > 0 || nrow(surveydf()) > 0){
+      plotly::ggplotly(p, tooltip = c("text")) %>% plotly::style(hoveron = "color")
+    }
   })
 }
     

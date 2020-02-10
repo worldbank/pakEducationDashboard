@@ -62,7 +62,7 @@ mod_province_select_server <- function(input, output, session){
   province <- reactive({
     dplyr::filter(pakeduc_province, province %in% input$province)
   })
-
+  
   # observeEvent(province(), {
   #   provinces <- unique(province()$province)
   #   # choices_district <- unique(pakeduc_district$dist_nm[pakeduc_district$province %in% provinces])

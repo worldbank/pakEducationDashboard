@@ -50,6 +50,11 @@ mod_province_visuals_server <- function(input,
       "Both"
     }
     
+    # TODO:HERE
+    ## Disable "Disaggregate by gender" option if for that combintation of indicator,
+    ## select, year there is no "Boy" or "Girl"
+    
+    
     dplyr::filter(pakeduc_province_weighted,
                   indicator == !!selection_vars$indicator(),
                   province %in% !!selection_vars$province(),
@@ -107,6 +112,7 @@ mod_province_visuals_server <- function(input,
           y = "Share of population (%)"
         )
       
+      plotly::ggplotly(p, tooltip = c("text")) %>% plotly::style(hoveron = c("color", "alpha"))
     }
     
     if (nrow(surveydf()) > 0) {
@@ -135,7 +141,10 @@ mod_province_visuals_server <- function(input,
         )
     }
     
-    plotly::ggplotly(p, tooltip = c("text")) %>% plotly::style(hoveron = c("color", "alpha"))
+    #Only return plot if filtered dataframe has rows
+    if(nrow(df()) > 0 || nrow(surveydf()) > 0){
+      plotly::ggplotly(p, tooltip = c("text")) %>% plotly::style(hoveron = c("color", "alpha"))
+    }
   })
 }
     
