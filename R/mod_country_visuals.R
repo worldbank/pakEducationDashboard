@@ -124,13 +124,12 @@ mod_country_visuals_server <- function(input,
         ggplot2::scale_y_continuous(limits = c(0, 1), labels = scales::percent) +
         ggthemes::scale_color_colorblind() +
         cowplot::theme_cowplot(14) +  
-        ggplot2::facet_wrap(~indicator, ncol = 2) +
+        # ggplot2::facet_wrap(~indicator, ncol = 2) +
         ggplot2::theme(
           legend.title = ggplot2::element_blank(),
           legend.position = "none"
         )
     }
-    
     
     #Only return plot if filtered dataframe has rows
     if(nrow(df()) > 0 || nrow(surveydf()) > 0){
