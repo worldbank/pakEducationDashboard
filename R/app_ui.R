@@ -25,8 +25,10 @@ app_ui <- function() {
                             mod_district_visuals_ui("district_visuals_ui_1"),
                             mod_district_map_ui("district_map_ui_1")
                           )
+                 ),
+                 tabPanel("FAQ",
+                          mainPanel(mod_faq_ui("faq_ui_1"))
                  )
-                 
       )
       
     )

@@ -131,7 +131,6 @@ mod_country_visuals_server <- function(input,
         )
     }
     
-    
     #Only return plot if filtered dataframe has rows
     if(nrow(df()) > 0 || nrow(surveydf()) > 0){
       plotly::ggplotly(p, tooltip = c("text")) %>% plotly::style(hoveron = "color")
