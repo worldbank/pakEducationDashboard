@@ -86,7 +86,7 @@ mod_country_visuals_server <- function(input,
       p <- ggplot2::ggplot(df(), ggplot2::aes(x = year, 
                                               y = point_estimate, 
                                               color = gender,
-                                              text = paste("Value:", pe_percent,
+                                              text = paste("Value (Share of population %):", pe_percent,
                                                            "<br />Year:", year,
                                                            "<br />Dataset:", dataset))) +
         ggplot2::geom_line(ggplot2::aes(group = gender),
@@ -102,7 +102,7 @@ mod_country_visuals_server <- function(input,
         ) +
         ggplot2::labs(
           x = "",
-          y = "Share of population (%)\n "
+          y = ""
         )
     }
     
@@ -111,7 +111,7 @@ mod_country_visuals_server <- function(input,
       p <- ggplot2::ggplot(surveydf(), ggplot2::aes(x = year, 
                                               y = point_estimate, 
                                               color = gender,
-                                              text = paste("Value:", pe_percent,
+                                              text = paste("Value (Share of population %):", pe_percent,
                                                            "<br />Year:", year,
                                                            "<br />Dataset:", dataset))) +
         ggplot2::geom_line(ggplot2::aes(group = interaction(dataset, gender), 
@@ -128,6 +128,10 @@ mod_country_visuals_server <- function(input,
         ggplot2::theme(
           legend.title = ggplot2::element_blank(),
           legend.position = "none"
+        ) +
+        ggplot2::labs(
+          x = "",
+          y = "Share of population (%)\n "
         )
     }
     

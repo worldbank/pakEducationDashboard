@@ -93,7 +93,7 @@ mod_province_visuals_server <- function(input,
       p <- ggplot2::ggplot(df(), ggplot2::aes(x = year, 
                                               y = point_estimate, 
                                               color = gender,
-                                              text = paste("Value:", pe_percent,
+                                              text = paste("Value (Share of population %):", pe_percent,
                                                            "<br />Year:", year,
                                                            "<br />Dataset:", dataset))) +
         ggplot2::geom_line(ggplot2::aes(group = gender),
@@ -103,16 +103,19 @@ mod_province_visuals_server <- function(input,
         ggthemes::scale_color_colorblind() +
         cowplot::theme_cowplot(14) +
         ggplot2::facet_wrap(~province, ncol = 2) +
+        # ggplot2::theme(
+        #   legend.title = ggplot2::element_blank(),
+        #   legend.position = "none"
+        # ) +
+        ggplot2::labs(
+          x = "",
+          y = ""
+        ) +
         ggplot2::theme(
           legend.title = ggplot2::element_blank(),
           legend.position = "none"
-        ) +
-        ggplot2::labs(
-          x = "",
-          y = "Share of population (%)"
-        )
+          )
       
-      plotly::ggplotly(p, tooltip = c("text")) %>% plotly::style(hoveron = c("color", "alpha"))
     }
     
     if (nrow(surveydf()) > 0) {
@@ -120,7 +123,7 @@ mod_province_visuals_server <- function(input,
       p <- ggplot2::ggplot(surveydf(), ggplot2::aes(x = year, 
                                                     y = point_estimate, 
                                                     color = gender,
-                                                    text = paste("Value:", pe_percent,
+                                                    text = paste("Value (Share of population %):", pe_percent,
                                                                  "<br />Year:", year,
                                                                  "<br />Dataset:", dataset))) +
         ggplot2::geom_line(ggplot2::aes(group = interaction(dataset, gender), 
@@ -135,6 +138,10 @@ mod_province_visuals_server <- function(input,
         cowplot::theme_cowplot(14) +  
         ggplot2::facet_wrap(~province, ncol = 2, 
                             labeller = ggplot2::labeller(indicator = indicator_choices_country_inv)) +
+        ggplot2::labs(
+          x = "",
+          y = ""
+        ) +
         ggplot2::theme(
           legend.title = ggplot2::element_blank(),
           legend.position = "none"
@@ -143,7 +150,8 @@ mod_province_visuals_server <- function(input,
     
     #Only return plot if filtered dataframe has rows
     if(nrow(df()) > 0 || nrow(surveydf()) > 0){
-      plotly::ggplotly(p, tooltip = c("text")) %>% plotly::style(hoveron = c("color", "alpha"))
+      p <- plotly::ggplotly(p, tooltip = c("text")) %>% 
+        plotly::style(hoveron = c("color", "alpha"))
     }
   })
 }
