@@ -25,30 +25,10 @@ app_ui <- function() {
                             mod_district_visuals_ui("district_visuals_ui_1"),
                             mod_district_map_ui("district_map_ui_1")
                           )
+                 ),
+                 tabPanel("FAQ",
+                          mainPanel(mod_faq_ui("faq_ui_1"))
                  )
-                 # # New tabs
-                 # tabPanel("FAQ",
-                 #          sidebarPanel(mod_district_select_ui("district_select_ui_1")),
-                 #          mainPanel(
-                 #            mod_district_visuals_ui("district_visuals_ui_1"),
-                 #            mod_district_map_ui("district_map_ui_1")
-                 #          )
-                 # ),
-                 # tabPanel("Add Data",
-                 #          sidebarPanel(mod_district_select_ui("district_select_ui_1")),
-                 #          mainPanel(
-                 #            mod_district_visuals_ui("district_visuals_ui_1"),
-                 #            mod_district_map_ui("district_map_ui_1")
-                 #          )
-                 # ),
-                 # tabPanel("Home",
-                 #          sidebarPanel(mod_district_select_ui("district_select_ui_1")),
-                 #          mainPanel(
-                 #            mod_district_visuals_ui("district_visuals_ui_1"),
-                 #            mod_district_map_ui("district_map_ui_1")
-                 #          )
-                 # )
-                 
       )
       
     )
