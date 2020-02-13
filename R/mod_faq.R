@@ -83,8 +83,48 @@ mod_faq_ui <- function(id){
               ": EGRA is an individually administered assessment tool that measures the foundational literacy skills that readers need before they
               can read, such as letter recognition, and oral reading fluency, as well as basic reading comprehension. The Pakistan EGRA survey was
               administered as part of a USAID funded reading project, providing baseline, midline and end-line data.")
-    )
+    ),
+    tags$h3("How were these indicators selected?"),
+    tags$ul(
+      tags$li("We have given priority to data and indicators that are of the most relevance to the current education projects in Pakistan. ")
+      #TODO: ASK AHEMD AND KOEN FOR HYPERLINK
+      # tags$li("If you are interested to see data on a specific topic, please get in touch with our team here. (Note: Hyper link will be added
+      #         to the form/tab on website where users can contact)")
+    ),
+    tags$h3("Why is the district the lowest level of aggregation available?"),
+    tags$p("None of the surveys currently included are representative at lower levels than districts. As we are adding administrative datasets to the
+           portal, we are trying to make these available at Tehsil and Union Council level. Unfortunately, it is already extremely difficult to present
+           Union Council-level data (let alone at lower levels of administration), since the coding of these districts is not consistent between datasets,
+           and across time. "),
+    tags$h3("How can I download these indicators? "),
+    tags$p("We are working on several download functions. It will be possible to download specific indicators from the portal, or to download the entire 
+           data underlying the portal.  "),
+    tags$h3("How can I access the microdata?"),
+    tags$p("We are trying to find out the best way to publish the microdata. Each of the micro-datasets have been made available to use in various ways,
+           mostly because these are already available in the public domain. That being said, we do not hold the licenses to publish the microdata here 
+           directly. We will work with the rights holders to try and find ways to make the microdata more easily accessible. "),
+    tags$h3("I have a question about the data, can you help me?"),
+    tags$p("As we are a small team, we currently do not have the bandwidth to offer any advice about the interpretation of the data. We do however write
+           blogs and narratives to aid interpretation for some of the key indicators. We sometimes make some exceptions to this rule for researchers and
+           journalists who are writing in depth stories, but please do not expect a reply."),
+    tags$h3("Why is this limited to education indicators?"),
+    tags$p("We are exploring ways to expand this portal towards a broader set of indicators that are relevant for human development. That being said, we
+           are an extremely small team with limited bandwidth, and so we are forced to carefully prioritize."),
     
+    #TODO: ASK KOEN FOR HYPERLINKS
+    # tags$h3("What can I do if I spot an error in the data?"),
+    # tags$p("We strive to reduce errors as much as possible, although we realize that we may have made errors. Please don’t hesitate to get in touch with our team here, if you find anything that looks like a mistake. ")
+    
+    #TODO: ASK KOEN FOR HYPERLINKS
+    # tags$h3("How can I contribute data to the portal?"),
+    # tags$p("If you are interested in contributing data to the portal, please contact our team here. (Note: Hyper link will be added to the form/tab on website where users can contact)")
+    
+    tags$h3("Is the data up to date? Are there plans to add more data in the future?"),
+    tags$ul(
+      tags$li("Yes, and yes. We have integrated the main datasets that we know are available, and are actively planning to add more data as they become available. If you have a dataset that can be added to this portal,
+              please get in touch."),
+      tags$li("•	The first item on our agenda is to add several waves of administrative data to the portal. We will make these available as a specific tab on the Punjab province. ")
+    )
   )
 }
     
