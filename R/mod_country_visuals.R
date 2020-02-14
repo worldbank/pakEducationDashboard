@@ -17,6 +17,7 @@ mod_country_visuals_ui <- function(id){
   ns <- NS(id)
   tagList(
     h3(textOutput(ns("country_title"))),
+    p(textOutput(ns("country_ind_description"))),
     plotly::plotlyOutput(outputId = ns("country_plot"), height = "600px"),
     textOutput(ns("warning_message"))
   )
@@ -56,6 +57,10 @@ mod_country_visuals_server <- function(input,
       )
   })
   
+  output$country_ind_description <- renderText({
+    unique(df()$Indicator.definition)
+  })
+  
   output$warning_message <- renderText({
     # TODO: GET CONTACT EMAIL FROM KOEN
     if (nrow(df()) == 0) {"No data available. Please make a new selection. Contact us at EMAIL_GOES_HERE"}
@@ -82,12 +87,12 @@ mod_country_visuals_server <- function(input,
   
   output$country_plot <- plotly::renderPlotly({
     if (nrow(df()) > 0) {
-      
       p <- ggplot2::ggplot(df(), ggplot2::aes(x = year, 
                                               y = point_estimate, 
                                               color = gender,
                                               text = paste("Value (Share of population %):", pe_percent,
                                                            "<br />Year:", year,
+                                                           # "<br />Indicator Description:", Indicator.definition,
                                                            "<br />Dataset:", dataset))) +
         ggplot2::geom_line(ggplot2::aes(group = gender),
                            size = ggplot2::rel(0.8)) +
@@ -97,13 +102,13 @@ mod_country_visuals_server <- function(input,
         cowplot::theme_cowplot(14) +
         # ggplot2::facet_wrap(~indicator, ncol = 2) +
         ggplot2::theme(
-          legend.title = ggplot2::element_blank(),
+          legend.title    = ggplot2::element_blank(),
           legend.position = "none"
         ) +
         ggplot2::labs(
           x = "",
           y = ""
-        )
+        ) 
     }
     
     if (nrow(surveydf()) > 0) {
@@ -131,13 +136,15 @@ mod_country_visuals_server <- function(input,
         ) +
         ggplot2::labs(
           x = "",
-          y = "Share of population (%)\n "
+          y = ""
         )
     }
     
     #Only return plot if filtered dataframe has rows
     if(nrow(df()) > 0 || nrow(surveydf()) > 0){
-      plotly::ggplotly(p, tooltip = c("text")) %>% plotly::style(hoveron = "color")
+      
+      plotly::ggplotly(p, tooltip = c("text")) %>% 
+        plotly::style(hoveron = "color")
     }
   })
 }

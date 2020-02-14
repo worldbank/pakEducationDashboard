@@ -57,33 +57,42 @@ mod_faq_ui <- function(id){
            advice in the design of the portal."),
     tags$h3("What are the sources for these indicators?"),
     tags$ul(
-      tags$li(tags$a("ASER", href = "http://aserpakistan.org/index.php"),
-              ": The Annual Status of Education Report is a citizen-led; household-based
-              survey that aims to provide reliable estimates on the schooling status of
-              children aged 3-16 years residing in all rural and several urban districts
-              of Pakistan. "),
-      tags$li(tags$a("HIES", href = "http://www.pbs.gov.pk/content/household-integrated-economic-survey-hies-2015-16"), 
-              ": The Household Integrated Economic Survey implemented by the Pakistan Bureau of Statistics provides information
-              on household income, savings, liabilities, and consumption expenditure, and social indicators at national 
-              and provincial levels. "),
-      tags$li(tags$a("PSLM", href ="http://www.pbs.gov.pk/content/pakistan-social-and-living-standards-measurement"),
-              ": The Pakistan Social and Living Standards Measurement (PSLM) is a household survey that provides social
-              and economic indicators, which is representative at provincial and district levels. It includes survey 
-              modules on education, health, employment, household assets and amenities, income and expenditure, population
-              welfare, water supply and sanitation."),
-      tags$li(tags$a("MICS", href ="http://www.bos.gop.pk/mics"),
-              ": The Multiple Indicator Cluster Survey is a multipurpose household survey implemented on a provincial level
-              basis, and is representative at district level. The MICS provides data to track poverty, education and health
-              indicators."),
-      tags$li(tags$a("DHS",  href ="https://dhsprogram.com/what-we-do/survey/survey-display-523.cfm"),
-              ": The Pakistan Demographic and Health Survey is a household survey implemented by the National Institute of
-              Population Studies. DHS provides internationally standardized indicators of demographic and health indicators.
-              The results from this survey are representative at the provincial and district levels."),
-      tags$li(tags$a("EGRA", href ="https://www.usaid.gov/news-information/videos/early-grade-reading-assessment-egra-extra-mile-better-journey"),
-              ": EGRA is an individually administered assessment tool that measures the foundational literacy skills that readers need before they
-              can read, such as letter recognition, and oral reading fluency, as well as basic reading comprehension. The Pakistan EGRA survey was
-              administered as part of a USAID funded reading project, providing baseline, midline and end-line data.")
-    ),
+      tags$li(tags$p(tags$a("ASER", href = "http://aserpakistan.org/index.php"),": The Annual Status of Education Report is a citizen-led; household-based survey that aims to provide reliable estimates on the schooling status of children and basic learning levels of children aged 5-16 years
+                     residing in all rural and several urban districts of Pakistan. It’s a large household-based survey covering all i.e. 138 districts and major urban cities of the country and is implemented each year. The
+                     results are representative at both provincial and district levels. "),
+              tags$p("The Annual Status of Education Report is used to understand the broad patterns in learning across districts and over time. It gives an overview of the learning competencies (grades 2/3-lower primary) of Pakistan's
+                     children, whether in school or out of school. The ASER tool is mapped to lower primary competencies of grades 2-3 or SDG 4.1.1a. Each indicator included in ASER measures both the public and private schools’ outcomes.
+                     ASER data also provides educational indicators including enrollment levels, school facilities, mothers’ literacy and various other school elements, apart from the learning levels of the children.")),
+      
+      tags$li(tags$p(tags$a("HIES", href = "http://www.pbs.gov.pk/content/household-integrated-economic-survey-hies-2015-16"),": Household Integrated Economic Survey implemented by the Pakistan Bureau of Statistics provides information on household income, savings, liabilities, and consumption expenditure, and social indicators at national 
+                     and provincial levels. HIES data is used by Planning Commission for estimation of consumption-based Poverty. The HIES is implemented in urban and rural areas of all four provinces of Pakistan. "),
+              tags$p("HIES is split into two modules in order to obtain better quality of information independently from male and female respondents by male and female enumerators respectively. ")),
+      
+      tags$li(tags$p(tags$a("PSLM", href ="http://www.pbs.gov.pk/content/pakistan-social-and-living-standards-measurement"),": The Pakistan Social and Living Standards Measurement (PSLM) is a household survey that provides social and economic indicators, which is representative at provincial and district levels. It includes survey modules on
+                     education, health, employment, household assets and amenities, income and expenditure, population welfare, water supply and sanitation."),
+              tags$p("The survey is carried out in alternate years and is the primary source of estimation of Multi-Dimensional Poverty in Pakistan. The sample size of PSLM surveys district level was approximately 80000 households and approximately
+                     26000 at Provincial level. The PSLM consists of all urban and rural areas of the four provinces of Pakistan and Islamabad. PSLM surveys are instrumental in monitoring 29 indicators of SDGS in Pakistan.  ")),
+      
+      tags$li(tags$p(tags$a("MICS", href ="http://www.bos.gop.pk/mics"), ": Multiple Indicator Cluster Survey Punjab is a household survey implemented by the Bureau of Statistics Punjab in collaboration with the United Children’s Fund (UNICEF). It provides data for assessing the situation of children,
+                     adolescents, women and households in Punjab. MICS surveys cover both rural and urban areas for all 36 districts of Punjab. The results from the MICS Punjab survey are representative at both the district and tehsil/town level 
+                     as well. The MICS Punjab survey covers all household members, women aged 15-49, men aged 15-49 years, all children under five and children age 5-17 years living in the household."),
+              tags$p("MICS Punjab allows the provincial government and districts to gauge and monitor their respective status of human and social development with precise data on a variety of key indicators. It allows to track the progress of Track
+                     the progress of World Summit for Children (WSC), World Fit for Children (WFFC), SDGs and PRSP indicators. ")),
+      
+      tags$li(tags$p(tags$a("DHS",  href ="https://dhsprogram.com/what-we-do/survey/survey-display-523.cfm"),": The Pakistan Demographic and Health Survey is a household survey implemented by the National Institute of Population Studies. DHS provides internationally standardized indicators of demographic and health indicators. The results
+                     from this survey are representative at the provincial and district levels. There are two main types of DHS Surveys:"),
+              tags$ul(
+                tags$li("Standard DHS Surveys have large sample sizes (usually between 5,000 and 30,000 households) and typically are conducted about every 5 years, to allow comparisons over time."),
+                tags$li("Interim DHS Surveys focus on the collection of information on key performance monitoring indicators but may not include data for all impact evaluation measures (such as mortality rates). These surveys are conducted
+                        between rounds of DHS surveys and have shorter questionnaires than DHS surveys. Although nationally representative, these surveys generally have smaller samples than DHS surveys.")
+                )),
+      
+      tags$li(tags$p(tags$a("EGRA", href ="https://www.usaid.gov/news-information/videos/early-grade-reading-assessment-egra-extra-mile-better-journey"),": EGRA is an individually administered assessment tool that measures the foundational literacy skills that readers need before they can read, such as letter recognition, and oral reading fluency, as well as basic reading comprehension."),
+              tags$p("The Pakistan EGRA survey was administered as part of a USAID funded reading project, providing baseline, midline and end-line data. Students at two selected grade levels-grade 3 and 5-were assessed.  EGRA was administered to a sample 
+                     of 33,000 children in 11,20 schools throughout the country. In all provinces, except Sindh, students were tested in Urdu. In Sindh, the test was administered in Sindhi. EGRA assessment was carried out in government schools in Pakistan
+                     and a random sample of both male and females schools were chosen. "))
+              ),
+   
     tags$h3("How were these indicators selected?"),
     tags$ul(
       tags$li("We have given priority to data and indicators that are of the most relevance to the current education projects in Pakistan. ")

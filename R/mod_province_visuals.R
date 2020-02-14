@@ -17,6 +17,7 @@ mod_province_visuals_ui <- function(id){
   ns <- NS(id)
   tagList(
     h3(textOutput(ns("province_title"))),
+    p(textOutput(ns("province_ind_description"))),
     plotly::plotlyOutput(outputId = ns("province_plot")),
     textOutput(ns("warning_message"))
   )
@@ -63,6 +64,11 @@ mod_province_visuals_server <- function(input,
       dplyr::mutate(
         pe_percent = sprintf("%.1f%%", point_estimate * 100)
       )
+  })
+  
+  
+  output$province_ind_description <- renderText({
+    unique(df()$Indicator.definition)
   })
   
   output$warning_message <- renderText({
@@ -150,8 +156,9 @@ mod_province_visuals_server <- function(input,
     
     #Only return plot if filtered dataframe has rows
     if(nrow(df()) > 0 || nrow(surveydf()) > 0){
-      p <- plotly::ggplotly(p, tooltip = c("text")) %>% 
-        plotly::style(hoveron = c("color", "alpha"))
+      
+      plotly::ggplotly(p, tooltip = c("text")) %>% 
+        plotly::style(hoveron = "color") 
     }
   })
 }
