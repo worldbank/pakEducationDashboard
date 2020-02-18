@@ -38,7 +38,7 @@ pakeduc_province <- haven::read_stata("data-raw/data_input/pakeduc_data_province
 indicator_choices_province <- sort(unique(pakeduc_province$indicator)) 
 indicator_choices_province <- prepare_indicator_choices(indicator_choices_province,
                                                         expected_choices = expected_choices,
-                                                        choices_labels = choices_labels,
+                                                        choices_labels = choice_labels,
                                                         labels_order = labels_order)
                                                                          
 # Create weighted dataset -------------------------------------------------

@@ -20,7 +20,7 @@ pakeduc_country <- haven::read_stata("data-raw/data_input/pakeduc_data_country.d
 indicator_choices_country <- sort(unique(pakeduc_country$indicator)) 
 indicator_choices_country <- prepare_indicator_choices(indicator_choices_country,
                                                        expected_choices = expected_choices,
-                                                       choices_labels = choices_labels,
+                                                       choices_labels = choice_labels,
                                                        labels_order = labels_order)
         
 indicator_choices_country_inv <- names(indicator_choices_country)

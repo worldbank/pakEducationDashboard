@@ -31,7 +31,7 @@ pakeduc_district <- pakeduc_district %>%
 indicator_choices_district <- sort(unique(pakeduc_district$indicator)) 
 indicator_choices_district <- prepare_indicator_choices(indicator_choices_district,
                                                         expected_choices = expected_choices_district,
-                                                        choices_labels = choices_labels_district,
+                                                        choices_labels = choice_labels_district,
                                                         labels_order = labels_order_district)
 # Create weighted dataset -------------------------------------------------
 

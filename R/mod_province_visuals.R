@@ -95,6 +95,13 @@ mod_province_visuals_server <- function(input,
   })
   
   output$province_plot <- plotly::renderPlotly({
+    # Adjust scale and tooltip according to indicator
+    if (stringr::str_detect(selection_vars$indicator(), "^egra")) {
+      y_scale <- ggplot2::scale_y_continuous(limits = c(0, 100))
+    } else {
+      y_scale <- ggplot2::scale_y_continuous(limits = c(0, 1), labels = scales::percent)
+    }
+    
     if (nrow(df()) > 0) {
       p <- ggplot2::ggplot(df(), ggplot2::aes(x = year, 
                                               y = point_estimate, 
@@ -106,7 +113,8 @@ mod_province_visuals_server <- function(input,
         ggplot2::geom_line(ggplot2::aes(group = gender),
                            size = ggplot2::rel(0.8)) +
         ggplot2::geom_point(size = ggplot2::rel(2.8)) +
-        ggplot2::scale_y_continuous(limits = c(0, 1), labels = scales::percent) +
+        y_scale +
+        ggplot2::scale_x_continuous(breaks = integer_breaks()) +
         ggthemes::scale_color_colorblind() +
         cowplot::theme_cowplot(14) +
         ggplot2::facet_wrap(~province, ncol = 5) +
@@ -141,7 +149,8 @@ mod_province_visuals_server <- function(input,
         ggplot2::geom_point(data = surveydf(),
                             ggplot2::aes(shape = dataset),
                             size = ggplot2::rel(2.2), alpha = .6) +
-        ggplot2::scale_y_continuous(limits = c(0, 1), labels = scales::percent) +
+        y_scale +
+        ggplot2::scale_x_continuous(breaks = integer_breaks()) +
         ggthemes::scale_color_colorblind() +
         cowplot::theme_cowplot(14) +  
         ggplot2::facet_wrap(~province, ncol = 5, 
