@@ -37,6 +37,7 @@ indicator_choices_district <- prepare_indicator_choices(indicator_choices_distri
 
 pakeduc_district_weighted <- pakeduc_district %>%
   filter(!is.na(point_estimate)) %>%
+  filter(!(dataset == "aser" & (str_detect(indicator, "^in_school") | str_detect(indicator, "^share_private")))) %>%
   mutate(
     inv_se = 1 / standard_error
   ) %>%

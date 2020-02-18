@@ -1,4 +1,3 @@
-
 # Clean country level data ------------------------------------------------
 
 pakeduc_country <- haven::read_stata("data-raw/data_input/pakeduc_data_country.dta")  %>%
@@ -32,6 +31,7 @@ names(indicator_choices_country_inv) <- unname(indicator_choices_country)
 
 pakeduc_country_weighted <- pakeduc_country %>%
   filter(!is.na(point_estimate)) %>%
+  filter(!(dataset == "aser" & (str_detect(indicator, "^in_school") | str_detect(indicator, "^share_private")))) %>%
   mutate(
     inv_se = 1 / standard_error
   ) %>%
