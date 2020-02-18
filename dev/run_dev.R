@@ -9,7 +9,7 @@ golem::detach_all_attached()
 golem::document_and_reload()
 
 # Run the application
-#TODO: REVERT
+#TODO: For profiling uncomment below
 # profvis::profvis({
 #   print(
 #     pakEducationDashboard::run_app()

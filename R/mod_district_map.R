@@ -17,9 +17,7 @@ mod_district_map_ui <- function(id){
   ns <- NS(id)
   tagList(
     ggiraph::ggiraphOutput(outputId = ns("district_map"), height = "600px"),
-    #plotOutput(outputId = ns("district_map"), height = "600px"),
     textOutput(ns("warning_message"))
-  
   )
 }
     
@@ -42,7 +40,7 @@ mod_district_map_server <- function(input,
     } else {
       "Both"
     }
-   
+    
     out <- dplyr::filter(pakeduc_district_weighted,
                          indicator == !!selection_vars$indicator(),
                          gender %in% !!gender_selection,
@@ -51,9 +49,10 @@ mod_district_map_server <- function(input,
       dplyr::mutate(
         pe_percent = sprintf("%.1f%%", point_estimate * 100)
       )
-    
+    # Changed to right join, so that rows == 0 when out returns 0 rows
     out <- pakgeo_district %>%
-      dplyr::left_join(out, by = c("dist_key" = "dist_key")) 
+      dplyr::left_join(out, by = c("dist_key" = "dist_key"))
+      # dplyr::right_join(out, by = c("dist_key" = "dist_key"))
   })
 
   output$warning_message <- renderText({
@@ -61,16 +60,15 @@ mod_district_map_server <- function(input,
   })
 
   output$district_map <- ggiraph::renderggiraph({
-  #output$district_map <- renderPlot({
     if (nrow(df()) > 0) {
       p <- ggplot2::ggplot(df()) +
-        #ggplot2::geom_sf( ggplot2::aes(fill = point_estimate)) +
         ggiraph::geom_sf_interactive( ggplot2::aes(fill = point_estimate, 
-                                                     tooltip = paste(
+                                                   tooltip = paste(
                                                        "District:",    DISTRICT,
                                                        "<br />Value:", pe_percent,
-                                                       "<br />Year:",  year
-                                                       ))) +
+                                                       "<br />Year:",  year),
+                                                   data_id = dist_nm
+                                                   )) +
         ggplot2::scale_fill_viridis_c(limits = c(0, 1), labels = scales::percent) +
         ggthemes::theme_map() +
         #ggplot2::facet_wrap(~gender) +
@@ -78,7 +76,7 @@ mod_district_map_server <- function(input,
           fill = ""
         )
 
-      ggiraph::girafe(ggobj = p)
+      ggiraph::girafe(ggobj = p, width_svg = 8, height_svg = 7)
     }
   })
 }
