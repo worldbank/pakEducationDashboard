@@ -49,7 +49,6 @@ mod_district_map_server <- function(input,
       dplyr::mutate(
         pe_percent = sprintf("%.1f%%", point_estimate * 100)
       )
-    
     # Changed to right join, so that rows == 0 when out returns 0 rows
     out <- pakgeo_district %>%
       dplyr::left_join(out, by = c("dist_key" = "dist_key"))
@@ -62,7 +61,6 @@ mod_district_map_server <- function(input,
 
   output$district_map <- ggiraph::renderggiraph({
     if (nrow(df()) > 0) {
-      
       p <- ggplot2::ggplot(df()) +
         ggiraph::geom_sf_interactive( ggplot2::aes(fill = point_estimate, 
                                                    tooltip = paste(

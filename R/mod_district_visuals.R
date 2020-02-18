@@ -61,7 +61,7 @@ mod_district_visuals_server <- function(input,
   
   
   output$district_ind_description <- renderText({
-    unique(df()$Indicator.definition)
+    unique(df()$indicator_definition)
   })
   
   output$warning_message <- renderText({
@@ -86,9 +86,10 @@ mod_district_visuals_server <- function(input,
         pe_percent = sprintf("%.1f%%", point_estimate * 100)
       )
   })
-  
+ 
   output$district_plot <- plotly::renderPlotly({
     if (nrow(df()) > 0) {
+      facet_rows <- ((length(unique(df()$dist_nm)) - 1) %/% 4) + 1
       p <- ggplot2::ggplot(df(), ggplot2::aes(x = year, 
                                               y = point_estimate, 
                                               color = gender,
@@ -101,7 +102,7 @@ mod_district_visuals_server <- function(input,
         ggplot2::geom_point(size = ggplot2::rel(2.8)) +
         ggplot2::scale_y_continuous(limits = c(0, 1), labels = scales::percent) +
         ggthemes::scale_color_colorblind() +
-        ggplot2::facet_wrap(~dist_nm, ncol = 2) +
+        ggplot2::facet_wrap(~dist_nm, nrow = facet_rows) +
         cowplot::theme_cowplot(14)  +
         ggplot2::theme(
           legend.position = "none"
@@ -114,6 +115,7 @@ mod_district_visuals_server <- function(input,
     
     if (nrow(surveydf()) > 0) {
       # When survey/dataset selected remove Weighted Mix
+      facet_rows <- ((length(unique(surveydf()$dist_nm)) - 1) %/% 4) + 1
       p <- ggplot2::ggplot(surveydf(), ggplot2::aes(x = year, 
                                                     y = point_estimate, 
                                                     color = gender,
@@ -131,7 +133,7 @@ mod_district_visuals_server <- function(input,
         ggplot2::scale_y_continuous(limits = c(0, 1), labels = scales::percent) +
         ggthemes::scale_color_colorblind() +
         cowplot::theme_cowplot(14) +  
-        ggplot2::facet_wrap(~dist_nm, ncol = 2, 
+        ggplot2::facet_wrap(~dist_nm, ncol = facet_rows, 
                             labeller = ggplot2::labeller(indicator = indicator_choices_country_inv)) +
         ggplot2::labs(
           x = "",

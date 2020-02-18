@@ -58,7 +58,7 @@ mod_country_visuals_server <- function(input,
   })
   
   output$country_ind_description <- renderText({
-    unique(df()$Indicator.definition)
+    unique(df()$indicator_definition)
   })
   
   output$warning_message <- renderText({
@@ -92,7 +92,7 @@ mod_country_visuals_server <- function(input,
                                               color = gender,
                                               text = paste("Value (Share of population %):", pe_percent,
                                                            "<br />Year:", year,
-                                                           # "<br />Indicator Description:", Indicator.definition,
+                                                           # "<br />Indicator Description:", indicator_definition,
                                                            "<br />Dataset:", dataset,
                                                            "<br />Gender:", gender))) +
         ggplot2::geom_line(ggplot2::aes(group = gender),
