@@ -94,7 +94,8 @@ mod_district_visuals_server <- function(input,
                                               color = gender,
                                               text = paste("Value (Share of population %):", pe_percent,
                                                            "<br />Year:", year,
-                                                           "<br />Dataset:", dataset))) +
+                                                           "<br />Dataset:", dataset,
+                                                           "<br />Gender:", gender))) +
         ggplot2::geom_line(ggplot2::aes(group = gender),
                            size = ggplot2::rel(0.8)) +
         ggplot2::geom_point(size = ggplot2::rel(2.8)) +
@@ -118,7 +119,8 @@ mod_district_visuals_server <- function(input,
                                                     color = gender,
                                                     text = paste("Value (Share of population %):", pe_percent,
                                                                  "<br />Year:", year,
-                                                                 "<br />Dataset:", dataset))) +
+                                                                 "<br />Dataset:", dataset,
+                                                                 "<br />Gender:", gender))) +
         ggplot2::geom_line(ggplot2::aes(group = interaction(dataset, gender), 
                                         linetype = dataset),
                            size = ggplot2::rel(0.6),
