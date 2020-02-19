@@ -4,7 +4,7 @@ app_ui <- function() {
     # Leave this function for adding external resources
     golem_add_external_resources(),
     shinyUI(
-      navbarPage("Pakistan Education Dashboard",
+      navbarPage("Data Depot",
                  theme = shinythemes::shinytheme("flatly"),
                  tabPanel("Country level",
                           sidebarPanel(mod_country_select_ui("country_select_ui_1")),

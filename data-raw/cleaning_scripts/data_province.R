@@ -37,7 +37,10 @@ pakeduc_province <- haven::read_stata("data-raw/data_input/pakeduc_data_province
   mutate(
     pe_percent = if_else(stringr::str_detect(indicator, "^egra"), 
                          as.character(round(point_estimate, 1)),
-                         sprintf("%.1f%%", point_estimate * 100))
+                         sprintf("%.1f%%", point_estimate * 100)),
+    province = as.factor(province),
+    province = forcats::fct_relevel(province, "Punjab", "Sindh", "KP", "Balochistan", "Other areas")
+    
   )
 
 indicator_choices_province <- sort(unique(pakeduc_province$indicator)) 
