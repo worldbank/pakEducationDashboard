@@ -95,19 +95,19 @@ mod_province_select_server <- function(input, output, session){
     dplyr::filter(pakeduc_province, province %in% input$province)
   })
   
+  # Only display years based on inputs for either weighted or non-weighted
   years <- reactive({
     if(is.null(input$dataset)){
-      pakeduc_province_weighted[which(pakeduc_province_weighted$province    == input$province & 
+      pakeduc_province_weighted[which(pakeduc_province_weighted$province %in% input$province & 
                                pakeduc_province_weighted$indicator == input$indicator &
                                !is.na(pakeduc_province_weighted$point_estimate)), "year"]
     } 
     else{
-      pakeduc_province[which(pakeduc_province$province    == input$province & 
+      pakeduc_province[which(pakeduc_province$province %in% input$province & 
                                pakeduc_province$indicator == input$indicator &
                                input$dataset %in% pakeduc_province$dataset &
                                !is.na(pakeduc_province$point_estimate)), "year"]
     }
-    
   })
   
   output$tempYear <- renderUI({
