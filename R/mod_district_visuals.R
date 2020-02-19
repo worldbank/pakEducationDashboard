@@ -63,7 +63,7 @@ mod_district_visuals_server <- function(input,
   
   output$warning_message <- renderText({
     # TODO: GET CONTACT EMAIL FROM KOEN
-    if (nrow(df()) == 0) {"No data available. Please make a new selection. Contact us at EMAIL_GOES_HERE"}
+    if (nrow(df()) == 0) {"No data available. Please make a new selection. Contact us at data@worldbank.org"}
   })
   
   surveydf <- reactive({
