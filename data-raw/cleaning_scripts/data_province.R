@@ -33,7 +33,12 @@ pakeduc_province <- haven::read_stata("data-raw/data_input/pakeduc_data_province
   ) %>%
   select(-names) %>%
   distinct() %>%
-  pivot_wider(names_from = "measurement", values_from = "values")
+  pivot_wider(names_from = "measurement", values_from = "values") %>%  
+  mutate(
+    pe_percent = if_else(stringr::str_detect(indicator, "^egra"), 
+                         as.character(round(point_estimate, 1)),
+                         sprintf("%.1f%%", point_estimate * 100))
+  )
 
 indicator_choices_province <- sort(unique(pakeduc_province$indicator)) 
 indicator_choices_province <- prepare_indicator_choices(indicator_choices_province,
@@ -75,7 +80,12 @@ pakeduc_province_weighted <- pakeduc_province %>%
     point_estimate,
     dataset
   ) %>%
-  distinct()
+  distinct() %>%  
+  mutate(
+    pe_percent = if_else(stringr::str_detect(indicator, "^egra"), 
+                         as.character(round(point_estimate, 1)),
+                         sprintf("%.1f%%", point_estimate * 100))
+  )
 
 # # Code to generate the admin_level_lkup
 # aser <- haven::read_stata("../Platform - Pak/ASER/aser_panel.dta")        
