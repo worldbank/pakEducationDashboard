@@ -20,6 +20,7 @@ mod_province_select_ui <- function(id){
   important_inds              <-  c("reading_9_11", "share_private_6_10")
   indicator_choices_province  <-  indicator_choices_province[order(match(indicator_choices_province, important_inds))]
   
+  
   tagList(
     selectInput(inputId = ns("indicator"),
                 label = "Choose an indicator",
@@ -41,12 +42,8 @@ mod_province_select_ui <- function(id){
                 selectize = TRUE,
                 #selected = c("aser"),
                 multiple = TRUE),
-    sliderInput(inputId = ns("year"),
-                label = "Select a year",
-                min = min(pakeduc_province$year, na.rm = TRUE),
-                max = max(pakeduc_province$year, na.rm = TRUE),
-                value = max(pakeduc_province$year, na.rm = TRUE),
-                sep = ""),
+    # Dynamically chooses year based on inputs
+    uiOutput(ns("tempYear")),
     tags$h4("Data sources"),
     tags$ul(
       tags$li(tags$a("ASER", href = "http://aserpakistan.org/index.php"),
@@ -89,8 +86,37 @@ mod_province_select_ui <- function(id){
 mod_province_select_server <- function(input, output, session){
   ns <- session$ns
   
+  # Used this solution to unhide uiOutput()
+  # https://stackoverflow.com/questions/36613018/r-shiny-uioutput-not-rendering-inside-menuitem
+  output$tempYear <- renderUI({})
+  outputOptions(output, "tempYear", suspendWhenHidden = FALSE)
+  
   province <- reactive({
     dplyr::filter(pakeduc_province, province %in% input$province)
+  })
+  
+  years <- reactive({
+    if(is.null(input$dataset)){
+      pakeduc_province_weighted[which(pakeduc_province_weighted$province    == input$province & 
+                               pakeduc_province_weighted$indicator == input$indicator &
+                               !is.na(pakeduc_province_weighted$point_estimate)), "year"]
+    } 
+    else{
+      pakeduc_province[which(pakeduc_province$province    == input$province & 
+                               pakeduc_province$indicator == input$indicator &
+                               input$dataset %in% pakeduc_province$dataset &
+                               !is.na(pakeduc_province$point_estimate)), "year"]
+    }
+    
+  })
+  
+  output$tempYear <- renderUI({
+          sliderInput(inputId = ns("year"),
+                label = "Select a year",
+                min = min(years(), na.rm = TRUE),
+                max = max(years(), na.rm = TRUE),
+                value = max(years(), na.rm = TRUE),
+                sep = "")
   })
   
   # observeEvent(province(), {

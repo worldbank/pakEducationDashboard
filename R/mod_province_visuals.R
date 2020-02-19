@@ -44,7 +44,6 @@ mod_province_visuals_server <- function(input,
   })
   
   df <- reactive({
-    
     gender_selection <- if(selection_vars$gender()) {
       c("Boy", "Girl")
     } else {
