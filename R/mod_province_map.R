@@ -51,8 +51,8 @@ mod_province_map_server <- function(input,
     
     # Changed to right join, so that rows == 0 when out returns 0 rows
     out <- pakgeo_province %>%
-      dplyr::left_join(out, by = c("province_id" = "province_id"))
-      # dplyr::right_join(out, by = c("province_id" = "province_id"))
+      dplyr::left_join(out, by = c("province_id" = "province_id")) %>%
+      dplyr::filter(!is.na(point_estimate))
   })
   
   output$warning_message <- renderText({

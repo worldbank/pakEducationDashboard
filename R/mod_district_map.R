@@ -49,10 +49,11 @@ mod_district_map_server <- function(input,
       dplyr::mutate(
         pe_percent = sprintf("%.1f%%", point_estimate * 100)
       )
+    
     # Changed to right join, so that rows == 0 when out returns 0 rows
     out <- pakgeo_district %>%
-      dplyr::left_join(out, by = c("dist_key" = "dist_key"))
-      # dplyr::right_join(out, by = c("dist_key" = "dist_key"))
+      dplyr::left_join(out, by = c("dist_key" = "dist_key")) %>%
+      dplyr::filter(!is.na(point_estimate))
   })
 
   output$warning_message <- renderText({
@@ -62,7 +63,7 @@ mod_district_map_server <- function(input,
   output$district_map <- ggiraph::renderggiraph({
     if (nrow(df()) > 0) {
       p <- ggplot2::ggplot(df()) +
-        ggiraph::geom_sf_interactive( ggplot2::aes(fill = point_estimate, 
+        ggiraph::geom_sf_interactive(ggplot2::aes(fill = point_estimate, 
                                                    tooltip = paste(
                                                        "District:",    DISTRICT,
                                                        "<br />Value:", pe_percent,
