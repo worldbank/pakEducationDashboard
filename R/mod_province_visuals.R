@@ -18,7 +18,7 @@ mod_province_visuals_ui <- function(id){
   tagList(
     h3(textOutput(ns("province_title"))),
     p(textOutput(ns("province_ind_description"))),
-    plotly::plotlyOutput(outputId = ns("province_plot")),
+    ggiraph::ggiraphOutput(outputId = ns("province_plot"), width = "100%", height = "200px"),
     textOutput(ns("warning_message"))
   )
 }
@@ -88,7 +88,7 @@ mod_province_visuals_server <- function(input,
                   !is.na(point_estimate)) 
   })
   
-  output$province_plot <- plotly::renderPlotly({
+  output$province_plot <- ggiraph::renderggiraph({
     # Adjust scale and tooltip according to indicator
     if (stringr::str_detect(selection_vars$indicator(), "^egra")) {
       y_scale <- ggplot2::scale_y_continuous(limits = c(0, 100))
@@ -104,7 +104,8 @@ mod_province_visuals_server <- function(input,
                                dataset = dataset,
                                gender = gender,
                                year = year,
-                               tooltip_value = pe_percent) +
+                               tooltip_value = pe_percent,
+                               font_size = 18) +
         ggplot2::facet_wrap(~province, ncol = 5)
       
       
@@ -119,7 +120,8 @@ mod_province_visuals_server <- function(input,
                       dataset = dataset,
                       gender = gender,
                       year = year,
-                      tooltip_value = pe_percent) +
+                      tooltip_value = pe_percent,
+                      font_size = 18) +
         ggplot2::facet_wrap(~province, ncol = 5, 
                             labeller = ggplot2::labeller(indicator = indicator_choices_country_inv))
       
@@ -128,8 +130,11 @@ mod_province_visuals_server <- function(input,
     #Only return plot if filtered dataframe has rows
     if(nrow(df()) > 0 || nrow(surveydf()) > 0){
       
-      plotly::ggplotly(p, tooltip = c("text")) %>% 
-        plotly::style(hoveron = "color") 
+      ggiraph::girafe(ggobj = p,
+                      pointsize = 16,
+                      width_svg = 22,
+                      height_svg = 8,
+                      options = list(ggiraph::opts_tooltip(use_fill = TRUE)))
     }
   })
 }

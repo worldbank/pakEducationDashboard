@@ -18,7 +18,8 @@ mod_country_visuals_ui <- function(id){
   tagList(
     h3(textOutput(ns("country_title"))),
     p(textOutput(ns("country_ind_description"))),
-    plotly::plotlyOutput(outputId = ns("country_plot"), height = "600px"),
+    #div(style="width:1200px;height:800px;", ggiraph::ggiraphOutput(outputId = ns("country_plot"))),
+    ggiraph::ggiraphOutput(outputId = ns("country_plot"), width = "100%", height = "800px"),
     textOutput(ns("warning_message"))
   )
 }
@@ -79,7 +80,7 @@ mod_country_visuals_server <- function(input,
   
   
   
-  output$country_plot <- plotly::renderPlotly({
+  output$country_plot <- ggiraph::renderggiraph({
     
     if (nrow(df()) > 0) {
       p <- plot_lines_weighted(data = df(),
@@ -89,7 +90,7 @@ mod_country_visuals_server <- function(input,
                                dataset = dataset,
                                gender = gender,
                                year = year,
-                               tooltip_value = pe_percent)
+                               tooltip_value = pe_percent) 
       
     }
     
@@ -108,8 +109,11 @@ mod_country_visuals_server <- function(input,
     #Only return plot if filtered dataframe has rows
     if(nrow(df()) > 0 || nrow(surveydf()) > 0){
       
-      plotly::ggplotly(p, tooltip = c("text")) %>% 
-        plotly::style(hoveron = "color")
+      ggiraph::girafe(ggobj = p,
+                      pointsize = 16,
+                      width_svg = 18,
+                      height_svg = 10,
+                      options = list(ggiraph::opts_tooltip(use_fill = TRUE)))
     }
   })
 }

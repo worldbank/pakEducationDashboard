@@ -18,7 +18,7 @@ mod_district_visuals_ui <- function(id){
   tagList(
     h3(textOutput(ns("district_title"))),
     p(textOutput(ns("district_ind_description"))),
-    plotly::plotlyOutput(outputId = ns("district_plot")),
+    ggiraph::ggiraphOutput(outputId = ns("district_plot"), width = "100%", height = "200px"),
     textOutput(ns("warning_message"))
   
   )
@@ -81,7 +81,7 @@ mod_district_visuals_server <- function(input,
                   !is.na(point_estimate)) 
   })
  
-  output$district_plot <- plotly::renderPlotly({
+  output$district_plot <- ggiraph::renderggiraph({
     # Adjust scale according to indicator
     if (stringr::str_detect(selection_vars$indicator(), "^egra")) {
       y_scale <- ggplot2::scale_y_continuous(limits = c(0, 100))
@@ -124,8 +124,11 @@ mod_district_visuals_server <- function(input,
     
     #Only return plot if filtered dataframe has rows
     if(nrow(df()) > 0 || nrow(surveydf()) > 0){
-      plotly::ggplotly(p, tooltip = c("text")) %>% 
-        plotly::style(hoveron = "color") 
+      ggiraph::girafe(ggobj = p,
+                      pointsize = 16,
+                      width_svg = 22,
+                      height_svg = 8,
+                      options = list(ggiraph::opts_tooltip(use_fill = TRUE))) 
     }
   })
 }
