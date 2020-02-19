@@ -16,7 +16,13 @@
 mod_province_map_ui <- function(id){
   ns <- NS(id)
   tagList(
-    ggiraph::ggiraphOutput(outputId = ns("province_map"), width = "100%", height = "1000px"),
+    shinycssloaders::withSpinner(
+      ggiraph::ggiraphOutput(outputId = ns("province_map"), 
+                             width = "100%", 
+                             height = "1000px"), 
+      type = 3, 
+      color = "#6c3b96",
+      color.background = "#FFFFFF"),
     textOutput(ns("warning_message"))
   )
 }
