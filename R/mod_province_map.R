@@ -34,22 +34,21 @@ mod_province_map_server <- function(input,
   ns <- session$ns
   
   df <- reactive({
-    gender_selection <- if(selection_vars$gender()) {
-      c("Boy", "Girl")
-    } else {
-      "Both"
-    }
+    # gender_selection <- if(selection_vars$gender()) {
+    #   c("Boy", "Girl")
+    # } else {
+    #   "Both"
+    # }
     
     out <- dplyr::filter(pakeduc_province_weighted,
                          indicator == !!selection_vars$indicator(),
-                         gender %in% !!gender_selection,
+                         #gender %in% !!gender_selection,
                          year == !!selection_vars$year()) %>%
       dplyr::distinct() 
     
     # Changed to right join, so that rows == 0 when out returns 0 rows
     out <- pakgeo_province %>%
       dplyr::left_join(out, by = c("province_id" = "province_id"))
-      # dplyr::right_join(out, by = c("province_id" = "province_id"))
   })
   
   output$warning_message <- renderText({
@@ -65,8 +64,8 @@ mod_province_map_server <- function(input,
                     year = year,
                     tooltip_region_header = "Province:",
                     tooltip_region_value = province,
-                    tooltip_value = pe_percent) +
-        ggplot2::facet_wrap(~gender)
+                    tooltip_value = pe_percent) #+
+        #ggplot2::facet_wrap(~gender)
       
       
       ggiraph::girafe(ggobj = p, 
