@@ -60,10 +60,7 @@ mod_province_visuals_server <- function(input,
                   indicator == !!selection_vars$indicator(),
                   province %in% !!selection_vars$province(),
                   !is.na(point_estimate),
-                  gender %in% !!gender_selection) %>%
-      dplyr::mutate(
-        pe_percent = sprintf("%.1f%%", point_estimate * 100)
-      )
+                  gender %in% !!gender_selection) 
   })
   
   
@@ -88,10 +85,7 @@ mod_province_visuals_server <- function(input,
                   province %in% !!selection_vars$province(),
                   gender %in% !!gender_selection, 
                   dataset %in% !!selection_vars$dataset(),
-                  !is.na(point_estimate)) %>%
-      dplyr::mutate(
-        pe_percent = sprintf("%.1f%%", point_estimate * 100)
-      )
+                  !is.na(point_estimate)) 
   })
   
   output$province_plot <- plotly::renderPlotly({

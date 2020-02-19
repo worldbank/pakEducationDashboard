@@ -15,7 +15,13 @@ pakeduc_country <- haven::read_stata("data-raw/data_input/pakeduc_data_country.d
   ) %>%
   select(-names) %>%
   distinct() %>%
-  pivot_wider(names_from = "measurement", values_from = "values")
+  pivot_wider(names_from = "measurement", values_from = "values") %>%  
+  mutate(
+    pe_percent = if_else(stringr::str_detect(indicator, "^egra"), 
+                         as.character(round(point_estimate, 1)),
+                         sprintf("%.1f%%", point_estimate * 100))
+  ) %>%
+  filter(!is.na(point_estimate))
 
 indicator_choices_country <- sort(unique(pakeduc_country$indicator)) 
 indicator_choices_country <- prepare_indicator_choices(indicator_choices_country,
@@ -60,6 +66,12 @@ pakeduc_country_weighted <- pakeduc_country %>%
     point_estimate,
     dataset
   ) %>%
-  distinct()
+  distinct() %>%  
+  mutate(
+    pe_percent = if_else(stringr::str_detect(indicator, "^egra"), 
+                         as.character(round(point_estimate, 1)),
+                         sprintf("%.1f%%", point_estimate * 100))
+  )
+  
   
 

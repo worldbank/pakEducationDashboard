@@ -51,10 +51,7 @@ mod_country_visuals_server <- function(input,
     dplyr::filter(pakeduc_country_weighted,
                   indicator %in% !!selection_vars$indicator(),
                   !is.na(point_estimate),
-                  gender %in% !!gender_selection) %>%
-      dplyr::mutate(
-        pe_percent = sprintf("%.1f%%", point_estimate * 100)
-      )
+                  gender %in% !!gender_selection) 
   })
   
   output$country_ind_description <- renderText({
@@ -77,10 +74,7 @@ mod_country_visuals_server <- function(input,
                   indicator %in% !!selection_vars$indicator(),
                   gender %in% !!gender_selection, 
                   dataset %in% !!selection_vars$dataset(),
-                  !is.na(point_estimate)) %>%
-      dplyr::mutate(
-        pe_percent = sprintf("%.1f%%", point_estimate * 100)
-      )
+                  !is.na(point_estimate)) 
   })
   
   

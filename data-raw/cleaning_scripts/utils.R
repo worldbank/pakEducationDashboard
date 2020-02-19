@@ -78,7 +78,7 @@ expected_choices <- c("reading_9_11",
                       "egra_orf_g5")
 
 tmp <- df %>%
-  filter(variable_name %in% expected_choices)
+  dplyr::filter(variable_name %in% expected_choices)
 assertthat::are_equal(length(tmp$variable_name), length(expected_choices))
 
 labels_lkup <- tmp$label
@@ -99,7 +99,7 @@ expected_choices_district = c("reading_9_11",
                               "share_private_11_16")
 
 tmp <- df %>%
-  filter(variable_name %in% expected_choices_district)
+  dplyr::filter(variable_name %in% expected_choices_district)
 assertthat::are_equal(length(tmp$variable_name), length(expected_choices_district))
 
 labels_lkup <- tmp$label

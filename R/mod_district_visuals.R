@@ -53,10 +53,7 @@ mod_district_visuals_server <- function(input,
                   province %in% !!selection_vars$province(),
                   dist_nm %in% !!selection_vars$district(),
                   !is.na(point_estimate),
-                  gender %in% !!gender_selection) %>%
-      dplyr::mutate(
-        pe_percent = sprintf("%.1f%%", point_estimate * 100)
-      )
+                  gender %in% !!gender_selection) 
   })
   
   
@@ -81,10 +78,7 @@ mod_district_visuals_server <- function(input,
                   gender %in% !!gender_selection, 
                   dist_nm %in% !!selection_vars$district(),
                   dataset %in% !!selection_vars$dataset(),
-                  !is.na(point_estimate)) %>%
-      dplyr::mutate(
-        pe_percent = sprintf("%.1f%%", point_estimate * 100)
-      )
+                  !is.na(point_estimate)) 
   })
  
   output$district_plot <- plotly::renderPlotly({
