@@ -125,7 +125,6 @@ mod_district_visuals_server <- function(input,
     #Only return plot if filtered dataframe has rows
     if(nrow(df()) > 0 || nrow(surveydf()) > 0){
       ggiraph::girafe(ggobj = p,
-                      pointsize = 16,
                       width_svg = 22,
                       height_svg = 8,
                       options = list(ggiraph::opts_tooltip(use_fill = TRUE))) 

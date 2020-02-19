@@ -16,7 +16,7 @@
 mod_province_map_ui <- function(id){
   ns <- NS(id)
   tagList(
-    ggiraph::ggiraphOutput(outputId = ns("province_map"), height = "600px"),
+    ggiraph::ggiraphOutput(outputId = ns("province_map"), width = "100%", height = "1000px"),
     textOutput(ns("warning_message"))
   )
 }
@@ -44,10 +44,7 @@ mod_province_map_server <- function(input,
                          indicator == !!selection_vars$indicator(),
                          gender %in% !!gender_selection,
                          year == !!selection_vars$year()) %>%
-      dplyr::distinct() %>%
-      dplyr::mutate(
-        pe_percent = sprintf("%.1f%%", point_estimate * 100)
-      )
+      dplyr::distinct() 
     
     # Changed to right join, so that rows == 0 when out returns 0 rows
     out <- pakgeo_province %>%
@@ -61,28 +58,22 @@ mod_province_map_server <- function(input,
   
   output$province_map <- ggiraph::renderggiraph({
     if (nrow(df()) > 0) {
-      p <- ggplot2::ggplot(df()) +
-        ggiraph::geom_sf_interactive(ggplot2::aes(fill = point_estimate,
-                                                  tooltip = paste("Province:", province,
-                                                                  "<br />Value:", pe_percent,
-                                                                  "<br />Year:", year),
-                                                  data_id = province
-                                                  )) +
-        ggplot2::scale_fill_viridis_c(limits = c(0, 1), labels = scales::percent) +
-        ggthemes::theme_map() +
-        ggplot2::facet_wrap(~gender) +
-        ggplot2::labs(
-          fill = ""
-        )
       
-      ggiraph::girafe(ggobj = p, width_svg = 8, height_svg = 7)
+      p <- plot_map(data = df(),
+                    fill = point_estimate,
+                    data_id = province,
+                    year = year,
+                    tooltip_region_header = "Province:",
+                    tooltip_region_value = province,
+                    tooltip_value = pe_percent) +
+        ggplot2::facet_wrap(~gender)
+      
+      
+      ggiraph::girafe(ggobj = p, 
+                      width_svg = 12, 
+                      height_svg = 12,
+                      options = list(ggiraph::opts_tooltip(use_fill = TRUE)))
     }
   })
 }
-    
-## To be copied in the UI
-# mod_province_map_ui("province_map_ui_1")
-    
-## To be copied in the server
-# callModule(mod_province_map_server, "province_map_ui_1")
  

@@ -126,6 +126,51 @@ plot_lines <- function(data,
   return(p)
 }
 
+#' plot_map
+#' Common ggplot layers for the maps
+#' 
+#' @param data data.frame: The dataset to be plotted
+#' @param fill object: Variable to be mapped to fill aesthetic
+#' @param data_id object: Variable to be mapped to data_id
+#' @param year object: Variable to be displayed in tooltip
+#' @param tooltip_region_header object: Variable to be displayed in tooltip (region header)
+#' @param tooltip_region_value object: Variable to be displayed in tooltip (region)
+#' @param tooltip_value object: Variable to be displayed in tooltip (statistic value)
+#' @param font_size numeric: Set the chart's font size value
+#'
+#' @return
+#' @export
+#'
+plot_map <- function(data,
+                     fill,
+                     data_id,
+                     year,
+                     tooltip_region_header,
+                     tooltip_region_value,
+                     tooltip_value,
+                     font_size = 20
+) 
+{
+  p <- ggplot2::ggplot(data) +
+    ggiraph::geom_sf_interactive(ggplot2::aes(fill = {{fill}},
+                                              tooltip = paste(tooltip_region_header, {{tooltip_region_value}},
+                                                              "<br />Value:", {{tooltip_value}},
+                                                              "<br />Year:", {{year}}),
+                                              data_id = {{data_id}}
+    )) +
+    ggplot2::scale_fill_viridis_c(limits = c(0, 1), labels = scales::percent, guide = FALSE) +
+    ggthemes::theme_map(base_size = font_size) +
+    ggplot2::labs(
+      fill = ""
+    )
+  
+  # return(p)
+}
+
+
+
+
+
 
 # A function factory for getting integer y-axis values.
 integer_breaks <- function(n = 5, ...) {
