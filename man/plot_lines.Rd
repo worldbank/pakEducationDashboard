@@ -5,7 +5,19 @@
 \title{plot_lines
 Common ggplot layers for the line plots using non-weighted data}
 \usage{
-plot_lines(data, x, y, color, dataset, gender, year, tooltip_value)
+plot_lines(
+  data,
+  x,
+  y,
+  color,
+  dataset,
+  gender,
+  year,
+  tooltip_value,
+  font_size = 20,
+  point_size = 5,
+  line_size = 1.6
+)
 }
 \arguments{
 \item{data}{data.frame: The dataset to be plotted}

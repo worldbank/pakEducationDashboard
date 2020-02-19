@@ -5,7 +5,19 @@
 \title{plot_lines_weighted
 Common ggplot layers for the line plots using weighted data}
 \usage{
-plot_lines_weighted(data, x, y, color, dataset, gender, year, tooltip_value)
+plot_lines_weighted(
+  data,
+  x,
+  y,
+  color,
+  dataset,
+  gender,
+  year,
+  tooltip_value,
+  font_size = 20,
+  point_size = 6,
+  line_size = 1.8
+)
 }
 \arguments{
 \item{data}{data.frame: The dataset to be plotted}
