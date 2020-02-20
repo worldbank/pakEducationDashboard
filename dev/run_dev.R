@@ -18,3 +18,7 @@ golem::document_and_reload()
 
 pakEducationDashboard::run_app()
 
+# profile app
+# profvis::profvis(
+#   shiny::runApp()
+# )

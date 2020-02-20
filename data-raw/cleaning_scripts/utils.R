@@ -6,8 +6,9 @@ prepare_indicator_choices <- function(choices,
                                       choices_labels,
                                       labels_order) 
 {
-  assertthat::assert_that(all.equal(choices, expected_choices))
+  assertthat::assert_that(all.equal(sort(choices), sort(expected_choices)))
   
+  choices <- expected_choices
   names(choices) <- choices_labels
   
   choices <- choices[labels_order]
@@ -48,72 +49,62 @@ combine_sf <- function(input_df, column_name, row_values, output_value){
 }
 
 # List of indicators and labels -------------------------------------------
-expected_choices <- c("division_9_11",
+# Read Indicator Description df
+df <- readxl::read_excel("./data-raw/data_input/pak_indicator_descriptions/pak_indicator_descriptions.xlsx")
+df <- janitor::clean_names(df)
+df <- janitor::remove_empty(df, which = "rows")
+
+# Select relevant columns & remove white spaces
+df <- df %>%
+  dplyr::select(variable_name, indicator_definition, label) %>%
+  dplyr::mutate(
+    variable_name = trimws(variable_name)
+  )
+
+# Handle country / province level indicators
+expected_choices <- c("reading_9_11",
+                      "in_school_6_10",
+                      "in_school_11_16",
+                      "division_9_11",
+                      "literacy_12_18",
+                      "numeracy_12_18",
+                      "share_private_6_10",
+                      "share_private_11_16",
                       "egra_clpm",
                       "egra_clpm_g3",
                       "egra_clpm_g5",
                       "egra_orf",
                       "egra_orf_g3",
-                      "egra_orf_g5",
-                      "in_school_11_16",
-                      "in_school_6_10",
-                      "literacy_12_18",
-                      "numeracy_12_18",
-                      "reading_9_11",
-                      "share_private_11_16",
-                      "share_private_6_10" )
+                      "egra_orf_g5")
 
-choices_labels <- c("Share of kids who can do division,  aged 9-11",
-                    "EGRA: correct letters per minute",
-                    "EGRA: correct letters per minute - Grade 3",
-                    "EGRA: correct letters per minute - Grade 5",
-                    "EGRA: Oral reading fluency",
-                    "EGRA: Oral reading fluency - Grade 3",
-                    "EGRA: Oral reading fluency - Grade 5",
-                    "Share of kids curently in school,  aged 11-16",
-                    "Share of kids curently in school,  aged 6-10",
-                    "Share of adolescent who are literate (self-reported),  aged 12-18",
-                    "Share of adolescent who are numerate (self-reported),  aged 12-18",
-                    "Share of kids who can read a basic paragraph,  aged 9-11",
-                    "Share of kids in private schools, among those enrolled,  aged 11-16",
-                    "Share of kids in private schools, among those enrolled,  aged 6-10")
+tmp <- df %>%
+  dplyr::filter(variable_name %in% expected_choices)
+assertthat::are_equal(length(tmp$variable_name), length(expected_choices))
 
-labels_order <- c("Share of kids who can do division,  aged 9-11",
-                  "Share of kids curently in school,  aged 6-10",
-                  "Share of kids curently in school,  aged 11-16",
-                  "Share of kids who can read a basic paragraph,  aged 9-11",
-                  "Share of kids in private schools, among those enrolled,  aged 6-10",
-                  "Share of kids in private schools, among those enrolled,  aged 11-16",
-                  "Share of adolescent who are literate (self-reported),  aged 12-18",
-                  "Share of adolescent who are numerate (self-reported),  aged 12-18",
-                  "EGRA: correct letters per minute",
-                  "EGRA: correct letters per minute - Grade 3",
-                  "EGRA: correct letters per minute - Grade 5",
-                  "EGRA: Oral reading fluency",
-                  "EGRA: Oral reading fluency - Grade 3",
-                  "EGRA: Oral reading fluency - Grade 5")
+labels_lkup <- tmp$label
+names(labels_lkup) <- tmp$variable_name
 
-expected_choices_district = c("division_9_11",
-                              "in_school_11_16",
+choice_labels <- unname(labels_lkup[expected_choices])
+
+labels_order <- choice_labels # Order is defined by expected_choices vector
+
+# Handle district level indicators
+expected_choices_district = c("reading_9_11",
                               "in_school_6_10",
+                              "in_school_11_16",
+                              "division_9_11",
                               "literacy_12_18",
                               "numeracy_12_18",
-                              "reading_9_11",
-                              "share_private_11_16",
-                              "share_private_6_10" )
-choices_labels_district <- c("Share of kids who can do division,  aged 9-11",
-                             "Share of kids curently in school,  aged 11-16",
-                             "Share of kids curently in school,  aged 6-10",
-                             "Share of adolescent who are literate (self-reported),  aged 12-18",
-                             "Share of adolescent who are numerate (self-reported),  aged 12-18",
-                             "Share of kids who can read a basic paragraph,  aged 9-11",
-                             "Share of kids in private schools, among those enrolled,  aged 11-16",
-                             "Share of kids in private schools, among those enrolled,  aged 6-10")
-labels_order_district <- c("Share of kids who can do division,  aged 9-11",
-                           "Share of kids curently in school,  aged 6-10",
-                           "Share of kids curently in school,  aged 11-16",
-                           "Share of kids who can read a basic paragraph,  aged 9-11",
-                           "Share of kids in private schools, among those enrolled,  aged 6-10",
-                           "Share of kids in private schools, among those enrolled,  aged 11-16",
-                           "Share of adolescent who are literate (self-reported),  aged 12-18",
-                           "Share of adolescent who are numerate (self-reported),  aged 12-18")
+                              "share_private_6_10", 
+                              "share_private_11_16")
+
+tmp <- df %>%
+  dplyr::filter(variable_name %in% expected_choices_district)
+assertthat::are_equal(length(tmp$variable_name), length(expected_choices_district))
+
+labels_lkup <- tmp$label
+names(labels_lkup) <- tmp$variable_name
+
+choice_labels_district <- unname(labels_lkup[expected_choices_district])
+
+labels_order_district <- choice_labels_district # Order is defined by expected_choices_district vector

@@ -26,12 +26,19 @@ pakeduc_district <- pakeduc_district %>%
     ) %>%
   select(-names) %>%
   distinct() %>%
-  pivot_wider(names_from = "measurement", values_from = "values")
+  pivot_wider(names_from = "measurement", values_from = "values") %>%  
+  mutate(
+    pe_percent = if_else(stringr::str_detect(indicator, "^egra"), 
+                         as.character(round(point_estimate, 1)),
+                         sprintf("%.1f%%", point_estimate * 100))
+  ) %>%
+  filter(!is.na(point_estimate))
+
 
 indicator_choices_district <- sort(unique(pakeduc_district$indicator)) 
 indicator_choices_district <- prepare_indicator_choices(indicator_choices_district,
                                                         expected_choices = expected_choices_district,
-                                                        choices_labels = choices_labels_district,
+                                                        choices_labels = choice_labels_district,
                                                         labels_order = labels_order_district)
 # Create weighted dataset -------------------------------------------------
 
@@ -69,7 +76,13 @@ pakeduc_district_weighted <- pakeduc_district %>%
     point_estimate,
     dataset
   ) %>%
-  distinct()
+  distinct() %>%  
+  mutate(
+    pe_percent = if_else(stringr::str_detect(indicator, "^egra"), 
+                         as.character(round(point_estimate, 1)),
+                         sprintf("%.1f%%", point_estimate * 100))
+  )
+
 
 
 # # Code to generate the admin_level_lkup

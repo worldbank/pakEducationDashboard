@@ -24,6 +24,7 @@ usethis::use_package("ggplot2")
 usethis::use_package("plotly")
 usethis::use_package("cowplot")
 usethis::use_package("shinythemes")
+usethis::use_package("ggiraph")
 
 
 ## 2.3 Add tests
