@@ -18,7 +18,13 @@ mod_district_visuals_ui <- function(id){
   tagList(
     h3(textOutput(ns("district_title"))),
     p(textOutput(ns("district_ind_description"))),
-    ggiraph::ggiraphOutput(outputId = ns("district_plot"), width = "100%", height = "200px"),
+    shinycssloaders::withSpinner(
+      ggiraph::ggiraphOutput(outputId = ns("district_plot"),
+                             width = "100%", 
+                             height = "200px"),
+      type = 3, 
+      color = "#6c3b96",
+      color.background = "#FFFFFF"),
     textOutput(ns("warning_message"))
   
   )

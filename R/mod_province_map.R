@@ -16,7 +16,13 @@
 mod_province_map_ui <- function(id){
   ns <- NS(id)
   tagList(
-    ggiraph::ggiraphOutput(outputId = ns("province_map"), width = "100%", height = "1000px"),
+    shinycssloaders::withSpinner(
+      ggiraph::ggiraphOutput(outputId = ns("province_map"), 
+                             width = "100%", 
+                             height = "1000px"), 
+      type = 3, 
+      color = "#6c3b96",
+      color.background = "#FFFFFF"),
     textOutput(ns("warning_message"))
   )
 }
@@ -34,15 +40,15 @@ mod_province_map_server <- function(input,
   ns <- session$ns
   
   df <- reactive({
-    gender_selection <- if(selection_vars$gender()) {
-      c("Boy", "Girl")
-    } else {
-      "Both"
-    }
+    # gender_selection <- if(selection_vars$gender()) {
+    #   c("Boy", "Girl")
+    # } else {
+    #   "Both"
+    # }
     
     out <- dplyr::filter(pakeduc_province_weighted,
                          indicator == !!selection_vars$indicator(),
-                         gender %in% !!gender_selection,
+                         #gender %in% !!gender_selection,
                          year == !!selection_vars$year()) %>%
       dplyr::distinct() 
     
@@ -65,8 +71,8 @@ mod_province_map_server <- function(input,
                     year = year,
                     tooltip_region_header = "Province:",
                     tooltip_region_value = province,
-                    tooltip_value = pe_percent) +
-        ggplot2::facet_wrap(~gender)
+                    tooltip_value = pe_percent) #+
+        #ggplot2::facet_wrap(~gender)
       
       
       ggiraph::girafe(ggobj = p, 

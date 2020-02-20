@@ -24,7 +24,8 @@ Imports:
     shinythemes,
     pkgload,
     sf (>= 0.8.0),
-    ggiraph
+    ggiraph,
+    shinycssloaders
 RoxygenNote: 7.0.2
 Suggests: 
     testthat
