@@ -158,11 +158,13 @@ plot_map <- function(data,
                                                               "<br />Year:", {{year}}),
                                               data_id = {{data_id}}
     )) +
-    ggplot2::scale_fill_viridis_c(limits = c(0, 1), labels = scales::percent, guide = FALSE) +
+    # ggplot2::scale_fill_viridis_c(limits = c(0, 1), labels = scales::percent, guide = FALSE) +
+    ggplot2::scale_fill_viridis_c(labels = scales::percent, guide = FALSE) +
     ggthemes::theme_map(base_size = font_size) +
     ggplot2::labs(
       fill = ""
     )
+  
   
   return(p)
 }

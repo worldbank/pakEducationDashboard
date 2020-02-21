@@ -49,7 +49,9 @@ mod_district_map_server <- function(input,
     out <- dplyr::filter(pakeduc_district_weighted,
                          indicator == !!selection_vars$indicator(),
                          #gender %in% !!gender_selection,
-                         year == !!selection_vars$year()) %>%
+                         year == !!selection_vars$year(),
+                         # Add only both
+                         gender == "Both") %>%
 
       dplyr::distinct() %>%
       dplyr::mutate(

@@ -49,8 +49,10 @@ mod_province_map_server <- function(input,
     out <- dplyr::filter(pakeduc_province_weighted,
                          indicator == !!selection_vars$indicator(),
                          #gender %in% !!gender_selection,
-                         year == !!selection_vars$year()
-                         ) %>%
+                         year == !!selection_vars$year(),
+                         # Add only both
+                         gender == "Both"
+                         ) %>% 
       dplyr::distinct() 
     
     # Changed to right join, so that rows == 0 when out returns 0 rows
