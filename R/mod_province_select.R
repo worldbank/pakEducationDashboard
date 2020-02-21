@@ -110,7 +110,8 @@ mod_province_select_server <- function(input, output, session){
     }
   })
   
-  output$tempYear <- renderUI({
+  output$tempYear <- 
+    renderUI({
           sliderInput(inputId = ns("year"),
                 label = "Select a year",
                 min = min(years(), na.rm = TRUE),

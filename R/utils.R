@@ -164,13 +164,8 @@ plot_map <- function(data,
       fill = ""
     )
   
-  # return(p)
+  return(p)
 }
-
-
-
-
-
 
 # A function factory for getting integer y-axis values.
 integer_breaks <- function(n = 5, ...) {

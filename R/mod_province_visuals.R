@@ -41,10 +41,6 @@ mod_province_visuals_server <- function(input,
                                         selection_vars){
   ns <- session$ns
   
-  # title <- reactive({
-  #   names(indicator_choices_province)[indicator_choices_province == selection_vars$indicator()]
-  # })
-  
   output$province_title <- renderText({
     names(indicator_choices_province)[indicator_choices_province == selection_vars$indicator()]
   })
@@ -56,11 +52,8 @@ mod_province_visuals_server <- function(input,
       "Both"
     }
     
-    # TODO:HERE
     ## Disable "Disaggregate by gender" option if for that combintation of indicator,
     ## select, year there is no "Boy" or "Girl"
-    
-    
     dplyr::filter(pakeduc_province_weighted,
                   indicator == !!selection_vars$indicator(),
                   province %in% !!selection_vars$province(),
