@@ -151,6 +151,15 @@ plot_map <- function(data,
                      font_size = 20
 ) 
 {
+  
+  
+  # Adjust scale according to indicator
+  if (stringr::str_detect(unique(data$indicator), "^egra")) {
+    fill_scale <- ggplot2::scale_fill_viridis_c(limits = c(0, 100), guide = FALSE)
+  } else {
+    fill_scale <- ggplot2::scale_fill_viridis_c(limits = c(0, 1), guide = FALSE)
+  }
+  
   p <- ggplot2::ggplot(data) +
     ggiraph::geom_sf_interactive(ggplot2::aes(fill = {{fill}},
                                               tooltip = paste(tooltip_region_header, {{tooltip_region_value}},
@@ -158,8 +167,7 @@ plot_map <- function(data,
                                                               "<br />Year:", {{year}}),
                                               data_id = {{data_id}}
     )) +
-    # ggplot2::scale_fill_viridis_c(limits = c(0, 1), labels = scales::percent, guide = FALSE) +
-    ggplot2::scale_fill_viridis_c(labels = scales::percent, guide = FALSE) +
+    fill_scale +
     ggthemes::theme_map(base_size = font_size) +
     ggplot2::labs(
       fill = ""

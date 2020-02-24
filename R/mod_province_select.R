@@ -43,7 +43,7 @@ mod_province_select_ui <- function(id){
                 #selected = c("aser"),
                 multiple = TRUE),
     # Dynamically chooses year based on inputs
-    uiOutput(ns("tempYear")),
+    uiOutput(ns("tmp_year")),
     tags$h4("Data sources"),
     tags$ul(
       tags$li(tags$a("ASER", href = "http://aserpakistan.org/index.php"),
@@ -88,8 +88,8 @@ mod_province_select_server <- function(input, output, session){
   
   # Used this solution to unhide uiOutput()
   # https://stackoverflow.com/questions/36613018/r-shiny-uioutput-not-rendering-inside-menuitem
-  output$tempYear <- renderUI({})
-  outputOptions(output, "tempYear", suspendWhenHidden = FALSE)
+  output$tmp_year <- renderUI({})
+  outputOptions(output, "tmp_year", suspendWhenHidden = FALSE)
   
   province <- reactive({
     dplyr::filter(pakeduc_province, province %in% input$province)
@@ -110,7 +110,7 @@ mod_province_select_server <- function(input, output, session){
     }
   })
   
-  output$tempYear <- 
+  output$tmp_year <- 
     renderUI({
           sliderInput(inputId = ns("year"),
                 label = "Select a year",

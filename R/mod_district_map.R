@@ -53,10 +53,7 @@ mod_district_map_server <- function(input,
                          # Add only both
                          gender == "Both") %>%
 
-      dplyr::distinct() %>%
-      dplyr::mutate(
-        pe_percent = sprintf("%.1f%%", point_estimate * 100)
-      )
+      dplyr::distinct()
     
     # Changed to right join, so that rows == 0 when out returns 0 rows
     out <- pakgeo_district %>%
