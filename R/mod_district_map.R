@@ -55,10 +55,8 @@ mod_district_map_server <- function(input,
 
       dplyr::distinct()
     
-    # Changed to right join, so that rows == 0 when out returns 0 rows
     out <- pakgeo_district %>%
-      dplyr::left_join(out, by = c("dist_key" = "dist_key")) %>%
-      dplyr::filter(!is.na(point_estimate))
+      dplyr::left_join(out, by = c("dist_key" = "dist_key"))
   })
 
   output$warning_message <- renderText({

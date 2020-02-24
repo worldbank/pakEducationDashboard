@@ -152,9 +152,8 @@ plot_map <- function(data,
 ) 
 {
   
-  
   # Adjust scale according to indicator
-  if (stringr::str_detect(unique(data$indicator), "^egra")) {
+  if (stringr::str_detect(unique(data$indicator), "^egra") & !is.na(unique(data$indicator))) {
     fill_scale <- ggplot2::scale_fill_viridis_c(limits = c(0, 100), guide = FALSE)
   } else {
     fill_scale <- ggplot2::scale_fill_viridis_c(limits = c(0, 1), guide = FALSE)
