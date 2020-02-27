@@ -97,27 +97,42 @@ mod_province_select_server <- function(input, output, session){
   
   # Only display years based on inputs for either weighted or non-weighted
   years <- reactive({
+    g <- ifelse(input$gender, c("Boy","Girl"), "Both")
+    
     if(is.null(input$dataset)){
+
       pakeduc_province_weighted[which(pakeduc_province_weighted$province %in% input$province & 
                                pakeduc_province_weighted$indicator == input$indicator &
-                               !is.na(pakeduc_province_weighted$point_estimate)), "year"]
+                               !is.na(pakeduc_province_weighted$point_estimate) &
+                               pakeduc_province_weighted$gender %in% g), "year"]
     } 
     else{
       pakeduc_province[which(pakeduc_province$province %in% input$province & 
                                pakeduc_province$indicator == input$indicator &
                                input$dataset %in% pakeduc_province$dataset &
-                               !is.na(pakeduc_province$point_estimate)), "year"]
+                               !is.na(pakeduc_province$point_estimate) &
+                               pakeduc_province %in% g), "year"]
     }
   })
   
   output$tmp_year <- 
+    
+    # TODO: HAVE TO INSTALL shinyWidgets
     renderUI({
-          sliderInput(inputId = ns("year"),
-                label = "Select a year",
-                min = min(years(), na.rm = TRUE),
-                max = max(years(), na.rm = TRUE),
-                value = max(years(), na.rm = TRUE),
-                sep = "")
+      
+      shinyWidgets::sliderTextInput(inputId  = ns("year"), 
+                                    label    = "Select a year", 
+                                    choices  = sort(unlist(unique(years()))),
+                                    selected = max(years(), na.rm = TRUE),
+                                    to_min   = min(years(), na.rm = TRUE),
+                                    to_max   = max(years(), na.rm = TRUE) 
+                                                )
+          # sliderInput(inputId = ns("year"),
+          #       label = "Select a year",
+          #       min = min(years(), na.rm = TRUE),
+          #       max = max(years(), na.rm = TRUE),
+          #       value = max(years(), na.rm = TRUE),
+          #       sep = "")
   })
   
   # observeEvent(province(), {
