@@ -125,19 +125,11 @@ mod_province_select_server <- function(input, output, session){
   years <- reactive({
     g <- ifelse(input$gender, c("Boy","Girl"), "Both")
     
-    if(is.null(input$dataset)){
-      pakeduc_province_weighted[which(pakeduc_province_weighted$province %in% input$province & 
+    # Assuming that years only effect map
+    pakeduc_province_weighted[which(pakeduc_province_weighted$province %in% input$province & 
                                pakeduc_province_weighted$indicator == input$indicator &
                                !is.na(pakeduc_province_weighted$point_estimate) &
                                pakeduc_province_weighted$gender %in% g), "year"]
-    } 
-    else{
-      pakeduc_province[which(pakeduc_province$province %in% input$province & 
-                               pakeduc_province$indicator == input$indicator &
-                               input$dataset %in% pakeduc_province$dataset &
-                               !is.na(pakeduc_province$point_estimate) &
-                               pakeduc_province$gender %in% g), "year"]
-    }
   })
   
   output$tmp_year <- 
