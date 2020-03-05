@@ -38,12 +38,6 @@ mod_province_select_ui <- function(id){
                   value = FALSE),
     # Dynamically chooses dataset based on inputs
     uiOutput(ns("tmp_dataset")),
-     # selectInput(inputId = ns("dataset"),
-     #            label = "Choose one or more survey(s)",
-     #            choices = sort(unique(pakeduc_province[["dataset"]])),
-     #            selectize = TRUE,
-     #            #selected = c("aser"),
-     #            multiple = TRUE),
     # Dynamically chooses year based on inputs
     uiOutput(ns("tmp_year")),
     tags$h4("Data sources"),

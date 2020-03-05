@@ -41,11 +41,8 @@ mod_district_select_ui <- function(id){
     checkboxInput(inputId = ns("gender"),
                   label = "Disaggregate by gender",
                   value = FALSE),
-    selectInput(inputId = ns("dataset"),
-                label = "Choose one or more survey(s)",
-                choices = sort(unique(pakeduc_district[["dataset"]])),
-                selectize = TRUE,
-                multiple = TRUE),
+    # Dynamically chooses dataset based on inputs
+    uiOutput(ns("tmp_dataset")),
     # Dynamically chooses year based on inputs
     uiOutput(ns("tmp_year")),
     tags$h4("Data sources"),
@@ -92,7 +89,10 @@ mod_district_select_server <- function(input, output, session){
   # Used this solution to unhide uiOutput()
   # https://stackoverflow.com/questions/36613018/r-shiny-uioutput-not-rendering-inside-menuitem
   output$tmp_year <- renderUI({})
-  outputOptions(output, "tmp_year", suspendWhenHidden = FALSE)
+  outputOptions(output, "tmp_year",    suspendWhenHidden = FALSE)
+  
+  output$tmp_dataset <- renderUI({})
+  outputOptions(output, "tmp_dataset", suspendWhenHidden = FALSE)
   
   province <- reactive({
     dplyr::filter(pakeduc_province, province %in% input$province)
@@ -101,21 +101,11 @@ mod_district_select_server <- function(input, output, session){
   # Only display years based on inputs for either weighted or non-weighted
   years <- reactive({
     g <- ifelse(input$gender, c("Boy","Girl"), "Both")
-    
-    if(is.null(input$dataset)){
-      pakeduc_district_weighted[which(pakeduc_district_weighted$province  %in% input$province & 
+          pakeduc_district_weighted[which(pakeduc_district_weighted$province %in% input$province & 
                                         pakeduc_district_weighted$indicator == input$indicator &
                                         !is.na(pakeduc_district_weighted$point_estimate) &
                                         pakeduc_district_weighted$dist_nm %in% input$district &
                                         pakeduc_district_weighted$gender %in% g), "year"]
-    } 
-    else{
-      pakeduc_district[which(pakeduc_district$province %in% input$province & 
-                             pakeduc_district$indicator == input$indicator &
-                             !is.na(pakeduc_district$point_estimate) &
-                             pakeduc_district$dist_nm %in% input$district & 
-                               pakeduc_district$gender %in% g), "year"]
-    }
   })
   
   output$tmp_year <- renderUI({
@@ -126,13 +116,27 @@ mod_district_select_server <- function(input, output, session){
                                   to_min   = min(years(), na.rm = TRUE),
                                   to_max   = max(years(), na.rm = TRUE) 
     )
+  })
+  
+  # Only display datasets based on inputs for non-weighted
+  datasets <- reactive({
     
-    # sliderInput(inputId = ns("year"),
-    #             label = "Select a year",
-    #             min = min(years(), na.rm = TRUE),
-    #             max = max(years(), na.rm = TRUE),
-    #             value = max(years(), na.rm = TRUE),
-    #             sep = "")
+    g <- ifelse(input$gender, c("Boy","Girl"), "Both")
+    
+    d <- pakeduc_district[which(pakeduc_district$province %in% input$province &
+                                  pakeduc_district$indicator == input$indicator &
+                                  !is.na(pakeduc_district$point_estimate) &
+                                  pakeduc_district$gender %in% g), "dataset"]
+    
+    ifelse(nrow(d > 0), d, "")
+  })
+  
+  output$tmp_dataset<-  renderUI({
+    selectInput(inputId = ns("dataset"),
+                label = "Choose one or more survey(s)",
+                choices = sort(unlist(unique(datasets()))),
+                selectize = TRUE,
+                multiple = TRUE)
   })
   
   observeEvent(province(), {
