@@ -120,19 +120,17 @@ mod_faq_ui <- function(id){
     tags$p("We are exploring ways to expand this portal towards a broader set of indicators that are relevant for human development. That being said, we
            are an extremely small team with limited bandwidth, and so we are forced to carefully prioritize."),
     
-    #TODO: ASK KOEN FOR HYPERLINKS
-    # tags$h3("What can I do if I spot an error in the data?"),
-    # tags$p("We strive to reduce errors as much as possible, although we realize that we may have made errors. Please don’t hesitate to get in touch with our team here, if you find anything that looks like a mistake. ")
+    tags$h3("What can I do if I spot an error in the data?"),
+    tags$p("We strive to reduce errors as much as possible, although we realize that we may have made errors. Please don’t hesitate to get in touch with our team at data@worldbank.org if you find anything that looks like a mistake. "),
     
-    #TODO: ASK KOEN FOR HYPERLINKS
-    # tags$h3("How can I contribute data to the portal?"),
-    # tags$p("If you are interested in contributing data to the portal, please contact our team here. (Note: Hyper link will be added to the form/tab on website where users can contact)")
+    tags$h3("How can I contribute data to the portal?"),
+    tags$p("If you are interested in contributing data to the portal, please contact our team at data@worldbank.org."),
     
     tags$h3("Is the data up to date? Are there plans to add more data in the future?"),
     tags$ul(
       tags$li("Yes, and yes. We have integrated the main datasets that we know are available, and are actively planning to add more data as they become available. If you have a dataset that can be added to this portal,
               please get in touch."),
-      tags$li("•	The first item on our agenda is to add several waves of administrative data to the portal. We will make these available as a specific tab on the Punjab province. ")
+      tags$li("The first item on our agenda is to add several waves of administrative data to the portal. We will make these available as a specific tab on the Punjab province. ")
     )
   )
 }

@@ -49,10 +49,12 @@ mod_district_map_server <- function(input,
     out <- dplyr::filter(pakeduc_district_weighted,
                          indicator == !!selection_vars$indicator(),
                          #gender %in% !!gender_selection,
-                         year == !!selection_vars$year()) %>%
-      dplyr::distinct() 
+                         year == !!selection_vars$year(),
+                         # Add only both
+                         gender == "Both") %>%
+
+      dplyr::distinct()
     
-    # Changed to right join, so that rows == 0 when out returns 0 rows
     out <- pakgeo_district %>%
       dplyr::left_join(out, by = c("dist_key" = "dist_key"))
   })
@@ -63,7 +65,6 @@ mod_district_map_server <- function(input,
 
   output$district_map <- ggiraph::renderggiraph({
     if (nrow(df()) > 0) {
-      
       p <- plot_map(data = df(),
                     fill = point_estimate,
                     data_id = dist_nm,
@@ -72,7 +73,7 @@ mod_district_map_server <- function(input,
                     tooltip_region_value = DISTRICT,
                     tooltip_value = pe_percent) #+
         #ggplot2::facet_wrap(~gender)
-
+      
       ggiraph::girafe(ggobj = p, 
                       width_svg = 12, 
                       height_svg = 12,
