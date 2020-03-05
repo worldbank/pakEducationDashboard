@@ -36,12 +36,14 @@ mod_province_select_ui <- function(id){
     checkboxInput(inputId = ns("gender"),
                   label = "Disaggregate by gender",
                   value = FALSE),
-    selectInput(inputId = ns("dataset"),
-                label = "Choose one or more survey(s)",
-                choices = sort(unique(pakeduc_province[["dataset"]])),
-                selectize = TRUE,
-                #selected = c("aser"),
-                multiple = TRUE),
+    # Dynamically chooses dataset based on inputs
+    uiOutput(ns("tmp_dataset")),
+     # selectInput(inputId = ns("dataset"),
+     #            label = "Choose one or more survey(s)",
+     #            choices = sort(unique(pakeduc_province[["dataset"]])),
+     #            selectize = TRUE,
+     #            #selected = c("aser"),
+     #            multiple = TRUE),
     # Dynamically chooses year based on inputs
     uiOutput(ns("tmp_year")),
     tags$h4("Data sources"),
@@ -89,10 +91,34 @@ mod_province_select_server <- function(input, output, session){
   # Used this solution to unhide uiOutput()
   # https://stackoverflow.com/questions/36613018/r-shiny-uioutput-not-rendering-inside-menuitem
   output$tmp_year <- renderUI({})
-  outputOptions(output, "tmp_year", suspendWhenHidden = FALSE)
+  outputOptions(output, "tmp_year",    suspendWhenHidden = FALSE)
+  
+  output$tmp_dataset <- renderUI({})
+  outputOptions(output, "tmp_dataset", suspendWhenHidden = FALSE)
   
   province <- reactive({
     dplyr::filter(pakeduc_province, province %in% input$province)
+  })
+  
+  # Only display datasets based on inputs for non-weighted
+  datasets <- reactive({
+    
+    g <- ifelse(input$gender, c("Boy","Girl"), "Both")
+    
+    d <- pakeduc_province[which(pakeduc_province$province %in% input$province &
+                                  pakeduc_province$indicator == input$indicator &
+                                  !is.na(pakeduc_province$point_estimate) &
+                                pakeduc_province$gender %in% g), "dataset"]
+
+    ifelse(nrow(d > 0), d, "")
+  })
+  
+  output$tmp_dataset<-  renderUI({
+    selectInput(inputId = ns("dataset"),
+                label = "Choose one or more survey(s)",
+                choices = sort(unlist(unique(datasets()))),
+                selectize = TRUE,
+                multiple = TRUE)
   })
   
   # Only display years based on inputs for either weighted or non-weighted
@@ -100,7 +126,6 @@ mod_province_select_server <- function(input, output, session){
     g <- ifelse(input$gender, c("Boy","Girl"), "Both")
     
     if(is.null(input$dataset)){
-
       pakeduc_province_weighted[which(pakeduc_province_weighted$province %in% input$province & 
                                pakeduc_province_weighted$indicator == input$indicator &
                                !is.na(pakeduc_province_weighted$point_estimate) &
@@ -111,37 +136,21 @@ mod_province_select_server <- function(input, output, session){
                                pakeduc_province$indicator == input$indicator &
                                input$dataset %in% pakeduc_province$dataset &
                                !is.na(pakeduc_province$point_estimate) &
-                               pakeduc_province %in% g), "year"]
+                               pakeduc_province$gender %in% g), "year"]
     }
   })
   
   output$tmp_year <- 
-    
-    # TODO: HAVE TO INSTALL shinyWidgets
     renderUI({
       
       shinyWidgets::sliderTextInput(inputId  = ns("year"), 
-                                    label    = "Select a year", 
+                                    label    = "Select a year",
                                     choices  = sort(unlist(unique(years()))),
                                     selected = max(years(), na.rm = TRUE),
                                     to_min   = min(years(), na.rm = TRUE),
                                     to_max   = max(years(), na.rm = TRUE) 
                                                 )
-          # sliderInput(inputId = ns("year"),
-          #       label = "Select a year",
-          #       min = min(years(), na.rm = TRUE),
-          #       max = max(years(), na.rm = TRUE),
-          #       value = max(years(), na.rm = TRUE),
-          #       sep = "")
   })
-  
-  # observeEvent(province(), {
-  #   provinces <- unique(province()$province)
-  #   # choices_district <- unique(pakeduc_district$dist_nm[pakeduc_district$province %in% provinces])
-  #   updateSelectizeInput(session, "province",
-  #                        choices = choices_district,
-  #                        selected = input$district)
-  # })
   
   return(
     list(
