@@ -41,46 +41,25 @@ mod_district_select_ui <- function(id){
     checkboxInput(inputId = ns("gender"),
                   label = "Disaggregate by gender",
                   value = FALSE),
-    selectInput(inputId = ns("dataset"),
-                label = "Choose one or more survey(s)",
-                choices = sort(unique(pakeduc_district[["dataset"]])),
-                selectize = TRUE,
-                multiple = TRUE),
-    sliderInput(inputId = ns("year"),
-                label = "Select a year",
-                min   = min(pakeduc_district$year, na.rm = TRUE),
-                max   = max(pakeduc_district$year, na.rm = TRUE),
-                value = max(pakeduc_district$year, na.rm = TRUE),
-                sep = ""),
+    # Dynamically chooses dataset based on inputs
+    uiOutput(ns("tmp_dataset")),
+    # Dynamically chooses year based on inputs
+    uiOutput(ns("tmp_year")),
     tags$h4("Data sources"),
     tags$ul(
       tags$li(tags$a("ASER", href = "http://aserpakistan.org/index.php"),
-              ": The Annual Status of Education Report is a citizen-led; household-based
-              survey that aims to provide reliable estimates on the schooling status of
-              children aged 3-16 years residing in all rural and several urban districts
-              of Pakistan. "),
-      tags$li(tags$a("HIES", href = "http://www.pbs.gov.pk/content/household-integrated-economic-survey-hies-2015-16"), 
-              ": The Household Integrated Economic Survey implemented by the Pakistan Bureau of Statistics provides information
-              on household income, savings, liabilities, and consumption expenditure, and social indicators at national 
-              and provincial levels. "),
-      tags$li(tags$a("PSLM", href ="http://www.pbs.gov.pk/content/pakistan-social-and-living-standards-measurement"),
-              ": The Pakistan Social and Living Standards Measurement (PSLM) is a household survey that provides social
-              and economic indicators, which is representative at provincial and district levels. It includes survey 
-              modules on education, health, employment, household assets and amenities, income and expenditure, population
-              welfare, water supply and sanitation."),
-      tags$li(tags$a("MICS", href ="http://www.bos.gop.pk/mics"),
-              ": The Multiple Indicator Cluster Survey is a multipurpose household survey implemented on a provincial level
-              basis, and is representative at district level. The MICS provides data to track poverty, education and health
-              indicators."),
+              ": The Annual Status of Education Report is a citizen-led; household-based survey, led by ITA. "),
       tags$li(tags$a("DHS",  href ="https://dhsprogram.com/what-we-do/survey/survey-display-523.cfm"),
-              ": The Pakistan Demographic and Health Survey is a household survey implemented by the National Institute of
-              Population Studies. DHS provides internationally standardized indicators of demographic and health indicators.
-              The results from this survey are representative at the provincial and district levels."),
+              ": The Pakistan Demographic and Health Survey is a household survey implemented by the National Institute of Population Studies."),
       tags$li(tags$a("EGRA", href ="https://www.usaid.gov/news-information/videos/early-grade-reading-assessment-egra-extra-mile-better-journey"),
-              ": EGRA is an individually administered assessment tool that measures the foundational literacy skills that readers need before they
-              can read, such as letter recognition, and oral reading fluency, as well as basic reading comprehension. The Pakistan EGRA survey was
-              administered as part of a USAID funded reading project, providing baseline, midline and end-line data.")
-      )
+              ": EGRA is an individually administered assessment tool that measures foundational literacy skills, which has been administered as part of USAID’s Pakistan Reading Project."),
+      tags$li(tags$a("HIES", href = "http://www.pbs.gov.pk/content/household-integrated-economic-survey-hies-2015-16"), 
+              ": The Household Integrated Economic Survey is a household survey, representative at the provincial level, and led by the Pakistan Bureau of Statistics."),
+      tags$li(tags$a("MICS", href ="http://www.bos.gop.pk/mics"),
+              ": The Multiple Indicator Cluster Survey is a multipurpose household survey implemented on a provincial level basis, and is representative at district level."),
+      tags$li(tags$a("PSLM", href ="http://www.pbs.gov.pk/content/pakistan-social-and-living-standards-measurement"),
+              ": The Pakistan Social and Living Standards Measurement (PSLM) is another household survey, representative at the district level, and led by the Pakistan Bureau of Statistics.")
+    )
   )
 }
     
@@ -93,8 +72,57 @@ mod_district_select_ui <- function(id){
 mod_district_select_server <- function(input, output, session){
   ns <- session$ns
   
+  # Used this solution to unhide uiOutput()
+  # https://stackoverflow.com/questions/36613018/r-shiny-uioutput-not-rendering-inside-menuitem
+  output$tmp_year <- renderUI({})
+  outputOptions(output, "tmp_year",    suspendWhenHidden = FALSE)
+  
+  output$tmp_dataset <- renderUI({})
+  outputOptions(output, "tmp_dataset", suspendWhenHidden = FALSE)
+  
   province <- reactive({
     dplyr::filter(pakeduc_province, province %in% input$province)
+  })
+  
+  # Only display years based on inputs for either weighted or non-weighted
+  years <- reactive({
+    g <- ifelse(input$gender, c("Boy","Girl"), "Both")
+          pakeduc_district_weighted[which(pakeduc_district_weighted$province %in% input$province & 
+                                        pakeduc_district_weighted$indicator == input$indicator &
+                                        !is.na(pakeduc_district_weighted$point_estimate) &
+                                        pakeduc_district_weighted$dist_nm %in% input$district &
+                                        pakeduc_district_weighted$gender %in% g), "year"]
+  })
+  
+  output$tmp_year <- renderUI({
+    shinyWidgets::sliderTextInput(inputId  = ns("year"), 
+                                  label    = "Select a year", 
+                                  choices  = sort(unlist(unique(years()))),
+                                  selected = max(years(), na.rm = TRUE),
+                                  to_min   = min(years(), na.rm = TRUE),
+                                  to_max   = max(years(), na.rm = TRUE) 
+    )
+  })
+  
+  # Only display datasets based on inputs for non-weighted
+  datasets <- reactive({
+    
+    g <- ifelse(input$gender, c("Boy","Girl"), "Both")
+    
+    d <- pakeduc_district[which(pakeduc_district$province %in% input$province &
+                                  pakeduc_district$indicator == input$indicator &
+                                  !is.na(pakeduc_district$point_estimate) &
+                                  pakeduc_district$gender %in% g), "dataset"]
+    
+    ifelse(nrow(d > 0), d, "")
+  })
+  
+  output$tmp_dataset<-  renderUI({
+    selectInput(inputId = ns("dataset"),
+                label = "Choose one or more survey(s)",
+                choices = sort(unlist(unique(datasets()))),
+                selectize = TRUE,
+                multiple = TRUE)
   })
   
   observeEvent(province(), {

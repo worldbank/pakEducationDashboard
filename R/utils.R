@@ -97,6 +97,12 @@ plot_lines <- function(data,
     y_scale <- ggplot2::scale_y_continuous(limits = c(0, 1), labels = scales::percent)
   }
   
+  # TO account for ggiraph bug
+  ## https://github.com/davidgohel/ggiraph/issues/31
+  shps <- setNames( c(0, 1, 2, 5, 6, 15, 16), c("Weighted mix","aser", "hies", "pslm",
+                                            "mics", "dhs", "egra"))
+  
+  
   p <- ggplot2::ggplot(data, ggplot2::aes(x = {{x}}, 
                                           y = {{y}}, 
                                           color = {{color}},
@@ -108,8 +114,10 @@ plot_lines <- function(data,
                                     linetype = {{dataset}}),
                        size = ggplot2::rel(line_size),
                        alpha = .6 ) +
-    ggiraph::geom_point_interactive(ggplot2::aes(shape = {{dataset}}),
-                                    size = ggplot2::rel(point_size), alpha = .6) +
+    # ggiraph::geom_point_interactive(ggplot2::aes(shape = {{dataset}}),
+    #                                 size = ggplot2::rel(point_size), alpha = .6) +
+    ggiraph::geom_point_interactive(size = ggplot2::rel(point_size), alpha = .6) +
+    ggplot2::scale_shape_manual(values = shps) +
     y_scale +
     ggplot2::scale_x_continuous(breaks = integer_breaks()) +
     ggthemes::scale_color_colorblind() +
@@ -121,7 +129,7 @@ plot_lines <- function(data,
     ggplot2::labs(
       x = "",
       y = ""
-    ) 
+    )
   
   return(p)
 }
@@ -151,6 +159,14 @@ plot_map <- function(data,
                      font_size = 20
 ) 
 {
+  
+  # Adjust scale according to indicator
+  if (stringr::str_detect(unique(data$indicator), "^egra") & !is.na(unique(data$indicator))) {
+    fill_scale <- ggplot2::scale_fill_viridis_c(limits = c(0, 100), guide = FALSE)
+  } else {
+    fill_scale <- ggplot2::scale_fill_viridis_c(limits = c(0, 1), guide = FALSE)
+  }
+  
   p <- ggplot2::ggplot(data) +
     ggiraph::geom_sf_interactive(ggplot2::aes(fill = {{fill}},
                                               tooltip = paste(tooltip_region_header, {{tooltip_region_value}},
@@ -158,19 +174,15 @@ plot_map <- function(data,
                                                               "<br />Year:", {{year}}),
                                               data_id = {{data_id}}
     )) +
-    ggplot2::scale_fill_viridis_c(limits = c(0, 1), labels = scales::percent, guide = FALSE) +
+    fill_scale +
     ggthemes::theme_map(base_size = font_size) +
     ggplot2::labs(
       fill = ""
     )
   
-  # return(p)
+  
+  return(p)
 }
-
-
-
-
-
 
 # A function factory for getting integer y-axis values.
 integer_breaks <- function(n = 5, ...) {
