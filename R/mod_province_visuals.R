@@ -106,7 +106,7 @@ mod_province_visuals_server <- function(input,
         ggplot2::facet_wrap(~province, ncol = 5) + 
         ggplot2::theme(
           strip.text       = ggplot2::element_text(color = "#006350", family = "Arial",
-                                                   face = "bold", size = 40),
+                                                   face = "bold", size = 30),
           strip.background = ggplot2::element_rect(color = "white", fill = "white")
         )
     }
@@ -126,7 +126,7 @@ mod_province_visuals_server <- function(input,
                             labeller = ggplot2::labeller(indicator = indicator_choices_country_inv)) +
         ggplot2::theme(
           strip.text       = ggplot2::element_text(color = "#006350", family = "Arial",
-                                                   face = "bold", size = 40),
+                                                   face = "bold", size = 30),
           strip.background = ggplot2::element_rect(color = "white", fill = "white")
         )
      }

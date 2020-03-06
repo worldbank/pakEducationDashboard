@@ -34,6 +34,9 @@ plot_lines_weighted <- function(data,
     y_scale <- ggplot2::scale_y_continuous(limits = c(0, 1), labels = scales::percent)
   }
   
+  # Adjust for gender
+  scale_values = ifelse(unique(data$gender) == "Both", "#F05123", c("#F05123","#97252B"))
+  
   p <- ggplot2::ggplot(data, ggplot2::aes(x = {{x}}, 
                                           y = {{y}}, 
                                           color = {{color}},
@@ -46,7 +49,7 @@ plot_lines_weighted <- function(data,
     ggiraph::geom_point_interactive(size = ggplot2::rel(point_size)) +
     y_scale +
     ggplot2::scale_x_continuous(breaks = integer_breaks()) +
-    ggplot2::scale_color_manual(values = "#F05123") +
+    ggplot2::scale_color_manual(values = scale_values) +
     cowplot::theme_cowplot(font_size) +
     ggplot2::theme(
       legend.title    = ggplot2::element_blank(),
