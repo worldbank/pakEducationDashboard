@@ -29,11 +29,14 @@ mod_country_select_ui <- function(id){
     checkboxInput(inputId = ns("gender"),
                   label = "Disaggregate by gender",
                   value = FALSE),
-    selectInput(inputId = ns("dataset"),
-                label = "Choose one or more survey(s)",
-                choices = sort(unique(pakeduc_province[["dataset"]])),
-                selectize = TRUE,
-                multiple = TRUE),
+    # selectInput(inputId = ns("dataset"),
+    #             label = "Choose one or more survey(s)",
+    #             choices = sort(unique(pakeduc_country[["dataset"]])),
+    #             selectize = TRUE,
+    #             multiple = TRUE),
+    # Dynamically chooses dataset based on inputs
+    uiOutput(ns("tmp_dataset")),
+    
     tags$h4("Data sources"),
     tags$ul(
       tags$li(tags$a("ASER", href = "http://aserpakistan.org/index.php"),
@@ -60,6 +63,31 @@ mod_country_select_ui <- function(id){
     
 mod_country_select_server <- function(input, output, session){
   ns <- session$ns
+  
+  output$tmp_dataset <- renderUI({})
+  outputOptions(output, "tmp_dataset", suspendWhenHidden = FALSE)
+  
+  # Only display datasets based on inputs for non-weighted
+  datasets <- reactive({
+    
+    g <- ifelse(input$gender, c("Boy","Girl"), "Both")
+    
+    d <- pakeduc_country[which(pakeduc_country$indicator == input$indicator &
+                                 !is.na(pakeduc_country$point_estimate) &
+                                 pakeduc_country$gender %in% g), "dataset"]
+    
+    if (nrow(d) > 0) {return(d[["dataset"]])} else {return("")}
+  })
+  
+  output$tmp_dataset<-  renderUI({
+    
+    #browser()
+    selectInput(inputId = ns("dataset"),
+                label = "Choose one or more survey(s)",
+                choices = sort(unique(datasets())),
+                selectize = TRUE,
+                multiple = TRUE)
+  })
   
   return(
     list(
