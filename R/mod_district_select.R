@@ -86,13 +86,10 @@ mod_district_select_server <- function(input, output, session){
   
   # Only display years based on inputs for either weighted or non-weighted
   years <- reactive({
-    # Map only displays aggregate numbers currently. Not need for reactivity on gender
-    # g <- ifelse(input$gender, c("Boy","Girl"), "Both")
           pakeduc_district_weighted[which(pakeduc_district_weighted$province %in% input$province & 
                                         pakeduc_district_weighted$indicator == input$indicator &
                                         !is.na(pakeduc_district_weighted$point_estimate) &
-                                        pakeduc_district_weighted$dist_nm %in% input$district &
-                                        pakeduc_district_weighted$gender == "Both"), "year"]
+                                        pakeduc_district_weighted$dist_nm %in% input$district), "year"]
   })
   
   output$tmp_year <- renderUI({
@@ -107,12 +104,12 @@ mod_district_select_server <- function(input, output, session){
   
   # Only display datasets based on inputs for non-weighted
   datasets <- reactive({
-    
     g <- ifelse(input$gender, c("Boy","Girl"), "Both")
     
     d <- pakeduc_district[which(pakeduc_district$province %in% input$province &
                                   pakeduc_district$indicator == input$indicator &
                                   !is.na(pakeduc_district$point_estimate) &
+                                  pakeduc_district$year == input$year,
                                   pakeduc_district$gender %in% g), "dataset"]
     
     ifelse(nrow(d > 0), d, "")

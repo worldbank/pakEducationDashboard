@@ -33,6 +33,8 @@ plot_lines_weighted <- function(data,
     y_scale <- ggplot2::scale_y_continuous(limits = c(0, 1), labels = scales::percent)
   }
   
+  # Adjust for gender
+  scale_values = ifelse(unique(data$gender) == "Both", "#F05123", c("#F05123","#97252B"))
   
   p <- ggplot2::ggplot(data, ggplot2::aes(x = {{x}}, 
                                           y = {{y}}, 
@@ -46,11 +48,12 @@ plot_lines_weighted <- function(data,
     ggiraph::geom_point_interactive(size = ggplot2::rel(point_size)) +
     y_scale +
     ggplot2::scale_x_continuous(breaks = integer_breaks()) +
-    ggthemes::scale_color_colorblind() +
+    ggplot2::scale_color_manual(values = scale_values) +
     cowplot::theme_cowplot(font_size) +
     ggplot2::theme(
       legend.title    = ggplot2::element_blank(),
-      legend.position = "none"
+      legend.position = "none",
+      panel.background = ggplot2::element_rect(fill = "#ECF0F1")
     ) +
     ggplot2::labs(
       x = "",
@@ -101,7 +104,6 @@ plot_lines <- function(data,
   shps <- setNames( c(0, 1, 2, 5, 6, 15, 16), c("Weighted mix","aser", "hies", "pslm",
                                             "mics", "dhs", "egra"))
   
-  
   p <- ggplot2::ggplot(data, ggplot2::aes(x = {{x}}, 
                                           y = {{y}}, 
                                           color = {{color}},
@@ -119,16 +121,17 @@ plot_lines <- function(data,
     ggplot2::scale_shape_manual(values = shps) +
     y_scale +
     ggplot2::scale_x_continuous(breaks = integer_breaks()) +
-    ggthemes::scale_color_colorblind() +
+    ggplot2::scale_color_manual(values = "#F05123") +
     cowplot::theme_cowplot(font_size) +
     ggplot2::theme(
       legend.title    = ggplot2::element_blank(),
-      legend.position = "none"
+      legend.position = "none",
+      panel.background = ggplot2::element_rect(fill = "#ECF0F1")
     ) +
     ggplot2::labs(
       x = "",
       y = ""
-    )
+    ) 
   
   return(p)
 }
@@ -184,7 +187,6 @@ plot_map <- function(data,
     ggplot2::labs(
       fill = ""
     )
-  
   
   return(p)
 }

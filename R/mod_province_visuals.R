@@ -103,9 +103,12 @@ mod_province_visuals_server <- function(input,
                                year = year,
                                tooltip_value = pe_percent,
                                font_size = 18) +
-        ggplot2::facet_wrap(~province, ncol = 5)
-      
-      
+        ggplot2::facet_wrap(~province, ncol = 5) + 
+        ggplot2::theme(
+          strip.text       = ggplot2::element_text(color = "#006350", family = "Arial",
+                                                   face = "bold", size = 30),
+          strip.background = ggplot2::element_rect(color = "white", fill = "white")
+        )
     }
     
     if (nrow(surveydf()) > 0) {
@@ -120,8 +123,12 @@ mod_province_visuals_server <- function(input,
                       tooltip_value = pe_percent,
                       font_size = 18) +
         ggplot2::facet_wrap(~province, ncol = 5, 
-                            labeller = ggplot2::labeller(indicator = indicator_choices_country_inv))
-      
+                            labeller = ggplot2::labeller(indicator = indicator_choices_country_inv)) +
+        ggplot2::theme(
+          strip.text       = ggplot2::element_text(color = "#006350", family = "Arial",
+                                                   face = "bold", size = 30),
+          strip.background = ggplot2::element_rect(color = "white", fill = "white")
+        )
      }
     
     #Only return plot if filtered dataframe has rows

@@ -88,6 +88,7 @@ mod_province_select_server <- function(input, output, session){
     d <- pakeduc_province[which(pakeduc_province$province %in% input$province &
                                   pakeduc_province$indicator == input$indicator &
                                   !is.na(pakeduc_province$point_estimate) &
+                                  pakeduc_province$year == input$year,
                                 pakeduc_province$gender %in% g), "dataset"]
 
     if (nrow(d) > 0) {return(d[["dataset"]])} else {return("")}
@@ -104,14 +105,10 @@ mod_province_select_server <- function(input, output, session){
   
   # Only display years based on inputs for either weighted or non-weighted
   years <- reactive({
-    # Map only displays aggregate numbers currently. Not need for reactivity on gender
-    # g <- ifelse(input$gender, c("Boy","Girl"), "Both")
-  
     # Assuming that years only effect map
     pakeduc_province_weighted[which(pakeduc_province_weighted$province %in% input$province & 
                                pakeduc_province_weighted$indicator == input$indicator &
-                               !is.na(pakeduc_province_weighted$point_estimate) &
-                               pakeduc_province_weighted$gender == "Both"), "year"]
+                               !is.na(pakeduc_province_weighted$point_estimate)), "year"]
   })
   
   output$tmp_year <- 
