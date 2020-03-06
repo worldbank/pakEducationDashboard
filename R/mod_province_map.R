@@ -59,7 +59,6 @@ mod_province_map_server <- function(input,
   
   output$province_map <- ggiraph::renderggiraph({
     if (nrow(df()) > 0) {
-      
       p <- plot_map(data = df(),
                     fill = point_estimate,
                     data_id = province,

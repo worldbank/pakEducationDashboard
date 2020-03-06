@@ -108,3 +108,46 @@ names(labels_lkup) <- tmp$variable_name
 choice_labels_district <- unname(labels_lkup[expected_choices_district])
 
 labels_order_district <- choice_labels_district # Order is defined by expected_choices_district vector
+
+create_weighted <- function(df,
+                            selection = c("year",
+                                          "country",
+                                          "indicator",
+                                          "gender",
+                                          "point_estimate",
+                                          "dataset"),
+                            ...
+                            )
+{
+  
+  by <- enquos(...)
+  
+  out <- df %>%
+    filter(!is.na(point_estimate)) %>%
+    filter(!(dataset == "aser" & (str_detect(indicator, "^in_school") | 
+                                    str_detect(indicator, "^share_private")))) %>%
+    mutate(
+      inv_se = 1 / standard_error
+    ) %>%
+    group_by(!!!by) %>%
+    mutate(
+      inv_se_sum = sum(inv_se)
+    ) %>%
+    ungroup() %>%
+    mutate(
+      weight_var = inv_se / inv_se_sum,
+      point_estimate = point_estimate * weight_var 
+    ) %>%
+    group_by(!!!by) %>%
+    mutate(
+      point_estimate = sum(point_estimate)
+    ) %>%
+    ungroup() %>%
+    mutate(
+      dataset = "Weighted mix (Moving average, window = 3)"
+    ) %>%
+    select(all_of(selection)) %>%
+    distinct()
+  
+  return(out)
+}

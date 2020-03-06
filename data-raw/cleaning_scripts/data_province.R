@@ -51,44 +51,67 @@ indicator_choices_province <- prepare_indicator_choices(indicator_choices_provin
                                                                          
 # Create weighted dataset -------------------------------------------------
 
+
 pakeduc_province_weighted <- pakeduc_province %>%
-  filter(!is.na(point_estimate)) %>%
-  filter(!(dataset == "aser" & (str_detect(indicator, "^in_school") | str_detect(indicator, "^share_private")))) %>%
+  create_weighted(selection = c("year",
+                                "province_id",
+                                "province",
+                                "indicator",
+                                "gender",
+                                "point_estimate",
+                                "dataset"),
+                  year, province, indicator, gender) %>%
+  group_by(province, indicator, gender) %>%
+  arrange(indicator, province, gender, year) %>%
   mutate(
-    inv_se = 1 / standard_error
-  ) %>%
-  group_by(year, province, indicator, gender) %>%
-  mutate(
-    inv_se_sum = sum(inv_se)
-  ) %>%
-  ungroup() %>%
-  mutate(
-    weight_var = inv_se / inv_se_sum,
-    point_estimate = point_estimate * weight_var 
-  ) %>%
-  group_by(year, province, indicator, gender) %>%
-  mutate(
-    point_estimate = sum(point_estimate)
-  ) %>%
-  ungroup() %>%
-  mutate(
-    dataset = "Weighted mix"
-  ) %>%
-  select(
-    year,
-    province_id,
-    province,
-    indicator,
-    gender,
-    point_estimate,
-    dataset
-  ) %>%
-  distinct() %>%  
-  mutate(
+    point_estimate = zoo::rollapply(point_estimate, 3, mean, align='center', fill=NA),
     pe_percent = if_else(stringr::str_detect(indicator, "^egra"), 
                          as.character(round(point_estimate, 1)),
                          sprintf("%.1f%%", point_estimate * 100))
-  )
+  ) %>%
+  ungroup() %>%
+  filter(!is.na(point_estimate)) %>%
+  distinct()
+
+# 
+# pakeduc_province_weighted <- pakeduc_province %>%
+#   filter(!is.na(point_estimate)) %>%
+#   filter(!(dataset == "aser" & (str_detect(indicator, "^in_school") | str_detect(indicator, "^share_private")))) %>%
+#   mutate(
+#     inv_se = 1 / standard_error
+#   ) %>%
+#   group_by(year, province, indicator, gender) %>%
+#   mutate(
+#     inv_se_sum = sum(inv_se)
+#   ) %>%
+#   ungroup() %>%
+#   mutate(
+#     weight_var = inv_se / inv_se_sum,
+#     point_estimate = point_estimate * weight_var 
+#   ) %>%
+#   group_by(year, province, indicator, gender) %>%
+#   mutate(
+#     point_estimate = sum(point_estimate)
+#   ) %>%
+#   ungroup() %>%
+#   mutate(
+#     dataset = "Weighted mix"
+#   ) %>%
+#   select(
+#     year,
+#     province_id,
+#     province,
+#     indicator,
+#     gender,
+#     point_estimate,
+#     dataset
+#   ) %>%
+#   distinct() %>%  
+#   mutate(
+#     pe_percent = if_else(stringr::str_detect(indicator, "^egra"), 
+#                          as.character(round(point_estimate, 1)),
+#                          sprintf("%.1f%%", point_estimate * 100))
+#   )
 
 # # Code to generate the admin_level_lkup
 # aser <- haven::read_stata("../Platform - Pak/ASER/aser_panel.dta")        

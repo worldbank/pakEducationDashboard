@@ -26,7 +26,6 @@ plot_lines_weighted <- function(data,
                                 line_size = 1.8
                                 ) 
   {
-  
   # Adjust scale according to indicator
   if (stringr::str_detect(unique(data$indicator), "^egra")) {
     y_scale <- ggplot2::scale_y_continuous(limits = c(0, 100))
