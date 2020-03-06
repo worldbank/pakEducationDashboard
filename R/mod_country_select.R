@@ -29,12 +29,8 @@ mod_country_select_ui <- function(id){
     checkboxInput(inputId = ns("gender"),
                   label = "Disaggregate by gender",
                   value = FALSE),
-    selectInput(inputId = ns("dataset"),
-                label = "Choose one or more survey(s)",
-                choices = sort(unique(pakeduc_province[["dataset"]])),
-                selectize = TRUE,
-                multiple = TRUE),
-    tags$h4("Data sources"),
+    # Dynamically chooses dataset based on inputs
+    uiOutput(ns("tmp_dataset")),
     tags$ul(
       tags$li(tags$a("ASER", href = "http://aserpakistan.org/index.php"),
               ": The Annual Status of Education Report is a citizen-led; household-based survey, led by ITA. "),
@@ -60,6 +56,26 @@ mod_country_select_ui <- function(id){
     
 mod_country_select_server <- function(input, output, session){
   ns <- session$ns
+  
+  # Only display datasets based on inputs for non-weighted
+  datasets <- reactive({
+    
+    g <- ifelse(input$gender, c("Boy","Girl"), "Both")
+    
+    d <- pakeduc_country[which(pakeduc_country$indicator == input$indicator &
+                                !is.na(pakeduc_country$point_estimate) &
+                                 pakeduc_country$gender %in% g), "dataset"]
+    
+    ifelse(nrow(d > 0), d, "")
+  })
+  
+  output$tmp_dataset<-  renderUI({
+    selectInput(inputId = ns("dataset"),
+                label = "Choose one or more survey(s)",
+                choices = sort(unlist(unique(datasets()))),
+                selectize = TRUE,
+                multiple = TRUE)
+  })
   
   return(
     list(

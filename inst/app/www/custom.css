@@ -1,0 +1,72 @@
+.navbar-default.navbar-nav{
+  font-family: arial;
+  font-weight: bold;
+}
+
+.container-fluid:nth-child(1){ 
+  background-color: #006350;
+}
+
+h3 .shiny-text-output.shiny-bound-output,
+form h4,
+.checkbox span{
+  font-family: arial;
+  font-weight: bold;
+  color:       black;
+}
+
+.control-label{
+  font-family: arial;
+  font-weight: bold;
+  color:       black;
+}
+
+.item, 
+.selectize-input.items.not-full.has-options.has-items .item{
+  font-family: arial;
+  color:       black;
+}
+
+.irs .irs-min,
+.irs .irs-max
+{
+  font-family:      arial;
+  color:            black;
+  background-color: inherit;
+  font-size: 15px;
+}
+
+/*SLIDER*/
+.irs .irs-single
+{
+  font-family:  arial;
+  font-size:    15px;
+}
+
+.js-irs-1 .irs-single,
+.js-irs-1 .irs-bar-edge,
+.js-irs-1 .irs-bar,
+.js-irs-0 .irs-single,
+.js-irs-0 .irs-bar-edge,
+.js-irs-0 .irs-bar
+{
+  background-color: #006350;
+  border-color: #006350;
+}
+
+form li{
+  font-family: arial;
+  color:       black;
+}
+
+.tab-pane.active h2,
+.tab-pane.active p{
+   font-family: arial;
+   color:       black;
+}
+
+.tab-pane.active h3{
+  font-family: arial;
+  color:       black;
+  font-weight: bold;
+}
