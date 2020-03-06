@@ -23,7 +23,7 @@ mod_district_visuals_ui <- function(id){
                              width = "100%", 
                              height = "200px"),
       type = 3, 
-      color = "#6c3b96",
+      color = "#006350",
       color.background = "#FFFFFF"),
     textOutput(ns("warning_message"))
   

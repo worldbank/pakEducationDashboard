@@ -70,3 +70,9 @@ form li{
   color:       black;
   font-weight: bold;
 }
+
+.img-id{
+  position: fixed;
+  right: 10px;
+  top: 5px;
+}
