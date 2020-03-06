@@ -53,7 +53,8 @@ plot_lines_weighted <- function(data,
     cowplot::theme_cowplot(font_size) +
     ggplot2::theme(
       legend.title    = ggplot2::element_blank(),
-      legend.position = "none"
+      legend.position = "none",
+      panel.background = ggplot2::element_rect(fill = "#ECF0F1")
     ) +
     ggplot2::labs(
       x = "",
@@ -125,7 +126,8 @@ plot_lines <- function(data,
     cowplot::theme_cowplot(font_size) +
     ggplot2::theme(
       legend.title    = ggplot2::element_blank(),
-      legend.position = "none"
+      legend.position = "none",
+      panel.background = ggplot2::element_rect(fill = "#ECF0F1")
     ) +
     ggplot2::labs(
       x = "",
