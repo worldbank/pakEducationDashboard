@@ -82,7 +82,7 @@ mod_province_select_server <- function(input, output, session){
   
   # Only display datasets based on inputs for non-weighted
   datasets <- reactive({
-    
+   
     g <- ifelse(input$gender, c("Boy","Girl"), "Both")
     
     d <- pakeduc_province[which(pakeduc_province$province %in% input$province &
@@ -91,13 +91,14 @@ mod_province_select_server <- function(input, output, session){
                                   pakeduc_province$year == input$year,
                                 pakeduc_province$gender %in% g), "dataset"]
 
-    ifelse(nrow(d > 0), d, "")
+    if (nrow(d) > 0) {return(d[["dataset"]])} else {return("")}
   })
   
   output$tmp_dataset<-  renderUI({
+    #browser()
     selectInput(inputId = ns("dataset"),
                 label = "Choose one or more survey(s)",
-                choices = sort(unlist(unique(datasets()))),
+                choices = sort(unique(datasets())),
                 selectize = TRUE,
                 multiple = TRUE)
   })

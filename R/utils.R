@@ -26,7 +26,6 @@ plot_lines_weighted <- function(data,
                                 line_size = 1.8
                                 ) 
   {
-  
   # Adjust scale according to indicator
   if (stringr::str_detect(unique(data$indicator), "^egra")) {
     y_scale <- ggplot2::scale_y_continuous(limits = c(0, 100))
@@ -165,9 +164,15 @@ plot_map <- function(data,
   
   # Adjust scale according to indicator
   if (stringr::str_detect(unique(data$indicator), "^egra") & !is.na(unique(data$indicator))) {
-    fill_scale <- ggplot2::scale_fill_viridis_c(limits = c(0, 100), guide = FALSE)
+    #fill_scale <- ggplot2::scale_fill_viridis_c(limits = c(0, 100), guide = FALSE)
+    fill_scale <- ggplot2::scale_fill_gradientn(colours = c("#002f54", "#009CA7", "#F05123"),
+                                                limits = c(0, 100), 
+                                                guide = FALSE,)
   } else {
-    fill_scale <- ggplot2::scale_fill_viridis_c(limits = c(0, 1), guide = FALSE)
+    #fill_scale <- ggplot2::scale_fill_viridis_c(limits = c(0, 1), guide = FALSE)
+    fill_scale <- ggplot2::scale_fill_gradientn(colours = c("#002f54", "#009CA7", "#F05123"),
+                                                limits = c(0, 1), 
+                                                guide = FALSE,)
   }
   
   p <- ggplot2::ggplot(data) +
