@@ -67,7 +67,6 @@ mod_province_visuals_server <- function(input,
   })
   
   output$warning_message <- renderText({
-    # TODO: GET CONTACT EMAIL FROM KOEN
     if (nrow(df()) == 0) {"No data available. Please make a new selection or contact Koen M. Geven at kgeven@worldbank.org"}
   })
   

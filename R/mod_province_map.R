@@ -40,12 +40,6 @@ mod_province_map_server <- function(input,
   ns <- session$ns
   
   df <- reactive({
-    # gender_selection <- if(selection_vars$gender()) {
-    #   c("Boy", "Girl")
-    # } else {
-    #   "Both"
-    # }
-    
     out <- dplyr::filter(pakeduc_province_weighted,
                          indicator == !!selection_vars$indicator(),
                          #gender %in% !!gender_selection,

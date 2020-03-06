@@ -97,6 +97,12 @@ plot_lines <- function(data,
     y_scale <- ggplot2::scale_y_continuous(limits = c(0, 1), labels = scales::percent)
   }
   
+  # TO account for ggiraph bug
+  ## https://github.com/davidgohel/ggiraph/issues/31
+  shps <- setNames( c(0, 1, 2, 5, 6, 15, 16), c("Weighted mix","aser", "hies", "pslm",
+                                            "mics", "dhs", "egra"))
+  
+  
   p <- ggplot2::ggplot(data, ggplot2::aes(x = {{x}}, 
                                           y = {{y}}, 
                                           color = {{color}},
@@ -108,8 +114,10 @@ plot_lines <- function(data,
                                     linetype = {{dataset}}),
                        size = ggplot2::rel(line_size),
                        alpha = .6 ) +
-    ggiraph::geom_point_interactive(ggplot2::aes(shape = {{dataset}}),
-                                    size = ggplot2::rel(point_size), alpha = .6) +
+    # ggiraph::geom_point_interactive(ggplot2::aes(shape = {{dataset}}),
+    #                                 size = ggplot2::rel(point_size), alpha = .6) +
+    ggiraph::geom_point_interactive(size = ggplot2::rel(point_size), alpha = .6) +
+    ggplot2::scale_shape_manual(values = shps) +
     y_scale +
     ggplot2::scale_x_continuous(breaks = integer_breaks()) +
     ggthemes::scale_color_colorblind() +
@@ -121,7 +129,7 @@ plot_lines <- function(data,
     ggplot2::labs(
       x = "",
       y = ""
-    ) 
+    )
   
   return(p)
 }

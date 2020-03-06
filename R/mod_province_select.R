@@ -36,42 +36,24 @@ mod_province_select_ui <- function(id){
     checkboxInput(inputId = ns("gender"),
                   label = "Disaggregate by gender",
                   value = FALSE),
-    selectInput(inputId = ns("dataset"),
-                label = "Choose one or more survey(s)",
-                choices = sort(unique(pakeduc_province[["dataset"]])),
-                selectize = TRUE,
-                #selected = c("aser"),
-                multiple = TRUE),
+    # Dynamically chooses dataset based on inputs
+    uiOutput(ns("tmp_dataset")),
     # Dynamically chooses year based on inputs
     uiOutput(ns("tmp_year")),
     tags$h4("Data sources"),
     tags$ul(
       tags$li(tags$a("ASER", href = "http://aserpakistan.org/index.php"),
-              ": The Annual Status of Education Report is a citizen-led; household-based
-              survey that aims to provide reliable estimates on the schooling status of
-              children aged 3-16 years residing in all rural and several urban districts
-              of Pakistan. "),
-      tags$li(tags$a("HIES", href = "http://www.pbs.gov.pk/content/household-integrated-economic-survey-hies-2015-16"), 
-              ": The Household Integrated Economic Survey implemented by the Pakistan Bureau of Statistics provides information
-              on household income, savings, liabilities, and consumption expenditure, and social indicators at national 
-              and provincial levels. "),
-      tags$li(tags$a("PSLM", href ="http://www.pbs.gov.pk/content/pakistan-social-and-living-standards-measurement"),
-              ": The Pakistan Social and Living Standards Measurement (PSLM) is a household survey that provides social
-              and economic indicators, which is representative at provincial and district levels. It includes survey 
-              modules on education, health, employment, household assets and amenities, income and expenditure, population
-              welfare, water supply and sanitation."),
-      tags$li(tags$a("MICS", href ="http://www.bos.gop.pk/mics"),
-              ": The Multiple Indicator Cluster Survey is a multipurpose household survey implemented on a provincial level
-              basis, and is representative at district level. The MICS provides data to track poverty, education and health
-              indicators."),
+              ": The Annual Status of Education Report is a citizen-led; household-based survey, led by ITA. "),
       tags$li(tags$a("DHS",  href ="https://dhsprogram.com/what-we-do/survey/survey-display-523.cfm"),
-              ": The Pakistan Demographic and Health Survey is a household survey implemented by the National Institute of
-              Population Studies. DHS provides internationally standardized indicators of demographic and health indicators.
-              The results from this survey are representative at the provincial and district levels."),
+              ": The Pakistan Demographic and Health Survey is a household survey implemented by the National Institute of Population Studies."),
       tags$li(tags$a("EGRA", href ="https://www.usaid.gov/news-information/videos/early-grade-reading-assessment-egra-extra-mile-better-journey"),
-              ": EGRA is an individually administered assessment tool that measures the foundational literacy skills that readers need before they
-              can read, such as letter recognition, and oral reading fluency, as well as basic reading comprehension. The Pakistan EGRA survey was
-              administered as part of a USAID funded reading project, providing baseline, midline and end-line data.")
+              ": EGRA is an individually administered assessment tool that measures foundational literacy skills, which has been administered as part of USAID’s Pakistan Reading Project."),
+      tags$li(tags$a("HIES", href = "http://www.pbs.gov.pk/content/household-integrated-economic-survey-hies-2015-16"), 
+              ": The Household Integrated Economic Survey is a household survey, representative at the provincial level, and led by the Pakistan Bureau of Statistics."),
+      tags$li(tags$a("MICS", href ="http://www.bos.gop.pk/mics"),
+              ": The Multiple Indicator Cluster Survey is a multipurpose household survey implemented on a provincial level basis, and is representative at district level."),
+      tags$li(tags$a("PSLM", href ="http://www.pbs.gov.pk/content/pakistan-social-and-living-standards-measurement"),
+              ": The Pakistan Social and Living Standards Measurement (PSLM) is another household survey, representative at the district level, and led by the Pakistan Bureau of Statistics.")
     )
     
   )
@@ -89,59 +71,58 @@ mod_province_select_server <- function(input, output, session){
   # Used this solution to unhide uiOutput()
   # https://stackoverflow.com/questions/36613018/r-shiny-uioutput-not-rendering-inside-menuitem
   output$tmp_year <- renderUI({})
-  outputOptions(output, "tmp_year", suspendWhenHidden = FALSE)
+  outputOptions(output, "tmp_year",    suspendWhenHidden = FALSE)
+  
+  output$tmp_dataset <- renderUI({})
+  outputOptions(output, "tmp_dataset", suspendWhenHidden = FALSE)
   
   province <- reactive({
     dplyr::filter(pakeduc_province, province %in% input$province)
+  })
+  
+  # Only display datasets based on inputs for non-weighted
+  datasets <- reactive({
+    
+    g <- ifelse(input$gender, c("Boy","Girl"), "Both")
+    
+    d <- pakeduc_province[which(pakeduc_province$province %in% input$province &
+                                  pakeduc_province$indicator == input$indicator &
+                                  !is.na(pakeduc_province$point_estimate) &
+                                pakeduc_province$gender %in% g), "dataset"]
+
+    ifelse(nrow(d > 0), d, "")
+  })
+  
+  output$tmp_dataset<-  renderUI({
+    selectInput(inputId = ns("dataset"),
+                label = "Choose one or more survey(s)",
+                choices = sort(unlist(unique(datasets()))),
+                selectize = TRUE,
+                multiple = TRUE)
   })
   
   # Only display years based on inputs for either weighted or non-weighted
   years <- reactive({
     g <- ifelse(input$gender, c("Boy","Girl"), "Both")
     
-    if(is.null(input$dataset)){
-
-      pakeduc_province_weighted[which(pakeduc_province_weighted$province %in% input$province & 
+    # Assuming that years only effect map
+    pakeduc_province_weighted[which(pakeduc_province_weighted$province %in% input$province & 
                                pakeduc_province_weighted$indicator == input$indicator &
                                !is.na(pakeduc_province_weighted$point_estimate) &
                                pakeduc_province_weighted$gender %in% g), "year"]
-    } 
-    else{
-      pakeduc_province[which(pakeduc_province$province %in% input$province & 
-                               pakeduc_province$indicator == input$indicator &
-                               input$dataset %in% pakeduc_province$dataset &
-                               !is.na(pakeduc_province$point_estimate) &
-                               pakeduc_province %in% g), "year"]
-    }
   })
   
   output$tmp_year <- 
-    
-    # TODO: HAVE TO INSTALL shinyWidgets
     renderUI({
       
       shinyWidgets::sliderTextInput(inputId  = ns("year"), 
-                                    label    = "Select a year", 
+                                    label    = "Select a year",
                                     choices  = sort(unlist(unique(years()))),
                                     selected = max(years(), na.rm = TRUE),
                                     to_min   = min(years(), na.rm = TRUE),
                                     to_max   = max(years(), na.rm = TRUE) 
                                                 )
-          # sliderInput(inputId = ns("year"),
-          #       label = "Select a year",
-          #       min = min(years(), na.rm = TRUE),
-          #       max = max(years(), na.rm = TRUE),
-          #       value = max(years(), na.rm = TRUE),
-          #       sep = "")
   })
-  
-  # observeEvent(province(), {
-  #   provinces <- unique(province()$province)
-  #   # choices_district <- unique(pakeduc_district$dist_nm[pakeduc_district$province %in% provinces])
-  #   updateSelectizeInput(session, "province",
-  #                        choices = choices_district,
-  #                        selected = input$district)
-  # })
   
   return(
     list(
