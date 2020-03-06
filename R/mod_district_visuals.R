@@ -68,7 +68,6 @@ mod_district_visuals_server <- function(input,
   })
   
   output$warning_message <- renderText({
-    # TODO: GET CONTACT EMAIL FROM KOEN
     if (nrow(df()) == 0) {"No data available. Please make a new selection or contact Koen M. Geven at kgeven@worldbank.org"}
   })
   
@@ -107,7 +106,12 @@ mod_district_visuals_server <- function(input,
                                gender = gender,
                                year = year,
                                tooltip_value = pe_percent) +
-        ggplot2::facet_wrap(~dist_nm, nrow = facet_rows)
+        ggplot2::facet_wrap(~dist_nm, nrow = facet_rows) +
+        ggplot2::theme(
+          strip.text       = ggplot2::element_text(color = "#006350", family = "Arial",
+                                                   face = "bold", size = 40),
+          strip.background = ggplot2::element_rect(color = "white", fill = "white")
+        )
         
     }
     
@@ -124,8 +128,12 @@ mod_district_visuals_server <- function(input,
                       year = year,
                       tooltip_value = pe_percent) +
         ggplot2::facet_wrap(~dist_nm, nrow = facet_rows, 
-                            labeller = ggplot2::labeller(indicator = indicator_choices_country_inv))
-      
+                            labeller = ggplot2::labeller(indicator = indicator_choices_country_inv)) +
+        ggplot2::theme(
+          strip.text       = ggplot2::element_text(color = "#006350", family = "Arial",
+                                                   face = "bold", size = 40),
+          strip.background = ggplot2::element_rect(color = "white", fill = "white")
+        )
     }
     
     #Only return plot if filtered dataframe has rows
