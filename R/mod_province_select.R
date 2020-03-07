@@ -88,7 +88,6 @@ mod_province_select_server <- function(input, output, session){
     d <- pakeduc_province[which(pakeduc_province$province %in% input$province &
                                   pakeduc_province$indicator == input$indicator &
                                   !is.na(pakeduc_province$point_estimate) &
-                                  pakeduc_province$year == input$year,
                                 pakeduc_province$gender %in% g), "dataset"]
 
     ifelse(nrow(d > 0), d, "")
