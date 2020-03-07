@@ -109,7 +109,6 @@ mod_district_select_server <- function(input, output, session){
     d <- pakeduc_district[which(pakeduc_district$province %in% input$province &
                                   pakeduc_district$indicator == input$indicator &
                                   !is.na(pakeduc_district$point_estimate) &
-                                  pakeduc_district$year == input$year,
                                   pakeduc_district$gender %in% g), "dataset"]
     
     ifelse(nrow(d > 0), d, "")
