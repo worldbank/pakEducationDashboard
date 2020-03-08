@@ -64,7 +64,7 @@ pakeduc_province_weighted <- pakeduc_province %>%
   group_by(province, indicator, gender) %>%
   arrange(indicator, province, gender, year) %>%
   mutate(
-    point_estimate = zoo::rollapply(point_estimate, 3, mean, align='center', fill=NA),
+    point_estimate = zoo::rollapply(point_estimate, 3, mean, align='right', fill=NA),
     pe_percent = if_else(stringr::str_detect(indicator, "^egra"), 
                          as.character(round(point_estimate, 1)),
                          sprintf("%.1f%%", point_estimate * 100))
