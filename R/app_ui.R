@@ -3,9 +3,10 @@
 #                             width = "190",
 #                             style = "position: fixed; right: 10px; top: 0px;"))
 
-my_title <- div(img(src="www/logo.png",
+my_title <- img("Data Depot",
+                    src="www/logo_green.png",
                     style="margin-top: -19px; padding-right:5px;padding-bottom:5px", 
-                    height = 63))
+                    height = 63)
 
 #' @import shiny
 app_ui <- function() {
