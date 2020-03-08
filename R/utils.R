@@ -169,13 +169,14 @@ plot_map <- function(data,
   if (stringr::str_detect(unique(data$indicator), "^egra") & !is.na(unique(data$indicator))) {
     #fill_scale <- ggplot2::scale_fill_viridis_c(limits = c(0, 100), guide = FALSE)
     fill_scale <- ggplot2::scale_fill_gradientn(colours = c("#002f54", "#009CA7", "#F05123"),
-                                                limits = c(0, 100), 
-                                                guide = FALSE,)
+                                                limits = c(0, 100),
+                                                breaks = c(0, 25, 50, 75, 100))
   } else {
     #fill_scale <- ggplot2::scale_fill_viridis_c(limits = c(0, 1), guide = FALSE)
     fill_scale <- ggplot2::scale_fill_gradientn(colours = c("#002f54", "#009CA7", "#F05123"),
-                                                limits = c(0, 1), 
-                                                guide = FALSE,)
+                                                limits = c(0, 1),
+                                                breaks = c(0, 0.25, 0.50, 0.75, 1),
+                                                labels = c("0%", "25%", "50%", "75%", "100%"))
   }
   
   p <- ggplot2::ggplot(data) +
@@ -186,6 +187,10 @@ plot_map <- function(data,
                                               data_id = {{data_id}}
     )) +
     fill_scale +
+    ggplot2::theme(
+      legend.background = ggplot2::element_rect(colour = "transparent", fill = "transparent"),
+      legend.box.background = ggplot2::element_rect(colour = "transparent", fill = "transparent")
+    ) +
     ggthemes::theme_map(base_size = font_size) +
     ggplot2::labs(
       fill = ""
