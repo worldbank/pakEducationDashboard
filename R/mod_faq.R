@@ -146,12 +146,16 @@ mod_faq_ui <- function(id){
    tags$h3("Is the data up to date? Are there plans to add more data in the future?"),
    tags$p("Yes, we have integrated the main datasets that we know are available and are actively planning to
           add more data as they become available. If you would like to contribute a relevant dataset to this
-          portal, please email us at Data_Depot_Pakistan@worldbank.org."),
+          portal, please email us at", a("Data_Depot_Pakistan@worldbank.org.", 
+                                         href = "mailto:Data_Depot_Pakistan@worldbank.org")
+          ),
    tags$p("We also plan to add several waves of administrative data to the portal. We will make these available
           as a specific tab on the Punjab province, which we expect to add during 2020."),
    tags$h3("What can I do if I spot an error in the data?"),
    tags$p("We strive to reduce errors as much as possible, although we are sure to have made some errors.
-          Please don’t hesitate to get in touch with our team at Data_Depot_Pakistan@worldbank.org.")
+          Please don’t hesitate to get in touch with our team at", a("Data_Depot_Pakistan@worldbank.org.", 
+                                                                     href = "mailto:Data_Depot_Pakistan@worldbank.org")
+   )
   )
 }
     
