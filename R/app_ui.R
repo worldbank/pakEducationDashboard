@@ -10,11 +10,11 @@ my_title <- img(src="www/logo_green.png",
 #' @import shiny
 app_ui <- function() {
   tagList(
-    
     # Leave this function for adding external resources
     golem_add_external_resources(),
     shinyUI(
       navbarPage(title = my_title,
+                 windowTitle = "Data Depot",
       theme = shinythemes::shinytheme("flatly"),
       tabPanel("Country level",
                sidebarPanel(mod_country_select_ui("country_select_ui_1")),
