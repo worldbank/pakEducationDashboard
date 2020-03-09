@@ -124,6 +124,12 @@ mod_faq_ui <- function(id){
    tags$p("After data cleaning and aggregation of the data on key indicators from different sources, we
           estimated means and standard errors using survey weights to correct for the sampling design. We
           carefully followed the documentation of each individual survey."),
+   tags$h3("How is the weighted mix calculated?"),
+   tags$p("The main estimates shown are moving averages of three years, which smoothen
+          stark differences in estimates between years due to random error (e.g. sampling).
+          When multiple data points for a given year are available, the main estimate
+          presented is the simple mean that is weighted by the inverse of the standard errors.
+          This is a common weighting technique to give more weight to more precise estimates."),
     tags$h3("Why is the district the lowest level of aggregation available?"),
     tags$p("None of the surveys currently included are representative at lower levels than districts. As we are
           adding administrative datasets to the portal, we are trying to make these available at Tehsil and
