@@ -94,7 +94,6 @@ mod_province_select_server <- function(input, output, session){
   })
   
   output$tmp_dataset<-  renderUI({
-    #browser()
     selectInput(inputId = ns("dataset"),
                 label = "Choose one or more survey(s)",
                 choices = sort(unique(datasets())),
