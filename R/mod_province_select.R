@@ -39,7 +39,7 @@ mod_province_select_ui <- function(id){
     # Dynamically chooses dataset based on inputs
     uiOutput(ns("tmp_dataset")),
     # Dynamically chooses year based on inputs
-    uiOutput(ns("tmp_year")),
+    #uiOutput(ns("tmp_year")),
     tags$h4("Data sources"),
     tags$ul(
       tags$li(tags$a("ASER", href = "http://aserpakistan.org/index.php"),
