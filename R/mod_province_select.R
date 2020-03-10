@@ -112,13 +112,18 @@ mod_province_select_server <- function(input, output, session){
   output$tmp_year <- 
     renderUI({
       
-      shinyWidgets::sliderTextInput(inputId  = ns("year"), 
-                                    label    = "Select a year",
-                                    choices  = sort(unlist(unique(years()))),
-                                    selected = max(years(), na.rm = TRUE),
-                                    to_min   = min(years(), na.rm = TRUE),
-                                    to_max   = max(years(), na.rm = TRUE) 
-                                                )
+      if(nrow(years()) > 0){
+        shinyWidgets::sliderTextInput(inputId  = ns("year"), 
+                                      label    = "Select a year",
+                                      choices  = sort(unlist(unique(years()))),
+                                      selected = max(years(), na.rm = TRUE),
+                                      to_min   = min(years(), na.rm = TRUE),
+                                      to_max   = max(years(), na.rm = TRUE) 
+        )
+      }
+      else{
+        tags$p("Please choose another indicator.", style = "color: red;")
+      }
   })
   
   return(
