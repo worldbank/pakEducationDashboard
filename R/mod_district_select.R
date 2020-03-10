@@ -74,8 +74,8 @@ mod_district_select_server <- function(input, output, session){
   
   # Used this solution to unhide uiOutput()
   # https://stackoverflow.com/questions/36613018/r-shiny-uioutput-not-rendering-inside-menuitem
-  output$tmp_year <- renderUI({})
-  outputOptions(output, "tmp_year",    suspendWhenHidden = FALSE)
+  # output$tmp_year <- renderUI({})
+  # outputOptions(output, "tmp_year",    suspendWhenHidden = FALSE)
   
   output$tmp_dataset <- renderUI({})
   outputOptions(output, "tmp_dataset", suspendWhenHidden = FALSE)
@@ -85,22 +85,22 @@ mod_district_select_server <- function(input, output, session){
   })
   
   # Only display years based on inputs for either weighted or non-weighted
-  years <- reactive({
-          pakeduc_district_weighted[which(pakeduc_district_weighted$province %in% input$province & 
-                                        pakeduc_district_weighted$indicator == input$indicator &
-                                        !is.na(pakeduc_district_weighted$point_estimate) &
-                                        pakeduc_district_weighted$dist_nm %in% input$district), "year"]
-  })
-  
-  output$tmp_year <- renderUI({
-    shinyWidgets::sliderTextInput(inputId  = ns("year"), 
-                                  label    = "Select a year", 
-                                  choices  = sort(unlist(unique(years()))),
-                                  selected = max(years(), na.rm = TRUE),
-                                  to_min   = min(years(), na.rm = TRUE),
-                                  to_max   = max(years(), na.rm = TRUE) 
-    )
-  })
+  # years <- reactive({
+  #         pakeduc_district_weighted[which(pakeduc_district_weighted$province %in% input$province & 
+  #                                       pakeduc_district_weighted$indicator == input$indicator &
+  #                                       !is.na(pakeduc_district_weighted$point_estimate) &
+  #                                       pakeduc_district_weighted$dist_nm %in% input$district), "year"]
+  # })
+  # 
+  # output$tmp_year <- renderUI({
+  #   shinyWidgets::sliderTextInput(inputId  = ns("year"), 
+  #                                 label    = "Select a year", 
+  #                                 choices  = sort(unlist(unique(years()))),
+  #                                 selected = max(years(), na.rm = TRUE),
+  #                                 to_min   = min(years(), na.rm = TRUE),
+  #                                 to_max   = max(years(), na.rm = TRUE) 
+  #   )
+  # })
   
   # Only display datasets based on inputs for non-weighted
   datasets <- reactive({
@@ -136,8 +136,8 @@ mod_district_select_server <- function(input, output, session){
       gender        = reactive({ input$gender }),
       dataset       = reactive({ input$dataset }),
       province      = reactive({ input$province }),
-      district      = reactive({ input$district }),
-      year          = reactive({ input$year })
+      district      = reactive({ input$district })#,
+      #year          = reactive({ input$year })
     )
   )
 }

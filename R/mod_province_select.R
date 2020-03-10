@@ -70,8 +70,8 @@ mod_province_select_server <- function(input, output, session){
   
   # Used this solution to unhide uiOutput()
   # https://stackoverflow.com/questions/36613018/r-shiny-uioutput-not-rendering-inside-menuitem
-  output$tmp_year <- renderUI({})
-  outputOptions(output, "tmp_year",    suspendWhenHidden = FALSE)
+  #output$tmp_year <- renderUI({})
+  #outputOptions(output, "tmp_year",    suspendWhenHidden = FALSE)
   
   output$tmp_dataset <- renderUI({})
   outputOptions(output, "tmp_dataset", suspendWhenHidden = FALSE)
@@ -102,32 +102,32 @@ mod_province_select_server <- function(input, output, session){
   })
   
   # Only display years based on inputs for either weighted or non-weighted
-  years <- reactive({
-    # Assuming that years only effect map
-    pakeduc_province_weighted[which(pakeduc_province_weighted$province %in% input$province & 
-                               pakeduc_province_weighted$indicator == input$indicator &
-                               !is.na(pakeduc_province_weighted$point_estimate)), "year"]
-  })
+  # years <- reactive({
+  #   # Assuming that years only effect map
+  #   pakeduc_province_weighted[which(pakeduc_province_weighted$province %in% input$province & 
+  #                              pakeduc_province_weighted$indicator == input$indicator &
+  #                              !is.na(pakeduc_province_weighted$point_estimate)), "year"]
+  # })
   
-  output$tmp_year <- 
-    renderUI({
-      
-      shinyWidgets::sliderTextInput(inputId  = ns("year"), 
-                                    label    = "Select a year",
-                                    choices  = sort(unlist(unique(years()))),
-                                    selected = max(years(), na.rm = TRUE),
-                                    to_min   = min(years(), na.rm = TRUE),
-                                    to_max   = max(years(), na.rm = TRUE) 
-                                                )
-  })
+  # output$tmp_year <- 
+  #   renderUI({
+  #     
+  #     shinyWidgets::sliderTextInput(inputId  = ns("year"), 
+  #                                   label    = "Select a year",
+  #                                   choices  = sort(unlist(unique(years()))),
+  #                                   selected = max(years(), na.rm = TRUE),
+  #                                   to_min   = min(years(), na.rm = TRUE),
+  #                                   to_max   = max(years(), na.rm = TRUE) 
+  #                                               )
+  # })
   
   return(
     list(
       indicator     = reactive({ input$indicator }),
       gender        = reactive({ input$gender }),
       dataset       = reactive({ input$dataset }),
-      province      = reactive({ input$province }),
-      year          = reactive({ input$year })
+      province      = reactive({ input$province })#,
+      #year          = reactive({ input$year })
     )
   )
 }
