@@ -124,6 +124,8 @@ create_weighted <- function(df,
   
   out <- df %>%
     filter(!is.na(point_estimate)) %>%
+    # aser data not to be used for these two indicators
+    # considered unreliable
     filter(!(dataset == "aser" & (str_detect(indicator, "^in_school") | 
                                     str_detect(indicator, "^share_private")))) %>%
     mutate(
