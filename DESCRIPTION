@@ -26,8 +26,10 @@ Imports:
     sf (>= 0.8.0),
     ggiraph,
     shinycssloaders,
-    shinyWidgets
-RoxygenNote: 7.0.2
+    shinyWidgets,
+    shinyjs,
+    config
+RoxygenNote: 7.1.0
 Suggests: 
     testthat
 URL: https://github.com/tonyfujs/pakEducationDashboard
