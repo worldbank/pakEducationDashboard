@@ -33,19 +33,10 @@ mod_country_select_ui <- function(id){
     # Dynamically chooses dataset based on inputs
     uiOutput(ns("tmp_dataset")),
     
-    tags$ul(
-      tags$li(tags$a("ASER", href = "http://aserpakistan.org/index.php"),
-              ": The Annual Status of Education Report is a citizen-led; household-based survey, led by ITA. "),
-      tags$li(tags$a("DHS",  href ="https://dhsprogram.com/what-we-do/survey/survey-display-523.cfm"),
-              ": The Pakistan Demographic and Health Survey is a household survey implemented by the National Institute of Population Studies."),
-      tags$li(tags$a("EGRA", href ="https://www.usaid.gov/news-information/videos/early-grade-reading-assessment-egra-extra-mile-better-journey"),
-              ": EGRA is an individually administered assessment tool that measures foundational literacy skills, which has been administered as part of USAID’s Pakistan Reading Project."),
-      tags$li(tags$a("HIES", href = "http://www.pbs.gov.pk/content/household-integrated-economic-survey-hies-2015-16"), 
-              ": The Household Integrated Economic Survey is a household survey, representative at the provincial level, and led by the Pakistan Bureau of Statistics."),
-      tags$li(tags$a("MICS", href ="http://www.bos.gop.pk/mics"),
-              ": The Multiple Indicator Cluster Survey is a multipurpose household survey implemented on a provincial level basis, and is representative at district level."),
-      tags$li(tags$a("PSLM", href ="http://www.pbs.gov.pk/content/pakistan-social-and-living-standards-measurement"),
-              ": The Pakistan Social and Living Standards Measurement (PSLM) is another household survey, representative at the district level, and led by the Pakistan Bureau of Statistics.")
+    # Hide and Show button for data sources description
+    actionButton(ns("hideshow"), "Survey Descriptions"),
+    shinyjs::hidden(
+      uiOutput(ns("data_src_description"))
     )
   )
 }
@@ -73,13 +64,21 @@ mod_country_select_server <- function(input, output, session){
   
   output$tmp_dataset<-  renderUI({
     
-    #browser()
     selectInput(inputId = ns("dataset"),
                 label = "Choose one or more survey(s)",
                 choices = sort(unique(datasets())),
                 selectize = TRUE,
                 multiple = TRUE)
   })
+  
+  output$data_src_description <- renderUI({data_sources_description})
+  # if clciked show survey descriptions
+  observeEvent(
+    input$hideshow,
+    {
+      shinyjs::toggle("data_src_description", anim = TRUE)
+    }
+  )
   
   return(
     list(

@@ -12,6 +12,7 @@ app_ui <- function() {
   tagList(
     # Leave this function for adding external resources
     golem_add_external_resources(),
+    shinyjs::useShinyjs(),
     shinyUI(
       navbarPage(title = my_title,
                  windowTitle = "Data Depot",
