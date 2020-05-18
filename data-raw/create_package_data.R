@@ -2,6 +2,23 @@ library(tidyverse)
 library(sf)
 source("./data-raw/cleaning_scripts/utils.R")
 
+
+# Create indicators -------------------------------------------------------
+varmap <- read_variable_map()
+indicator_choices_country <- create_indicator_choices(df = varmap, level = "country")
+indicator_choices_province <- create_indicator_choices(df = varmap, level = "province")
+indicator_choices_district <- create_indicator_choices(df = varmap, level = "district",
+                                                       labels_order =  c("reading_9_11",
+                                                                         "in_school_6_10",
+                                                                         "in_school_6_15",
+                                                                         "in_school_11_16",
+                                                                         "division_9_11",
+                                                                         "literacy_12_18",
+                                                                         "numeracy_12_18",
+                                                                         "share_private_6_10", 
+                                                                         "share_private_11_16"))
+
+
 # Create package data using a series of scripts ---------------------------
 
 # Create country level data
@@ -18,9 +35,9 @@ source("./data-raw/cleaning_scripts/geodata.R")
 # Add labels --------------------------------------------------------------
 
 # Read Indicator Description df
-df <- readxl::read_excel("./data-raw/data_input/pak_indicator_descriptions/pak_indicator_descriptions.xlsx")
-df <- janitor::clean_names(df)
-df <- janitor::remove_empty(df, which = "rows")
+df <- varmap %>%
+  janitor::clean_names() %>%
+  janitor::remove_empty(which = "rows")
 
 # Select relevant columns & remove white spaces
 df <- df %>%
@@ -43,7 +60,7 @@ pakeduc_province           <- pakeduc_province %>% left_join(df, by = c("indicat
 pakeduc_province_weighted  <- pakeduc_province_weighted %>% left_join(df, by = c("indicator" = "variable_name"))
 
 # Data sources descrition
-
+library(shiny)
 data_sources_description <- tagList(
   tags$h4("Data sources"),
   tags$ul(
