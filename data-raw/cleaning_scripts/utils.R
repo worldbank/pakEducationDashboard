@@ -1,22 +1,3 @@
-
-
-# Label and order indicators ----------------------------------------------
-prepare_indicator_choices <- function(choices,
-                                      expected_choices,
-                                      choices_labels,
-                                      labels_order) 
-{
-  assertthat::assert_that(all.equal(sort(choices), sort(expected_choices)))
-  
-  choices <- expected_choices
-  names(choices) <- choices_labels
-  
-  choices <- choices[labels_order]
-  
-  return(choices)
-}
-
-
 # Combine sf geometries ---------------------------------------------------
 combine_sf <- function(input_df, column_name, row_values, output_value){
   
@@ -48,67 +29,82 @@ combine_sf <- function(input_df, column_name, row_values, output_value){
   return(rbind(output_df, sf::st_as_sf(combined_df)))
 }
 
-# List of indicators and labels -------------------------------------------
-# Read Indicator Description df
-df <- readxl::read_excel("./data-raw/data_input/pak_indicator_descriptions/pak_indicator_descriptions.xlsx")
-df <- janitor::clean_names(df)
-df <- janitor::remove_empty(df, which = "rows")
+#' read_variable_map
+#'
+#' @param ddh_link character: Link to variable map file on DDH
+#'
+#' @return data.frame
+#' @export
+#'
+read_variable_map <- function(ddh_link = "https://development-data-hub-s3-public.s3.amazonaws.com/ddhfiles/936441/dd_pak_varmap.xlsx") {
+  httr::GET(ddh_link, httr::write_disk(tmp <- tempfile(fileext = ".xlsx")))
+  
+  df <- readxl::read_excel(tmp, sheet = "Varmap", skip = 1)
+  df <- janitor::clean_names(df)
+  df <- janitor::remove_empty(df, which = "rows")
+  df <- janitor::remove_empty(df, which = "cols")
+}
 
-# Select relevant columns & remove white spaces
-df <- df %>%
-  dplyr::select(variable_name, indicator_definition, label) %>%
-  dplyr::mutate(
-    variable_name = trimws(variable_name)
-  )
 
-# Handle country / province level indicators
-expected_choices <- c("reading_9_11",
-                      "in_school_6_10",
-                      "in_school_11_16",
-                      "division_9_11",
-                      "literacy_12_18",
-                      "numeracy_12_18",
-                      "share_private_6_10",
-                      "share_private_11_16",
-                      "egra_clpm",
-                      "egra_clpm_g3",
-                      "egra_clpm_g5",
-                      "egra_orf",
-                      "egra_orf_g3",
-                      "egra_orf_g5")
+#' create_indicator_choices
+#' Create a vector of valid choices from the Variable map file stored in DDH
+#' 
+#' @param df data.frame: Varmap sheet of the DDH file
+#' @param level character: Regional level for which to extract the list of indicators
+#'
+#' @return named character vector
+#' @export
+#'
 
-tmp <- df %>%
-  dplyr::filter(variable_name %in% expected_choices)
-assertthat::are_equal(length(tmp$variable_name), length(expected_choices))
+create_indicator_choices <- function(df, 
+                                     level = c("country", "province","district"),
+                                     labels_order = c("reading_9_11",
+                                                      "in_school_6_10",
+                                                      "in_school_6_15",
+                                                      "in_school_11_16",
+                                                      "division_9_11",
+                                                      "literacy_12_18",
+                                                      "numeracy_12_18",
+                                                      "share_private_6_10",
+                                                      "share_private_11_16",
+                                                      "egra_clpm",
+                                                      "egra_clpm_g3",
+                                                      "egra_clpm_g5",
+                                                      "egra_orf",
+                                                      "egra_orf_g3",
+                                                      "egra_orf_g5")) 
+{
+  values <- df[df[[level]] == 1, c("variable_name", "label")]
+  values <- values[!is.na(values$variable_name), ]
+  values <- values[!values$variable_name %in% c("year", "dataset", "country", "province", "dist_key", "dist_nm"), ]
+  values[] <- lapply(values, stringr::str_squish) 
+  values <- values[!stringr::str_detect(tolower(values$variable_name), "_se$"),]
+  values <- values[!stringr::str_detect(tolower(values$variable_name), "_boys|_girls"),]
+  values <- unique(values)
+  #values <- values[order(values$variable_name),]
+  out <- values$variable_name
+  assertthat::assert_that(all.equal(sort(out), sort(labels_order))) # CHECk that all expected indicators are here
+  names(out) <- values$label
+  
+  out <- out[order(match(out, labels_order))]
+  
+  return(out)
+}
 
-labels_lkup <- tmp$label
-names(labels_lkup) <- tmp$variable_name
 
-choice_labels <- unname(labels_lkup[expected_choices])
 
-labels_order <- choice_labels # Order is defined by expected_choices vector
 
-# Handle district level indicators
-expected_choices_district = c("reading_9_11",
-                              "in_school_6_10",
-                              "in_school_11_16",
-                              "division_9_11",
-                              "literacy_12_18",
-                              "numeracy_12_18",
-                              "share_private_6_10", 
-                              "share_private_11_16")
 
-tmp <- df %>%
-  dplyr::filter(variable_name %in% expected_choices_district)
-assertthat::are_equal(length(tmp$variable_name), length(expected_choices_district))
-
-labels_lkup <- tmp$label
-names(labels_lkup) <- tmp$variable_name
-
-choice_labels_district <- unname(labels_lkup[expected_choices_district])
-
-labels_order_district <- choice_labels_district # Order is defined by expected_choices_district vector
-
+#' created_weighted
+#' Created weighted average
+#' 
+#' @param df 
+#' @param selection 
+#' @param ... 
+#'
+#' @return
+#' @export
+#'
 create_weighted <- function(df,
                             selection = c("year",
                                           "country",
