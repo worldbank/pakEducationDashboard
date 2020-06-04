@@ -33,8 +33,13 @@ mod_province_select_ui <- function(id){
                 multiple = TRUE,
                 selectize = TRUE,
                 selected = sort(unique(pakeduc_province[["province"]]))),
+    # Trigger gender disaggregation
     checkboxInput(inputId = ns("gender"),
                   label = "Disaggregate by gender",
+                  value = FALSE),
+    # Trigger display of weighted average trend line
+    checkboxInput(inputId = ns("weighted_mix"),
+                  label = "Show weighted average trend line",
                   value = FALSE),
     # Dynamically chooses dataset based on inputs
     uiOutput(ns("tmp_dataset")),
@@ -86,7 +91,8 @@ mod_province_select_server <- function(input, output, session){
                 label = "Choose one or more survey(s)",
                 choices = sort(unique(datasets())),
                 selectize = TRUE,
-                multiple = TRUE)
+                multiple = TRUE,
+                selected = c("pslm", "aser", "hies", "egra", "dhs"))
   })
   
   # Only display years based on inputs for either weighted or non-weighted
@@ -122,7 +128,8 @@ mod_province_select_server <- function(input, output, session){
       indicator     = reactive({ input$indicator }),
       gender        = reactive({ input$gender }),
       dataset       = reactive({ input$dataset }),
-      province      = reactive({ input$province })#,
+      province      = reactive({ input$province }),
+      weighted_mix  = reactive({ input$weighted_mix})#,
       #year          = reactive({ input$year })
     )
   )

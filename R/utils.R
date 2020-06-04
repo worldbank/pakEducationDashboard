@@ -64,9 +64,10 @@ plot_lines_weighted <- function(data,
 }
 
 #' plot_lines
-#' Common ggplot layers for the line plots using non-weighted data
+#' Common ggplot layers for the line plots
 #' 
 #' @param data data.frame: The dataset to be plotted
+#' @param wght_data data.frame: The dataset containing weighted-mix data
 #' @param x object: Variable to be mapped to x aesthetic
 #' @param y object: Variable to be mapped to y aesthetic
 #' @param color object: Variable to be mapped to color aesthetic
@@ -79,6 +80,7 @@ plot_lines_weighted <- function(data,
 #' @export
 #'
 plot_lines <- function(data,
+                       wght_data = NULL,
                        x,
                        y,
                        color,
@@ -105,7 +107,7 @@ plot_lines <- function(data,
   # TO account for ggiraph bug
   ## https://github.com/davidgohel/ggiraph/issues/31
   shps <- setNames( c(0, 1, 2, 5, 6, 15, 16), c("Weighted mix","aser", "hies", "pslm",
-                                            "mics", "dhs", "egra"))
+                                                "mics", "dhs", "egra"))
   
   p <- ggplot2::ggplot(data, ggplot2::aes(x = {{x}}, 
                                           y = {{y}}, 
@@ -113,14 +115,29 @@ plot_lines <- function(data,
                                           tooltip = paste("Value:", {{tooltip_value}},
                                                           "<br />Year:", {{year}},
                                                           "<br />Dataset:", {{dataset}},
-                                                          "<br />Gender:", {{gender}}))) +
-    ggplot2::geom_line(ggplot2::aes(group = interaction({{dataset}}, {{gender}}), 
-                                    linetype = {{dataset}}),
-                       size = ggplot2::rel(line_size),
-                       alpha = .6 ) +
-    # ggiraph::geom_point_interactive(ggplot2::aes(shape = {{dataset}}),
-    #                                 size = ggplot2::rel(point_size), alpha = .6) +
-    ggiraph::geom_point_interactive(size = ggplot2::rel(point_size), alpha = .6) +
+                                                          "<br />Gender:", {{gender}}))) 
+  
+  
+  if (!is.null(wght_data)) {
+    p <- p +
+      ggplot2::geom_line(ggplot2::aes(group = interaction({{dataset}}, {{gender}}), 
+                                      linetype = {{dataset}}),
+                         color = "grey",
+                         size = ggplot2::rel(line_size),
+                         alpha = .6 ) +
+      ggiraph::geom_point_interactive(size = ggplot2::rel(point_size), 
+                                      color = "grey",
+                                      alpha = .6)
+  } else {
+    p <- p +
+      ggplot2::geom_line(ggplot2::aes(group = interaction({{dataset}}, {{gender}}), 
+                                      linetype = {{dataset}}),
+                         size = ggplot2::rel(line_size),
+                         alpha = 1 ) +
+      ggiraph::geom_point_interactive(size = ggplot2::rel(point_size), alpha = 1)
+  }
+  
+  p <- p +
     ggplot2::scale_shape_manual(values = shps) +
     y_scale +
     ggplot2::scale_x_continuous(breaks = integer_breaks()) +
@@ -135,6 +152,20 @@ plot_lines <- function(data,
       x = "",
       y = ""
     ) 
+  
+  if (!is.null(wght_data)) {
+    p <- p +
+      ggplot2::geom_line(data = wght_data,
+                         ggplot2::aes(group = interaction({{dataset}}, {{gender}})),
+                         #color = {{color}}),
+                         size = ggplot2::rel(line_size),
+                         alpha = 1) +
+      ggiraph::geom_point_interactive(data = wght_data,
+                                      #ggplot2::aes(color = {{color}}),
+                                      size = ggplot2::rel(point_size), 
+                                      alpha = 1)
+    
+  }
   
   return(p)
 }

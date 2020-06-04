@@ -46,30 +46,7 @@ mod_country_visuals_server <- function(input,
     names(indicator_choices_country)[indicator_choices_country == selection_vars$indicator()]
   })
   
-  
-  df <- reactive({
-    
-    gender_selection <- if(selection_vars$gender()) {
-      c("Boy", "Girl")
-    } else {
-      "Both"
-    }
-    
-    dplyr::filter(pakeduc_country_weighted,
-                  indicator %in% !!selection_vars$indicator(),
-                  !is.na(point_estimate),
-                  gender %in% !!gender_selection) 
-  })
-  
-  output$country_ind_description <- renderText({
-    unique(df()$indicator_definition)
-  })
-  
-  output$warning_message <- renderText({
-    # TODO: GET CONTACT EMAIL FROM KOEN
-    if (nrow(df()) == 0) {"No data available. Please make a new selection or contact Koen M. Geven at kgeven@worldbank.org"}
-  })
-  
+  # Non-weighted data
   surveydf <- reactive({
     gender_selection <- if(selection_vars$gender()) {
       c("Boy", "Girl")
@@ -84,24 +61,46 @@ mod_country_visuals_server <- function(input,
                   !is.na(point_estimate)) 
   })
   
+  # Weighted data
   
+  df <- reactive({
+
+    gender_selection <- if(selection_vars$gender()) {
+      c("Boy", "Girl")
+    } else {
+      "Both"
+    }
+
+    dplyr::filter(pakeduc_country_weighted,
+                  indicator %in% !!selection_vars$indicator(),
+                  !is.na(point_estimate),
+                  gender %in% !!gender_selection)
+  })
   
+  output$country_ind_description <- renderText({
+    unique(surveydf()$indicator_definition)
+  })
+  
+  output$warning_message <- renderText({
+    # TODO: GET CONTACT EMAIL FROM KOEN
+    if (nrow(surveydf()) == 0) {"No data available. Please make a new selection or contact Koen M. Geven at kgeven@worldbank.org"}
+  })
+  
+ 
   output$country_plot <- ggiraph::renderggiraph({
     
-    if (nrow(df()) > 0) {
-      p <- plot_lines_weighted(data = df(),
-                               x = year,
-                               y = point_estimate,
-                               color = gender,
-                               dataset = dataset,
-                               gender = gender,
-                               year = year,
-                               tooltip_value = pe_percent) 
+    if (nrow(surveydf()) > 0 & selection_vars$weighted_mix()) {
       
-    }
-    
-    if (nrow(surveydf()) > 0) {
-      # When survey/dataset selected remove Weighted Mix
+      p <- plot_lines(data = surveydf(),
+                      wght_data = df(),
+                      x = year,
+                      y = point_estimate,
+                      color = gender,
+                      dataset = dataset,
+                      gender = gender,
+                      year = year,
+                      tooltip_value = pe_percent)
+    } else {
       p <- plot_lines(data = surveydf(),
                       x = year,
                       y = point_estimate,
@@ -113,7 +112,7 @@ mod_country_visuals_server <- function(input,
     }
     
     #Only return plot if filtered dataframe has rows
-    if(nrow(df()) > 0 || nrow(surveydf()) > 0){
+    if(nrow(surveydf()) > 0) {
       
       ggiraph::girafe(ggobj = p,
                       pointsize = 16,

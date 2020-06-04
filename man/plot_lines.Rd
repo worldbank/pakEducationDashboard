@@ -3,10 +3,11 @@
 \name{plot_lines}
 \alias{plot_lines}
 \title{plot_lines
-Common ggplot layers for the line plots using non-weighted data}
+Common ggplot layers for the line plots}
 \usage{
 plot_lines(
   data,
+  wght_data = NULL,
   x,
   y,
   color,
@@ -21,6 +22,8 @@ plot_lines(
 }
 \arguments{
 \item{data}{data.frame: The dataset to be plotted}
+
+\item{wght_data}{data.frame: The dataset containing weighted-mix data}
 
 \item{x}{object: Variable to be mapped to x aesthetic}
 
@@ -41,5 +44,5 @@ plot_lines(
 }
 \description{
 plot_lines
-Common ggplot layers for the line plots using non-weighted data
+Common ggplot layers for the line plots
 }

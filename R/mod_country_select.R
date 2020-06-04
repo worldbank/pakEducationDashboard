@@ -16,18 +16,20 @@
 mod_country_select_ui <- function(id){
   ns <- NS(id)
   tagList(
+    # Indicator selection
     selectInput(inputId = ns("indicator"),
                 label = "Choose an indicator",
                 choices = indicator_choices_country,
                 selectize = TRUE,
-                
-                #TODO: Revert to Tony
-                ## had to comment to account for title not rendering
-                # multiple = TRUE,
-                # selected = c("reading_9_11", "share_private_6_10")),
                 selected = c("reading_9_11")),
+    # Trigger gender disaggregation
     checkboxInput(inputId = ns("gender"),
                   label = "Disaggregate by gender",
+                  value = FALSE),
+    
+    # Trigger display of weighted average trend line
+    checkboxInput(inputId = ns("weighted_mix"),
+                  label = "Show weighted average trend line",
                   value = FALSE),
 
     # Dynamically chooses dataset based on inputs
@@ -50,7 +52,7 @@ mod_country_select_ui <- function(id){
 mod_country_select_server <- function(input, output, session){
   ns <- session$ns
   
-  # Only display datasets based on inputs for non-weighted
+  # Only display data sets based on inputs for non-weighted
   datasets <- reactive({
     
     g <- ifelse(input$gender, c("Boy","Girl"), "Both")
@@ -68,11 +70,12 @@ mod_country_select_server <- function(input, output, session){
                 label = "Choose one or more survey(s)",
                 choices = sort(unique(datasets())),
                 selectize = TRUE,
-                multiple = TRUE)
+                multiple = TRUE,
+                selected = c("pslm", "aser", "hies", "egra", "dhs"))
   })
   
   output$data_src_description <- renderUI({data_sources_description})
-  # if clciked show survey descriptions
+  # if clicked show survey descriptions
   observeEvent(
     input$hideshow,
     {
@@ -84,7 +87,9 @@ mod_country_select_server <- function(input, output, session){
     list(
       indicator     = reactive({ input$indicator }),
       gender        = reactive({ input$gender }),
-      dataset       = reactive({ input$dataset })
+      dataset       = reactive({ input$dataset }),
+      weighted_mix  = reactive({ input$weighted_mix})
+      
     )
   )
 }
