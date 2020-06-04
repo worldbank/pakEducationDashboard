@@ -1,6 +1,6 @@
 Package: pakEducationDashboard
 Title: Pakistan Education Dashboard
-Version: 0.0.0.9000
+Version: 0.1.0.9000
 Authors@R: person('Tony', 'Fujs', email = 'tonyfujs@gmail.com', role = c('cre', 'aut'))
 Description: Provides interactive visualization of Pakistan education data.
 License: MIT + file LICENSE

@@ -10,3 +10,4 @@ url: http://w0lxopshyprd1b.worldbank.org:3939/data_depot/
 when: 1591109177.75604
 asMultiple: FALSE
 asStatic: FALSE
+ignoredFiles: TEMP.R
