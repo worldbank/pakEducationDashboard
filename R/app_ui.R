@@ -15,22 +15,23 @@ app_ui <- function() {
     shinyjs::useShinyjs(),
     shinyUI(
       navbarPage(title = my_title,
+                 id = "data_depot",
                  windowTitle = "Data Depot",
       theme = shinythemes::shinytheme("flatly"),
-      tabPanel("Country level",
+      tabPanel("Country level", value = "country",
                sidebarPanel(mod_country_select_ui("country_select_ui_1")),
                mainPanel(
                  mod_country_visuals_ui("country_visuals_ui_1")
                )
       ),
-      tabPanel("Province level",
+      tabPanel("Province level", value = "province",
                sidebarPanel(mod_province_select_ui("province_select_ui_1")),
                mainPanel(
                  mod_province_visuals_ui("province_visuals_ui_1"),
                  #mod_province_map_ui("province_map_ui_1")
                )
       ),
-      tabPanel("District level",
+      tabPanel("District level", value = "district",
                sidebarPanel(mod_district_select_ui("district_select_ui_1")),
                mainPanel(
                  mod_district_visuals_ui("district_visuals_ui_1"),
