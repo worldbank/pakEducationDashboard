@@ -38,8 +38,13 @@ mod_district_select_ui <- function(id){
                 multiple = TRUE,
                 selectize = TRUE,
                 selected = c("Attock", "Lahore", "Chakwal", "Rajanpur")),
+    # Trigger gender disaggregation
     checkboxInput(inputId = ns("gender"),
                   label = "Disaggregate by gender",
+                  value = FALSE),
+    # Trigger display of weighted average trend line
+    checkboxInput(inputId = ns("weighted_mix"),
+                  label = "Show weighted average trend line",
                   value = FALSE),
     # Dynamically chooses dataset based on inputs
     uiOutput(ns("tmp_dataset")),
@@ -107,7 +112,8 @@ mod_district_select_server <- function(input, output, session){
                 label = "Choose one or more survey(s)",
                 choices = sort(unlist(unique(datasets()))),
                 selectize = TRUE,
-                multiple = TRUE)
+                multiple = TRUE,
+                selected = c("pslm", "aser", "hies", "egra", "dhs"))
   })
   
   observeEvent(province(), {
@@ -133,7 +139,8 @@ mod_district_select_server <- function(input, output, session){
       gender        = reactive({ input$gender }),
       dataset       = reactive({ input$dataset }),
       province      = reactive({ input$province }),
-      district      = reactive({ input$district })#,
+      district      = reactive({ input$district }),
+      weighted_mix  = reactive({ input$weighted_mix})#,
       #year          = reactive({ input$year })
     )
   )
