@@ -49,7 +49,8 @@ mod_district_map_server <- function(input,
     out <- dplyr::filter(pakeduc_district_weighted,
                          indicator == !!selection_vars$indicator(),
                          #gender %in% !!gender_selection,
-                         year == !!selection_vars$year(),
+                         #year == !!selection_vars$year(),
+                         year == max(year, na.rm = TRUE),
                          # Add only both
                          gender == "Both") %>%
 
@@ -71,7 +72,8 @@ mod_district_map_server <- function(input,
                     year = year,
                     tooltip_region_header = "District:",
                     tooltip_region_value = DISTRICT,
-                    tooltip_value = pe_percent) #+
+                    tooltip_value = pe_percent,
+                    tooltip_dataset = dataset) #+
         #ggplot2::facet_wrap(~gender)
       
       ggiraph::girafe(ggobj = p, 

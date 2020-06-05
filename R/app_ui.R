@@ -28,14 +28,14 @@ app_ui <- function() {
                sidebarPanel(mod_province_select_ui("province_select_ui_1")),
                mainPanel(
                  mod_province_visuals_ui("province_visuals_ui_1"),
-                 #mod_province_map_ui("province_map_ui_1")
+                 mod_province_map_ui("province_map_ui_1")
                )
       ),
       tabPanel("District level", value = "district",
                sidebarPanel(mod_district_select_ui("district_select_ui_1")),
                mainPanel(
                  mod_district_visuals_ui("district_visuals_ui_1"),
-                 #mod_district_map_ui("district_map_ui_1")
+                 mod_district_map_ui("district_map_ui_1")
                )
       ),
       tabPanel("FAQ",

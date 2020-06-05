@@ -19,6 +19,7 @@ pakgeo_district <- pakgeo_district %>%
   ) %>%
   left_join(distkey_lkup, by = c("PROVINCE" = "province", "DISTRICT" = "district"))
 
+pakgeo_district$dist_key <- as.character(pakgeo_district$dist_key)
 
 # Province level shapefiles -----------------------------------------------
 pakgeo_province <- sf::read_sf("data-raw/data_input/pak_province_boundaries")

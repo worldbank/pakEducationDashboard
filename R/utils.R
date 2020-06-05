@@ -180,6 +180,7 @@ plot_lines <- function(data,
 #' @param tooltip_region_header object: Variable to be displayed in tooltip (region header)
 #' @param tooltip_region_value object: Variable to be displayed in tooltip (region)
 #' @param tooltip_value object: Variable to be displayed in tooltip (statistic value)
+#' @param tooltip_dataset object: Variable to be displayed in tooltip
 #' @param font_size numeric: Set the chart's font size value
 #'
 #' @return
@@ -192,9 +193,12 @@ plot_map <- function(data,
                      tooltip_region_header,
                      tooltip_region_value,
                      tooltip_value,
+                     tooltip_dataset,
                      font_size = 20
 ) 
 {
+  
+  my_title <- unique(data$year)
   
   # Adjust scale according to indicator
   if (stringr::str_detect(unique(data$indicator), "^egra") & !is.na(unique(data$indicator))) {
@@ -214,7 +218,8 @@ plot_map <- function(data,
     ggiraph::geom_sf_interactive(ggplot2::aes(fill = {{fill}},
                                               tooltip = paste(tooltip_region_header, {{tooltip_region_value}},
                                                               "<br />Value:", {{tooltip_value}},
-                                                              "<br />Year:", {{year}}),
+                                                              "<br />Year:", {{year}},
+                                                              "<br />Dataset:", {{tooltip_dataset}}),
                                               data_id = {{data_id}}
     )) +
     fill_scale +
@@ -224,6 +229,7 @@ plot_map <- function(data,
     ) +
     ggthemes::theme_map(base_size = font_size) +
     ggplot2::labs(
+      title = my_title,
       fill = ""
     )
   
