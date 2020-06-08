@@ -222,6 +222,7 @@ plot_map <- function(data,
                                                               "<br />Dataset:", {{tooltip_dataset}}),
                                               data_id = {{data_id}}
     )) +
+    ggplot2::geom_sf(data = outer_border, linetype = "dashed", alpha = .4, color = "grey") +
     fill_scale +
     ggplot2::theme(
       legend.background = ggplot2::element_rect(colour = "transparent", fill = "transparent"),

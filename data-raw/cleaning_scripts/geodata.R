@@ -61,8 +61,36 @@ pakgeo_province <- pakgeo_province %>%
   left_join(provincekey_lkup, by = "province_id") %>%
   select(-NAME_1, -province)
 
+
+
+
+# Extract outer border ----------------------------------------------------
+# Extract region ID 0
+rg0 <- pakgeo_province %>%
+  filter(province_id == 0) %>%
+  st_cast("POLYGON") %>%
+  slice(2)
+# Extract region ID 1 & 4
+rg14 <- pakgeo_province %>%
+  filter(province_id %in% c(1, 4))
+
+# Extract intersection
+outer_border <- st_intersection(rg0, rg14) %>%
+  st_geometry() 
+
+# Remove disputed area ----------------------------------------------------
+to_keep <- pakgeo_province %>%
+  filter(province_id == 0) %>%
+  st_cast("POLYGON") %>%
+  slice(1)
+
+pakgeo_province <- pakgeo_province %>%
+  filter(province_id != 0) %>%
+  bind_rows(to_keep)
+
 # Save data ---------------------------------------------------------------
 
 usethis::use_data(pakgeo_district,
                   pakgeo_province,
+                  outer_border,
                   overwrite = TRUE)
