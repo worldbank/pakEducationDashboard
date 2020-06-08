@@ -68,7 +68,7 @@ mod_province_visuals_server <- function(input,
     } else {
       "Both"
     }
-    
+   
     ## Disable "Disaggregate by gender" option if for that combintation of indicator,
     ## select, year there is no "Boy" or "Girl"
     dplyr::filter(pakeduc_province_weighted,
@@ -88,7 +88,6 @@ mod_province_visuals_server <- function(input,
   })
   
   
-  
   output$province_plot <- ggiraph::renderggiraph({
     # Adjust scale and tooltip according to indicator
     # if (stringr::str_detect(selection_vars$indicator(), "^egra")) {
@@ -96,7 +95,9 @@ mod_province_visuals_server <- function(input,
     # } else {
     #   y_scale <- ggplot2::scale_y_continuous(limits = c(0, 1), labels = scales::percent)
     # }
-    
+    #Only return plot if filtered dataframe has rows
+    if( nrow(surveydf()) > 0) {
+      
     if (nrow(surveydf()) > 0 & selection_vars$weighted_mix()) {
       
       p <- plot_lines(data = surveydf(),
@@ -130,9 +131,6 @@ mod_province_visuals_server <- function(input,
         strip.background = ggplot2::element_rect(color = "white", fill = "white")
       )
     
-    #Only return plot if filtered dataframe has rows
-    if( nrow(surveydf()) > 0) {
-      
       ggiraph::girafe(ggobj = p,
                       pointsize = 16,
                       width_svg = 22,

@@ -198,7 +198,7 @@ plot_map <- function(data,
 ) 
 {
   
-  my_title <- unique(data$year)
+  my_title <- paste0("Value of weighted-mix for ", max(data$year, na.rm = TRUE))
   
   # Adjust scale according to indicator
   if (stringr::str_detect(unique(data$indicator), "^egra") & !is.na(unique(data$indicator))) {
@@ -227,6 +227,7 @@ plot_map <- function(data,
       legend.background = ggplot2::element_rect(colour = "transparent", fill = "transparent"),
       legend.box.background = ggplot2::element_rect(colour = "transparent", fill = "transparent")
     ) +
+    #ggplot2::annotate("text", x = 32.06, y = 68.99, label = "Top-left") +
     ggthemes::theme_map(base_size = font_size) +
     ggplot2::labs(
       title = my_title,

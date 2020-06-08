@@ -104,7 +104,7 @@ mod_district_select_server <- function(input, output, session){
                                   !is.na(pakeduc_district$point_estimate) &
                                   pakeduc_district$gender %in% g), "dataset"]
     
-    ifelse(nrow(d > 0), d, "")
+    if (nrow(d) > 0) {return(d[["dataset"]])} else {return("")}
   })
   
   output$tmp_dataset<-  renderUI({

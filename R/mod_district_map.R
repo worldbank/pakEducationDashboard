@@ -47,7 +47,9 @@ mod_district_map_server <- function(input,
     # }
     
     out <- dplyr::filter(pakeduc_district_weighted,
-                         indicator == !!selection_vars$indicator(),
+                         indicator == !!selection_vars$indicator())
+    
+    out <- dplyr::filter(out,
                          #gender %in% !!gender_selection,
                          #year == !!selection_vars$year(),
                          year == max(year, na.rm = TRUE),

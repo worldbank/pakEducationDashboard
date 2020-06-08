@@ -97,41 +97,43 @@ mod_district_visuals_server <- function(input,
     # } else {
     #   y_scale <- ggplot2::scale_y_continuous(limits = c(0, 1), labels = scales::percent)
     # }
-   
     
-    if (nrow(surveydf()) > 0 & selection_vars$weighted_mix()) {
-     
-      p <- plot_lines(data = surveydf(),
-                      wght_data = df(),
-                      x = year,
-                      y = point_estimate,
-                      color = gender,
-                      dataset = dataset,
-                      gender = gender,
-                      year = year,
-                      tooltip_value = pe_percent)
-    } else {
-      p <- plot_lines(data = surveydf(),
-                      x = year,
-                      y = point_estimate,
-                      color = gender,
-                      dataset = dataset,
-                      gender = gender,
-                      year = year,
-                      tooltip_value = pe_percent)
-    }
-    
-    facet_rows <- ((length(unique(surveydf()$dist_nm)) - 1) %/% 4) + 1    
-    p <- p +
-      ggplot2::facet_wrap(~dist_nm, nrow = facet_rows) +
+    if(nrow(surveydf()) > 0){
+      
+      
+      if (nrow(surveydf()) > 0 & selection_vars$weighted_mix()) {
+        
+        p <- plot_lines(data = surveydf(),
+                        wght_data = df(),
+                        x = year,
+                        y = point_estimate,
+                        color = gender,
+                        dataset = dataset,
+                        gender = gender,
+                        year = year,
+                        tooltip_value = pe_percent)
+      } else {
+        p <- plot_lines(data = surveydf(),
+                        x = year,
+                        y = point_estimate,
+                        color = gender,
+                        dataset = dataset,
+                        gender = gender,
+                        year = year,
+                        tooltip_value = pe_percent)
+      }
+      
+      facet_rows <- ((length(unique(surveydf()$dist_nm)) - 1) %/% 4) + 1    
+      p <- p +
+        ggplot2::facet_wrap(~dist_nm, nrow = facet_rows) +
         ggplot2::theme(
           strip.text       = ggplot2::element_text(color = "#009DA7", family = "Arial",
                                                    face = "bold", size = 30),
           strip.background = ggplot2::element_rect(color = "white", fill = "white")
         )
-    
-    #Only return plot if filtered dataframe has rows
-    if(nrow(surveydf()) > 0){
+      
+      #Only return plot if filtered dataframe has rows
+      
       ggiraph::girafe(ggobj = p,
                       width_svg = 22,
                       height_svg = 8,
