@@ -1,46 +1,98 @@
 .navbar-default.navbar-nav{
-  font-family: arial;
+  font-family: Andes;
   font-weight: bold;
 }
 
+.container-fluid:nth-child(1) {    
+   background: #fff !important;
+}
+.navbar-brand>img {
+    display: none !important;
+}
+
+.navbar-default .navbar-nav>li>a {
+    color: #808080;
+    padding-top: 10px;
+    padding-bottom: 10px;
+    text-transform: uppercase;
+    font-size: 14px;
+}
+
+ul.navbar-nav {
+    border-bottom: 1px solid #dedede;
+    width: 100% !important;
+}
+.navbar-default .navbar-nav>.active>a,
+.navbar-default .navbar-nav>.active>a:hover,
+.navbar-default .navbar-nav>.active>a:focus {
+    color: #151515 !important;
+    background-color: #fff !important;
+}
+.navbar-default .navbar-nav>li>a {
+    color: #151515 !important;        
+}
+.navbar-default .navbar-nav>li.active>a{
+    font-weight: 600;
+}
+.navbar-default .navbar-nav>li {
+    border-bottom:3px solid transparent;
+}
+.navbar-default .navbar-nav>li.active {
+    border-bottom: 3px solid #009DA7;
+}
+.navbar-default .navbar-nav>li:hover  {
+     border-bottom: 3px solid #009DA7;
+} 
+.navbar-default .navbar-nav>li:nth-child(4) { 
+    display:none;
+}
+.navbar-default {
+    background-color: transparent !important;
+    border-color: transparent;
+}
+
+.navbar>.container-fluid .navbar-brand {
+   display: none !important
+}
+
 .container-fluid:nth-child(1){ 
-  background-color: #006350;
+  background-color: #fff;
 }
 
 h3 .shiny-text-output.shiny-bound-output,
 form h4,
 .checkbox span{
-  font-family: arial;
+  font-family: Andes;
   font-weight: bold;
   color:       black;
 }
 
 .control-label{
-  font-family: arial;
+  font-family: Andes;
   font-weight: bold;
   color:       black;
 }
 
 .item, 
 .selectize-input.items.not-full.has-options.has-items .item{
-  font-family: arial;
+  font-family: Andes;
   color:       black;
 }
 
 .irs .irs-min,
 .irs .irs-max
 {
-  font-family:      arial;
+  font-family:      Andes;
   color:            black;
   background-color: inherit;
-  font-size: 15px;
+  font-size: 14px;
 }
 
 /*SLIDER*/
 .irs .irs-single
 {
-  font-family:  arial;
-  font-size:    15px;
+  font-family:  Andes;
+  font-size:    14px;
 }
 
 .js-irs-1 .irs-single,
@@ -50,23 +102,23 @@ form h4,
 .js-irs-0 .irs-bar-edge,
 .js-irs-0 .irs-bar
 {
-  background-color: #006350;
-  border-color: #006350;
+  background-color: #009DA7;
+  border-color: #009DA7;
 }
 
 form li{
-  font-family: arial;
+  font-family: Andes;
   color:       black;
 }
 
 .tab-pane.active h2,
 .tab-pane.active p{
-   font-family: arial;
+   font-family: Andes;
    color:       black;
 }
 
 .tab-pane.active h3{
-  font-family: arial;
+  font-family: Andes;
   color:       black;
   font-weight: bold;
 }

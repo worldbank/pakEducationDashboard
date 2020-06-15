@@ -23,7 +23,7 @@ mod_country_visuals_ui <- function(id){
                              width = "100%", 
                              height = "800px"),
       type = 3, 
-      color = "#006350",
+      color = "#009DA7",
       color.background = "#FFFFFF"),
     
     textOutput(ns("warning_message"))

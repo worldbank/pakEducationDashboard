@@ -29,7 +29,7 @@ Imports:
     shinyWidgets,
     shinyjs,
     config
-RoxygenNote: 7.1.0
+RoxygenNote: 7.1.1
 Suggests: 
     testthat
 URL: https://github.com/tonyfujs/pakEducationDashboard
