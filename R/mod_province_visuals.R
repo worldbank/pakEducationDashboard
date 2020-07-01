@@ -23,7 +23,7 @@ mod_province_visuals_ui <- function(id){
                              width = "100%", 
                              height = "200px"),
       type = 3, 
-      color = "#006350",
+      color = "#009DA7",
       color.background = "#FFFFFF"),
     textOutput(ns("warning_message"))
   )
@@ -125,7 +125,7 @@ mod_province_visuals_server <- function(input,
       ggplot2::facet_wrap(~province, ncol = 5, 
                           labeller = ggplot2::labeller(indicator = indicator_choices_country_inv)) +
       ggplot2::theme(
-        strip.text       = ggplot2::element_text(color = "#006350", family = "Arial",
+        strip.text       = ggplot2::element_text(color = "#009DA7", family = "Arial",
                                                  face = "bold", size = 30),
         strip.background = ggplot2::element_rect(color = "white", fill = "white")
       )
