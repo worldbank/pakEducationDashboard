@@ -51,7 +51,7 @@ mod_province_map_server <- function(input,
                          gender == "Both"
                          ) %>% 
       dplyr::distinct() 
-    
+    #browser()
     pakgeo_province %>%
       dplyr::left_join(out, by = c("province_id" = "province_id"))
   })

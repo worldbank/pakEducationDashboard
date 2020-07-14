@@ -220,9 +220,11 @@ plot_map <- function(data,
                                                               "<br />Value:", {{tooltip_value}},
                                                               "<br />Year:", {{year}},
                                                               "<br />Dataset:", {{tooltip_dataset}}),
-                                              data_id = {{data_id}}
-    )) +
-    ggplot2::geom_sf(data = outer_border, linetype = "dashed", alpha = .4, color = "grey") +
+                                              data_id = {{data_id}}),
+                                 color = "#4d4e4f") +
+    ggplot2::geom_sf(data = dashed_border, linetype = "dashed", color = "white") +
+    ggplot2::geom_sf(data = dotted_border, linetype = "dotted", color = "#4d4e4f") +
+    ggplot2::geom_sf(data = plain_border, color = "#4d4e4f") +
     fill_scale +
     ggplot2::theme(
       legend.background = ggplot2::element_rect(colour = "transparent", fill = "transparent"),

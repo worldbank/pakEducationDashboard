@@ -21,7 +21,7 @@ mod_district_visuals_ui <- function(id){
     shinycssloaders::withSpinner(
       ggiraph::ggiraphOutput(outputId = ns("district_plot"),
                              width = "100%", 
-                             height = "200px"),
+                             height = "400px"),
       type = 3, 
       color = "#009DA7",
       color.background = "#FFFFFF"),
