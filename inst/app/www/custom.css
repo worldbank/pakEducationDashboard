@@ -40,12 +40,14 @@ ul.navbar-nav {
 .navbar-default .navbar-nav>li.active {
     border-bottom: 3px solid #009DA7;
 }
+
 .navbar-default .navbar-nav>li:hover  {
      border-bottom: 3px solid #009DA7;
 } 
-.navbar-default .navbar-nav>li:nth-child(4) { 
+.navbar-default .navbar-nav>li:nth-child(5) { 
     display:none;
 }
+
 .navbar-default {
     background-color: transparent !important;
     border-color: transparent;

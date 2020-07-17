@@ -198,8 +198,6 @@ plot_map <- function(data,
 ) 
 {
   
-  my_title <- paste0("Value of weighted-mix for ", max(data$year, na.rm = TRUE))
-  
   # Adjust scale according to indicator
   if (stringr::str_detect(unique(data$indicator), "^egra") & !is.na(unique(data$indicator))) {
     #fill_scale <- ggplot2::scale_fill_viridis_c(limits = c(0, 100), guide = FALSE)
@@ -233,7 +231,6 @@ plot_map <- function(data,
     #ggplot2::annotate("text", x = 32.06, y = 68.99, label = "Top-left") +
     ggthemes::theme_map(base_size = font_size) +
     ggplot2::labs(
-      title = my_title,
       fill = ""
     )
   

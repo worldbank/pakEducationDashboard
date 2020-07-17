@@ -81,7 +81,7 @@ mod_district_visuals_server <- function(input,
   
   
   output$district_ind_description <- renderText({
-    unique(df()$indicator_definition)
+    unique(df()$indicator_definition[!is.na(df()$indicator_definition)])
   })
   
   output$warning_message <- renderText({
