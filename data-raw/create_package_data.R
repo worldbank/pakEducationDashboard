@@ -64,17 +64,17 @@ library(shiny)
 data_sources_description <- tagList(
   tags$h4("Data sources"),
   tags$ul(
-    tags$li(tags$a("ASER", href = "http://aserpakistan.org/index.php"),
+    tags$li(tags$a("ASER", href = "http://aserpakistan.org/index.php", target="_blank"),
             ": The Annual Status of Education Report is a citizen-led; household-based survey, led by ITA. "),
-    tags$li(tags$a("DHS",  href ="https://dhsprogram.com/what-we-do/survey/survey-display-523.cfm"),
+    tags$li(tags$a("DHS",  href ="https://dhsprogram.com/what-we-do/survey/survey-display-523.cfm", target="_blank"),
             ": The Pakistan Demographic and Health Survey is a household survey implemented by the National Institute of Population Studies."),
-    tags$li(tags$a("EGRA", href ="https://www.usaid.gov/news-information/videos/early-grade-reading-assessment-egra-extra-mile-better-journey"),
+    tags$li(tags$a("EGRA", href ="https://www.usaid.gov/news-information/videos/early-grade-reading-assessment-egra-extra-mile-better-journey", target="_blank"),
             ": EGRA is an individually administered assessment tool that measures foundational literacy skills, which has been administered as part of USAID’s Pakistan Reading Project."),
-    tags$li(tags$a("HIES", href = "http://www.pbs.gov.pk/content/household-integrated-economic-survey-hies-2015-16"), 
+    tags$li(tags$a("HIES", href = "http://www.pbs.gov.pk/content/household-integrated-economic-survey-hies-2015-16", target="_blank"), 
             ": The Household Integrated Economic Survey is a household survey, representative at the provincial level, and led by the Pakistan Bureau of Statistics."),
-    tags$li(tags$a("MICS", href ="http://www.bos.gop.pk/mics"),
+    tags$li(tags$a("MICS", href ="http://www.bos.gop.pk/mics", target="_blank"),
             ": The Multiple Indicator Cluster Survey is a multipurpose household survey implemented on a provincial level basis, and is representative at district level."),
-    tags$li(tags$a("PSLM", href ="http://www.pbs.gov.pk/content/pakistan-social-and-living-standards-measurement"),
+    tags$li(tags$a("PSLM", href ="http://www.pbs.gov.pk/content/pakistan-social-and-living-standards-measurement", target="_blank"),
             ": The Pakistan Social and Living Standards Measurement (PSLM) is another household survey, representative at the district level, and led by the Pakistan Bureau of Statistics.")
   )
 )
