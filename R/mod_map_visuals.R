@@ -38,6 +38,10 @@ mod_map_visuals_server <- function(input,
   })
   
   df <- reactive({
+    # Handles potential issues due to missing selection inputs
+    req(selection_vars$year())
+    
+    
     # gender_selection <- if(selection_vars$gender()) {
     #   c("Boy", "Girl")
     # } else {

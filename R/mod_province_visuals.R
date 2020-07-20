@@ -47,6 +47,9 @@ mod_province_visuals_server <- function(input,
   
   # Non-weigthed 
   surveydf <- reactive({
+    # Handles potential issues due to missing selection inputs
+    req(selection_vars$dataset())
+    
     gender_selection <- if(selection_vars$gender()) {
       c("Boy", "Girl")
     } else {
