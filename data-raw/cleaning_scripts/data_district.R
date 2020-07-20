@@ -41,4 +41,7 @@ pakeduc_district_weighted <- pakeduc_district %>%
   ) %>%
   ungroup() %>%
   filter(!is.na(point_estimate)) %>%
-  distinct()
+  distinct() %>%
+  mutate(
+    dist_key = as.character(dist_key)
+  )

@@ -13,6 +13,7 @@ plot_map(
   tooltip_region_header,
   tooltip_region_value,
   tooltip_value,
+  tooltip_dataset,
   font_size = 20
 )
 }
@@ -30,6 +31,8 @@ plot_map(
 \item{tooltip_region_value}{object: Variable to be displayed in tooltip (region)}
 
 \item{tooltip_value}{object: Variable to be displayed in tooltip (statistic value)}
+
+\item{tooltip_dataset}{object: Variable to be displayed in tooltip}
 
 \item{font_size}{numeric: Set the chart's font size value}
 }

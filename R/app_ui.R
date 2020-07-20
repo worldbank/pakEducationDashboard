@@ -17,38 +17,35 @@ app_ui <- function() {
       navbarPage(title = "Data Depot",
                  id = "data_depot",
                  windowTitle = "Data Depot",
-      theme = shinythemes::shinytheme("flatly"),
-      tabPanel("Country level", value = "country",
-               sidebarPanel(mod_country_select_ui("country_select_ui_1")),
-               mainPanel(
-                 mod_country_visuals_ui("country_visuals_ui_1")
-               )
-      ),
-      tabPanel("Province level", value = "province",
-               sidebarPanel(mod_province_select_ui("province_select_ui_1")),
-               mainPanel(
-                 mod_province_visuals_ui("province_visuals_ui_1"),
-                 #mod_province_map_ui("province_map_ui_1")
-               )
-      ),
-      tabPanel("District level", value = "district",
-               sidebarPanel(mod_district_select_ui("district_select_ui_1")),
-               mainPanel(
-                 mod_district_visuals_ui("district_visuals_ui_1"),
-                 #mod_district_map_ui("district_map_ui_1")
-               )
-      ),
-      tabPanel("FAQ",
-               mainPanel(mod_faq_ui("faq_ui_1"))
+                 theme = shinythemes::shinytheme("flatly"),
+                 tabPanel("Country level", value = "country",
+                          sidebarPanel(mod_country_select_ui("country_select_ui_1")),
+                          mainPanel(
+                            mod_country_visuals_ui("country_visuals_ui_1")
+                          )
+                 ),
+                 tabPanel("Province level", value = "province",
+                          sidebarPanel(mod_province_select_ui("province_select_ui_1")),
+                          mainPanel(
+                            mod_province_visuals_ui("province_visuals_ui_1")
+                          )
+                 ),
+                 tabPanel("District level", value = "district",
+                          sidebarPanel(mod_district_select_ui("district_select_ui_1")),
+                          mainPanel(
+                            mod_district_visuals_ui("district_visuals_ui_1")
+                          )
+                 ),
+                 tabPanel("Map", value = "map",
+                          sidebarPanel(mod_map_select_ui("map_select_ui_1")),
+                          mainPanel(
+                            mod_map_visuals_ui("map_visuals_ui_1")
+                          )
+                 )
       )
-      )
-      
-      
     )
   )
 }   
-
-
 
 
 # fluidPage(

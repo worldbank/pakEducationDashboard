@@ -1,21 +1,17 @@
-# Module UI
-  
-#' @title   mod_district_map_ui and mod_district_map_server
-#' @description  A shiny Module.
+#' map_visuals UI Function
 #'
-#' @param id shiny id
-#' @param input internal
-#' @param output internal
-#' @param session internal
+#' @description A shiny Module.
 #'
-#' @rdname mod_district_map
+#' @param id,input,output,session Internal parameters for {shiny}.
 #'
-#' @keywords internal
-#' @export 
+#' @noRd 
+#'
 #' @importFrom shiny NS tagList 
-mod_district_map_ui <- function(id){
+mod_map_visuals_ui <- function(id){
   ns <- NS(id)
   tagList(
+    h3(textOutput(ns("map_title"))),
+    p(textOutput(ns("map_ind_description"))),
     shinycssloaders::withSpinner(
       ggiraph::ggiraphOutput(outputId = ns("district_map"),
                              width = "100%", 
@@ -27,19 +23,25 @@ mod_district_map_ui <- function(id){
   )
 }
     
-# Module Server
-    
-#' @rdname mod_district_map
-#' @export
-#' @keywords internal
-    
-mod_district_map_server <- function(input, 
-                                    output, 
-                                    session,
-                                    selection_vars){
+#' map_visuals Server Function
+#'
+#' @noRd
+
+mod_map_visuals_server <- function(input, 
+                                   output, 
+                                   session,
+                                   selection_vars){
   ns <- session$ns
   
+  output$map_title <- renderText({
+    names(indicator_choices_district)[indicator_choices_district == selection_vars$indicator()]
+  })
+  
   df <- reactive({
+    # Handles potential issues due to missing selection inputs
+    req(selection_vars$year())
+    
+    
     # gender_selection <- if(selection_vars$gender()) {
     #   c("Boy", "Girl")
     # } else {
@@ -47,22 +49,27 @@ mod_district_map_server <- function(input,
     # }
     
     out <- dplyr::filter(pakeduc_district_weighted,
-                         indicator == !!selection_vars$indicator(),
+                         indicator == !!selection_vars$indicator())
+    out <- dplyr::filter(out,
                          #gender %in% !!gender_selection,
                          year == !!selection_vars$year(),
+                         # year == max(year, na.rm = TRUE),
                          # Add only both
-                         gender == "Both") %>%
-
-      dplyr::distinct()
+                         gender == "Both")
+    out <- dplyr::distinct(out)
     
     out <- pakgeo_district %>%
       dplyr::left_join(out, by = c("dist_key" = "dist_key"))
   })
-
+  
   output$warning_message <- renderText({
     if (nrow(df()) == 0) {"No data available. Please make a new selection"}
   })
-
+  
+  output$map_ind_description <- renderText({
+    unique(df()$indicator_definition[!is.na(df()$indicator_definition)])
+  })
+  
   output$district_map <- ggiraph::renderggiraph({
     if (nrow(df()) > 0) {
       p <- plot_map(data = df(),
@@ -71,8 +78,9 @@ mod_district_map_server <- function(input,
                     year = year,
                     tooltip_region_header = "District:",
                     tooltip_region_value = DISTRICT,
-                    tooltip_value = pe_percent) #+
-        #ggplot2::facet_wrap(~gender)
+                    tooltip_value = pe_percent,
+                    tooltip_dataset = dataset) #+
+      #ggplot2::facet_wrap(~gender)
       
       ggiraph::girafe(ggobj = p, 
                       width_svg = 12, 
@@ -81,4 +89,9 @@ mod_district_map_server <- function(input,
     }
   })
 }
- 
+    
+## To be copied in the UI
+# mod_map_visuals_ui("map_visuals_ui_1")
+    
+## To be copied in the server
+# callModule(mod_map_visuals_server, "map_visuals_ui_1")

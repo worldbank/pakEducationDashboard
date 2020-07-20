@@ -180,6 +180,7 @@ plot_lines <- function(data,
 #' @param tooltip_region_header object: Variable to be displayed in tooltip (region header)
 #' @param tooltip_region_value object: Variable to be displayed in tooltip (region)
 #' @param tooltip_value object: Variable to be displayed in tooltip (statistic value)
+#' @param tooltip_dataset object: Variable to be displayed in tooltip
 #' @param font_size numeric: Set the chart's font size value
 #'
 #' @return
@@ -192,6 +193,7 @@ plot_map <- function(data,
                      tooltip_region_header,
                      tooltip_region_value,
                      tooltip_value,
+                     tooltip_dataset,
                      font_size = 20
 ) 
 {
@@ -214,14 +216,19 @@ plot_map <- function(data,
     ggiraph::geom_sf_interactive(ggplot2::aes(fill = {{fill}},
                                               tooltip = paste(tooltip_region_header, {{tooltip_region_value}},
                                                               "<br />Value:", {{tooltip_value}},
-                                                              "<br />Year:", {{year}}),
-                                              data_id = {{data_id}}
-    )) +
+                                                              "<br />Year:", {{year}},
+                                                              "<br />Dataset:", {{tooltip_dataset}}),
+                                              data_id = {{data_id}}),
+                                 color = "#4d4e4f") +
+    ggplot2::geom_sf(data = dashed_border, linetype = "dashed", color = "white") +
+    ggplot2::geom_sf(data = dotted_border, linetype = "dotted", color = "#4d4e4f") +
+    ggplot2::geom_sf(data = plain_border, color = "#4d4e4f") +
     fill_scale +
     ggplot2::theme(
       legend.background = ggplot2::element_rect(colour = "transparent", fill = "transparent"),
       legend.box.background = ggplot2::element_rect(colour = "transparent", fill = "transparent")
     ) +
+    #ggplot2::annotate("text", x = 32.06, y = 68.99, label = "Top-left") +
     ggthemes::theme_map(base_size = font_size) +
     ggplot2::labs(
       fill = ""
