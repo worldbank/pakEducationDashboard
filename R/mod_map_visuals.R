@@ -26,7 +26,7 @@ mod_map_visuals_ui <- function(id){
 #' map_visuals Server Function
 #'
 #' @noRd
-#' @importFrom magrittr %>%
+
 mod_map_visuals_server <- function(input, 
                                    output, 
                                    session,
@@ -55,10 +55,8 @@ mod_map_visuals_server <- function(input,
                          year == !!selection_vars$year(),
                          # year == max(year, na.rm = TRUE),
                          # Add only both
-                         gender == "Both"
-                         ) %>%
-      
-      dplyr::distinct()
+                         gender == "Both")
+    out <- dplyr::distinct(out)
     
     out <- pakgeo_district %>%
       dplyr::left_join(out, by = c("dist_key" = "dist_key"))
