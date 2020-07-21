@@ -19,16 +19,9 @@ mod_map_select_ui <- function(id){
                 choices = indicator_choices_district,
                 selectize = TRUE,
                 selected = "reading_9_11"),
-    # Trigger gender disaggregation
-    # checkboxInput(inputId = ns("gender"),
-    #               label = "Disaggregate by gender",
-    #               value = FALSE),
-    # Trigger display of weighted average trend line
-    # checkboxInput(inputId = ns("weighted_mix"),
-    #               label = "Show weighted average trend line",
-    #               value = FALSE),
+
     # Dynamically chooses dataset based on inputs
-    uiOutput(ns("tmp_dataset")),
+    # uiOutput(ns("tmp_dataset")),
     # Dynamically chooses year based on inputs
     uiOutput(ns("tmp_year")),
     # Hide and Show button for data sources description
@@ -50,8 +43,8 @@ mod_map_select_server <- function(input, output, session){
   # output$tmp_year <- renderUI({})
   # outputOptions(output, "tmp_year",    suspendWhenHidden = FALSE)
   
-  output$tmp_dataset <- renderUI({})
-  outputOptions(output, "tmp_dataset", suspendWhenHidden = FALSE)
+  # output$tmp_dataset <- renderUI({})
+  # outputOptions(output, "tmp_dataset", suspendWhenHidden = FALSE)
   
   # Only display years based on inputs for either weighted or non-weighted
   years <- reactive({
@@ -72,24 +65,25 @@ mod_map_select_server <- function(input, output, session){
   
   # Only display datasets based on inputs for non-weighted
   datasets <- reactive({
-    #g <- ifelse(input$gender, c("Boy","Girl"), "Both")
-    g <- "Both"
+    
+    # dim <- ifelse(!is.null(input$dimension), input$dimension, "aggregate")
+    dim <- "aggregate"
     
     d <- pakeduc_district[which(pakeduc_district$indicator == input$indicator &
                                   !is.na(pakeduc_district$point_estimate) &
-                                  pakeduc_district$gender %in% g), "dataset"]
+                                  pakeduc_district$dimensions %in% dim), "dataset"]
     
     if (nrow(d) > 0) {return(d[["dataset"]])} else {return("")}
   })
   
-  output$tmp_dataset<-  renderUI({
-    selectInput(inputId = ns("dataset"),
-                label = "Choose one or more survey(s)",
-                choices = sort(unlist(unique(datasets()))),
-                selectize = TRUE,
-                multiple = TRUE,
-                selected = c("pslm", "aser", "hies", "egra", "dhs"))
-  })
+  # output$tmp_dataset<-  renderUI({
+  #   selectInput(inputId = ns("dataset"),
+  #               label = "Choose one or more survey(s)",
+  #               choices = sort(unlist(unique(datasets()))),
+  #               selectize = TRUE,
+  #               multiple = TRUE,
+  #               selected = c("pslm", "aser", "hies", "egra", "dhs"))
+  # })
   
   output$data_src_description <- renderUI({data_sources_description})
   # if clicked show survey descriptions
@@ -103,9 +97,8 @@ mod_map_select_server <- function(input, output, session){
   return(
     list(
       indicator     = reactive({ input$indicator }),
-      gender        = reactive({ input$gender }),
+      # dimension     = reactive({ input$dimension }),
       dataset       = reactive({ input$dataset }),
-      weighted_mix  = reactive({ input$weighted_mix}),
       year          = reactive({ input$year })
     )
   )

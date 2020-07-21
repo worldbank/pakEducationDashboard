@@ -4,19 +4,37 @@ source("./data-raw/cleaning_scripts/utils.R")
 
 
 # Create indicators -------------------------------------------------------
-varmap <- read_variable_map()
+# varmap <- read_variable_map()
+# TO DELETE ONCE FILE HAS BEEN FIXED IN DDH
+# START DELETE
+varmap_path <- "data-raw/data_input/DD_Pak_metadata_indicators_version2.xlsx"
+varmap <- readxl::read_excel(varmap_path, sheet = "Varmap", skip = 2) %>%
+  janitor::clean_names() %>%
+  janitor::remove_empty(which = "rows") %>%
+  janitor::remove_empty(which = "cols")
+# END DELETE
 indicator_choices_country <- create_indicator_choices(df = varmap, level = "country")
 indicator_choices_province <- create_indicator_choices(df = varmap, level = "province")
 indicator_choices_district <- create_indicator_choices(df = varmap, level = "district",
-                                                       labels_order =  c("reading_9_11",
-                                                                         "in_school_6_10",
-                                                                         "in_school_6_15",
-                                                                         "in_school_11_16",
-                                                                         "division_9_11",
-                                                                         "literacy_12_18",
-                                                                         "numeracy_12_18",
-                                                                         "share_private_6_10", 
-                                                                         "share_private_11_16"))
+                                                       labels_order = c("reading_6_8",
+                                                                        "reading_9_11",
+                                                                        "reading_12_14",
+                                                                        "in_school_5_10",
+                                                                        "in_school_5_16",
+                                                                        "in_school_11_16",
+                                                                        "division_6_8",
+                                                                        "division_9_11",
+                                                                        "division_12_14",
+                                                                        "literacy_12_18",
+                                                                        "literacy_19_25",
+                                                                        "literacy_26_32",
+                                                                        "numeracy_12_18",
+                                                                        "numeracy_19_25",
+                                                                        "numeracy_26_32",
+                                                                        "share_private_5_10",
+                                                                        "share_private_5_16", 
+                                                                        "share_private_11_16"
+                                                       ))
 
 
 # Create package data using a series of scripts ---------------------------
@@ -43,7 +61,7 @@ df <- varmap %>%
 df <- df %>%
   select(variable_name, indicator_definition, label) %>%
   mutate(
-    variable_name = trimws(variable_name)
+    variable_name = stringr::str_squish(variable_name)
   )
 
 
@@ -51,13 +69,14 @@ df <- df %>%
 pakeduc_country           <- pakeduc_country %>% left_join(df, by = c("indicator" = "variable_name"))
 pakeduc_country_weighted  <- pakeduc_country_weighted %>% left_join(df, by = c("indicator" = "variable_name"))
 
+# Add relevant descriptions to province df
+pakeduc_province           <- pakeduc_province %>% left_join(df, by = c("indicator" = "variable_name"))
+pakeduc_province_weighted  <- pakeduc_province_weighted %>% left_join(df, by = c("indicator" = "variable_name"))
+
 # Add relevant descriptions to district df
 pakeduc_district           <- pakeduc_district %>% left_join(df, by = c("indicator" = "variable_name"))
 pakeduc_district_weighted  <- pakeduc_district_weighted %>% left_join(df, by = c("indicator" = "variable_name"))
 
-# Add relevant descriptions to province df
-pakeduc_province           <- pakeduc_province %>% left_join(df, by = c("indicator" = "variable_name"))
-pakeduc_province_weighted  <- pakeduc_province_weighted %>% left_join(df, by = c("indicator" = "variable_name"))
 
 # Data sources descrition
 library(shiny)

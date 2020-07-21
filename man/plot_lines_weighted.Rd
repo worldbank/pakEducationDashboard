@@ -11,7 +11,7 @@ plot_lines_weighted(
   y,
   color,
   dataset,
-  gender,
+  group,
   year,
   tooltip_value,
   font_size = 20,
@@ -30,7 +30,7 @@ plot_lines_weighted(
 
 \item{dataset}{object: Variable to be displayed in tooltip}
 
-\item{gender}{object: Variable to be displayed in tooltip}
+\item{group}{object: Variable used for dis-aggregation & to be displayed in tooltip}
 
 \item{year}{object: Variable to be displayed in tooltip}
 

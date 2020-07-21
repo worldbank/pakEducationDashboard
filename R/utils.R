@@ -6,7 +6,7 @@
 #' @param y object: Variable to be mapped to y aesthetic
 #' @param color object: Variable to be mapped to color aesthetic
 #' @param dataset object: Variable to be displayed in tooltip
-#' @param gender object: Variable to be displayed in tooltip
+#' @param group object: Variable used for dis-aggregation & to be displayed in tooltip
 #' @param year object: Variable to be displayed in tooltip
 #' @param tooltip_value object: Variable to be displayed in tooltip
 #'
@@ -18,7 +18,7 @@ plot_lines_weighted <- function(data,
                                 y,
                                 color,
                                 dataset,
-                                gender,
+                                group,
                                 year,
                                 tooltip_value,
                                 font_size = 20,
@@ -33,8 +33,9 @@ plot_lines_weighted <- function(data,
     y_scale <- ggplot2::scale_y_continuous(limits = c(0, 1), labels = scales::percent)
   }
   
-  # Adjust for gender
-  scale_values = ifelse(unique(data$gender) == "Both", "#F05123", c("#F05123","#97252B"))
+  # Adjust for group
+  # scale_values = ifelse(unique(data$group) == "Both", "#F05123", c("#F05123","#97252B"))
+  scale_values <- c("#F05123","#97252B", "#29AFDE", "#6DD6C3", "#EBD197")
   
   p <- ggplot2::ggplot(data, ggplot2::aes(x = {{x}}, 
                                           y = {{y}}, 
@@ -42,8 +43,8 @@ plot_lines_weighted <- function(data,
                                           tooltip = paste("Value:", {{tooltip_value}},
                                                           "<br />Year:", {{year}},
                                                           "<br />Dataset:", {{dataset}},
-                                                          "<br />Gender:", {{gender}}))) +
-    ggplot2::geom_line(ggplot2::aes(group = {{gender}}),
+                                                          "<br />Group:", {{group}}))) +
+    ggplot2::geom_line(ggplot2::aes(group = {{group}}),
                        size = ggplot2::rel(line_size)) +
     ggiraph::geom_point_interactive(size = ggplot2::rel(point_size)) +
     y_scale +
@@ -72,7 +73,7 @@ plot_lines_weighted <- function(data,
 #' @param y object: Variable to be mapped to y aesthetic
 #' @param color object: Variable to be mapped to color aesthetic
 #' @param dataset object: Variable to be displayed in tooltip
-#' @param gender object: Variable to be displayed in tooltip
+#' @param group object: Variable used for dis-aggregation & to be displayed in tooltip
 #' @param year object: Variable to be displayed in tooltip
 #' @param tooltip_value object: Variable to be displayed in tooltip
 #'
@@ -85,7 +86,7 @@ plot_lines <- function(data,
                        y,
                        color,
                        dataset,
-                       gender,
+                       group,
                        year,
                        tooltip_value,
                        font_size = 20,
@@ -101,8 +102,9 @@ plot_lines <- function(data,
     y_scale <- ggplot2::scale_y_continuous(limits = c(0, 1), labels = scales::percent)
   }
   
-  # Adjust for gender
-  scale_values = ifelse(unique(data$gender) == "Both", "#F05123", c("#F05123","#97252B"))
+  # Adjust for group
+  # scale_values = ifelse(unique(data$group) == "Both", "#F05123", c("#F05123","#97252B"))
+  scale_values <- c("#F05123","#97252B", "#29AFDE", "#6DD6C3", "#EBD197")
   
   # TO account for ggiraph bug
   ## https://github.com/davidgohel/ggiraph/issues/31
@@ -115,12 +117,12 @@ plot_lines <- function(data,
                                           tooltip = paste("Value:", {{tooltip_value}},
                                                           "<br />Year:", {{year}},
                                                           "<br />Dataset:", {{dataset}},
-                                                          "<br />Gender:", {{gender}}))) 
+                                                          "<br />Group:", {{group}}))) 
   
   
   if (!is.null(wght_data)) {
     p <- p +
-      ggplot2::geom_line(ggplot2::aes(group = interaction({{dataset}}, {{gender}}), 
+      ggplot2::geom_line(ggplot2::aes(group = interaction({{dataset}}, {{group}}), 
                                       linetype = {{dataset}}),
                          color = "grey",
                          size = ggplot2::rel(line_size),
@@ -130,7 +132,7 @@ plot_lines <- function(data,
                                       alpha = .6)
   } else {
     p <- p +
-      ggplot2::geom_line(ggplot2::aes(group = interaction({{dataset}}, {{gender}}), 
+      ggplot2::geom_line(ggplot2::aes(group = interaction({{dataset}}, {{group}}), 
                                       linetype = {{dataset}}),
                          size = ggplot2::rel(line_size),
                          alpha = 1 ) +
@@ -156,7 +158,7 @@ plot_lines <- function(data,
   if (!is.null(wght_data)) {
     p <- p +
       ggplot2::geom_line(data = wght_data,
-                         ggplot2::aes(group = interaction({{dataset}}, {{gender}})),
+                         ggplot2::aes(group = interaction({{dataset}}, {{group}})),
                          #color = {{color}}),
                          size = ggplot2::rel(line_size),
                          alpha = 1) +

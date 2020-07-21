@@ -28,14 +28,36 @@ read_variable_map <- function(ddh_link = "https://development-data-hub-s3-public
 
 create_indicator_choices <- function(df, 
                                      level = c("country", "province","district"),
-                                     labels_order = c("reading_9_11",
-                                                      "in_school_6_10",
-                                                      "in_school_6_15",
+                                     to_remove = c("year", 
+                                                   "dataset", 
+                                                   "country", 
+                                                   "province", 
+                                                   "dist_key", 
+                                                   "dist_nm",
+                                                   "district",
+                                                   "country_tag",
+                                                   "province_tag",
+                                                   "district_tag"),
+                                     pattern_to_remove = c("_boy|boy_|_boy_|_girl|girl_|_girl_", 
+                                                           "_wq[1-5]|wq[1-5]_|_wq[1-5]_",
+                                                           "_urban|urban_|_urban_|_rural|rural_|_rural_"),
+                                     labels_order = c("reading_6_8",
+                                                      "reading_9_11",
+                                                      "reading_12_14",
+                                                      "in_school_5_10",
+                                                      "in_school_5_16",
                                                       "in_school_11_16",
+                                                      "division_6_8",
                                                       "division_9_11",
+                                                      "division_12_14",
                                                       "literacy_12_18",
+                                                      "literacy_19_25",
+                                                      "literacy_26_32",
                                                       "numeracy_12_18",
-                                                      "share_private_6_10",
+                                                      "numeracy_19_25",
+                                                      "numeracy_26_32",
+                                                      "share_private_5_10",
+                                                      "share_private_5_16", 
                                                       "share_private_11_16",
                                                       "egra_clpm",
                                                       "egra_clpm_g3",
@@ -44,12 +66,15 @@ create_indicator_choices <- function(df,
                                                       "egra_orf_g3",
                                                       "egra_orf_g5")) 
 {
+  pattern_to_remove <- paste(pattern_to_remove, collapse = "|")
+  
   values <- df[df[[level]] == 1, c("variable_name", "label")]
   values <- values[!is.na(values$variable_name), ]
-  values <- values[!values$variable_name %in% c("year", "dataset", "country", "province", "dist_key", "dist_nm"), ]
+  values <- values[!values$variable_name %in% to_remove, ]
   values[] <- lapply(values, stringr::str_squish) 
+  values <- values[!stringr::str_detect(tolower(values$variable_name), pattern = pattern_to_remove),]
   values <- values[!stringr::str_detect(tolower(values$variable_name), "_se$"),]
-  values <- values[!stringr::str_detect(tolower(values$variable_name), "_boys|_girls"),]
+  values <- values[!stringr::str_detect(tolower(values$variable_name), "_n$"),]
   values <- unique(values)
   #values <- values[order(values$variable_name),]
   out <- values$variable_name
@@ -60,9 +85,6 @@ create_indicator_choices <- function(df,
   
   return(out)
 }
-
-
-
 
 
 #' created_weighted
@@ -77,16 +99,19 @@ create_indicator_choices <- function(df,
 #'
 create_weighted <- function(df,
                             selection = c("year",
-                                          "country",
                                           "indicator",
-                                          "gender",
+                                          "age_range",
+                                          "dimensions",
+                                          "dimension_levels",
                                           "point_estimate",
                                           "dataset"),
+                            weighted_mix = "Weighted mix (Moving average, window = 3)",
                             ...
                             )
 {
   
-  by <- enquos(...)
+  by <- dplyr::enquos(...)
+  weighted_mix <- dplyr::enquo(weighted_mix)
   
   out <- df %>%
     filter(!is.na(point_estimate)) %>%
@@ -112,10 +137,165 @@ create_weighted <- function(df,
     ) %>%
     ungroup() %>%
     mutate(
-      dataset = "Weighted mix (Moving average, window = 3)"
+      dataset = !!weighted_mix
     ) %>%
     select(all_of(selection)) %>%
     distinct()
+  
+  return(out)
+}
+
+#' extract_dimension
+#' 
+#' @param col character: Character vector of column names from which dimensions need to be extracted
+#' @param pattern character: Regular expression to match specific patterns in \code{col}
+#' @param dimension character: Dimension names corresponding to \code{pattern}
+#'
+#' @return character
+#' @export
+#'
+extract_dimension <- function(col, pattern, dimension) {
+  # CHECK inputs
+  assertthat::assert_that(class(col) == "character")
+  assertthat::assert_that(class(pattern) == "character")
+  assertthat::assert_that(class(dimension) == "character")
+  assertthat::assert_that(length(pattern) == 1)
+  assertthat::assert_that(length(dimension) == 1)
+  
+  out <- stringr::str_detect(col, pattern = pattern)
+  col[out == TRUE] <- dimension
+  
+  return(col)
+}
+
+#' extract_dimensions
+#' vectorized version fo extract_dimension
+#' @param col character: Character vector of column names from which dimensions need to be extracted
+#' @param pattern_list character: Regular expressions to match specific patterns in \code{col}
+#' @param dimension_list character: Dimension names corresponding to \code{pattern}
+#'
+#' @return character
+#' @export
+#'
+extract_dimensions <- function(col, pattern_list, dimension_list) {
+  # CHECK that lists are of the same length
+  assertthat::assert_that(length(pattern_list) == length(dimension_list))
+  
+  for (i in seq_along(pattern_list)) {
+    col <- extract_dimension(col, 
+                             pattern = pattern_list[[i]],
+                             dimension = dimension_list[[i]]
+                             )
+  }
+  
+  col[!col %in% dimension_list] <- "aggregate"
+  
+  return(col)
+}
+
+#' extract_indicator_name
+#' Retrieve indicator name from column names
+#' @param col character: Character vector of column names from which indicators need to be extracted
+#' @param to_remove character: Regular expressions of patterns to be removed from name
+#'
+#' @return character
+#' @export
+#'
+extract_indicator_name <- function(col, to_remove) {
+  # CHECK inputs
+  assertthat::assert_that(class(col) == "character")
+  assertthat::assert_that(class(to_remove) == "character")
+  to_remove <- paste(to_remove, collapse = "|")
+  
+  col <- stringr::str_remove(col, pattern = to_remove) 
+  col <- stringr::str_remove(col, "_se$|_n$")
+  
+  return(col)
+}
+
+#' extract_age_range
+#' Retrieve age_range name from column names
+#' @param col character: Character vector of column names from which age ranges need to be extracted
+#'
+#' @return character
+#' @export
+#'
+extract_age_range <- function(col) {
+  # CHECK inputs
+  assertthat::assert_that(class(col) == "character")
+  age_range_pattern <- "_[0-9]{1,2}_[0-9]{1,2}"
+  
+  col <- stringr::str_extract(col, pattern = age_range_pattern) 
+  col <- stringr::str_remove(col, "^_")
+  col <- stringr::str_replace(col, "_", " to ")
+  
+  return(col)
+}
+
+#' extract_measurement
+#' Retrieve measurement type from column names
+#' @param col character: Character vector of column names from which measurements need to be extracted
+#'
+#' @return character
+#' @export
+#'
+extract_measurement <- function(col) {
+  # CHECK inputs
+  assertthat::assert_that(class(col) == "character")
+  
+  sd <- "standard_error"
+  ss <- "sample_size"
+  
+  out <- col
+  out[stringr::str_detect(col, "_se$")] <- sd 
+  out[stringr::str_detect(col, "_n$")] <- ss
+  out[!out %in% c(sd, ss)] <- "point_estimate" 
+
+  return(out)
+}
+
+#' extract_dimension_levels
+#' extract_dimension_levels from column names
+#' @param col character: Column names from which dimension levels need to be extracted
+#' @param dim_col character: Column pre-identified dimensions
+#' @param dimensions character: Valid dimensions
+#' 
+#' @return character
+#' @export
+#'
+extract_dimension_levels <- function(col, dim_col, dimensions) {
+  # CHECK that lists are of the same length
+  assertthat::assert_that(class(col) == "character")
+  assertthat::assert_that(length(col) == length(dim_col))
+  assertthat::assert_that(all(dimensions %in% unique(dim_col)))
+  
+  gender_dim <- "gender"
+  wq_dim <- "wealth quintile"
+  ur_dim <- "urban-rural"
+  wq <- c("wq1", "wq2", "wq3", "wq4", "wq5")
+  # CHECK that hard coded variable are valid
+  # Not great. Think about refactoring this
+  assertthat::assert_that(gender_dim %in% dimensions)
+  assertthat::assert_that(wq_dim %in% dimensions)
+  assertthat::assert_that(ur_dim %in% dimensions)
+  
+  out <- rep("Combined", length(col))
+  # Handle gender
+  out[stringr::str_detect(col, "boys")] <- "Boy"
+  out[stringr::str_detect(col, "girls")] <- "Girl"
+  # out[(!stringr::str_detect(col, "boys|girls")) & 
+  #       stringr::str_detect(dim_col, gender_dim)] <- "Gender combined"
+  # Handle wealth quintile
+  for (i in seq_along(wq)) {
+    out[stringr::str_detect(col, wq[i])] <- wq[i]
+  }
+  # out[(!stringr::str_detect(col, paste(wq, collapse = "|"))) & 
+  #       stringr::str_detect(dim_col, wq_dim)] <- "All quintiles"
+  # Handle urban-rural
+  out[stringr::str_detect(col, "urban")] <- "Urban"
+  out[stringr::str_detect(col, "rural")] <- "Rural"
+  # out[(!stringr::str_detect(col, "urnam|rural")) & 
+  #       stringr::str_detect(dim_col, ur_dim)] <- "Urban and Rural combined"
   
   return(out)
 }
