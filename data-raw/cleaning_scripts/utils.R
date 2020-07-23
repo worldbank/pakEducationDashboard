@@ -1,3 +1,69 @@
+#' clean_raw_data
+#' Helper function to clean data stored on DDH for easy consumption by the
+#' Shiny app
+#' @param df data.frame: Data from DDH (Country, Province, or District level)
+#' @param cols_to_remove character: Columns to be removed from the data frame
+#' @param unique_keys character: Columns to be used as unique keys to pivot data frame
+#' @param dimensions character: Dimensions to be used for indicator decomposition
+#' @param patterns character: Patterns to be matched for identification of 
+#' dimensions in column names
+#'
+#' @return data.frame
+#' @export
+#'
+clean_raw_data <- function(df,
+                           cols_to_remove = c( "country_tag",
+                                               "province_tag",
+                                               "district_tag",
+                                               "country",
+                                               "province", 
+                                               "district"),
+                           unique_keys = c("identifier",
+                                           "year",
+                                           "dataset"),
+                           dimensions = c("gender", 
+                                          "wealth quintile", 
+                                          "urban-rural"),
+                           patterns = c("_boys|boys_|_boys_|_girls|girls_|_girls_", 
+                                        "_wq[1-5]|wq[1-5]_|_wq[1-5]_",
+                                        "_urban|urban_|_urban_|_rural|rural_|_rural_")) {
+  
+  # CHECK input
+  assertthat::assert_that(all(cols_to_remove %in% colnames(df)))
+  assertthat::assert_that(all(unique_keys %in% colnames(df)))
+  
+  
+  out <- df %>%
+    dplyr::select(-c(tidyselect::all_of(cols_to_remove))) %>%
+    tidyr::pivot_longer(cols = -c(tidyselect::all_of(unique_keys)), 
+                        names_to = "names", 
+                        values_to = "values") %>%
+    dplyr::mutate(
+      dimensions       = extract_dimensions(col = names, 
+                                            pattern_list = patterns, 
+                                            dimension_list = dimensions),
+      dimension_levels = extract_dimension_levels(col = names,
+                                                  dim_col = dimensions,
+                                                  dimensions = dimensions),
+      indicator        = extract_indicator_name(col = names,
+                                                to_remove = patterns),
+      age_range        = extract_age_range(col = names),
+      measurement      = extract_measurement(names)
+    ) %>%
+    dplyr::select(-names) %>%
+    dplyr::distinct() %>%
+    tidyr::pivot_wider(names_from = "measurement", values_from = "values") %>%
+    dplyr::filter(!is.na(point_estimate)) %>%
+    dplyr::mutate(
+      pe_percent = dplyr::if_else(stringr::str_detect(indicator, "^egra"),
+                                  as.character(round(point_estimate, 1)),
+                                  sprintf("%.1f%%", point_estimate * 100))
+    )
+  
+  return(out)
+  
+}
+
 
 #' read_variable_map
 #'
@@ -9,7 +75,7 @@
 read_variable_map <- function(ddh_link = "https://development-data-hub-s3-public.s3.amazonaws.com/ddhfiles/936441/dd_pak_varmap.xlsx") {
   httr::GET(ddh_link, httr::write_disk(tmp <- tempfile(fileext = ".xlsx")))
   
-  df <- readxl::read_excel(tmp, sheet = "Varmap", skip = 1)
+  df <- readxl::read_excel(tmp, sheet = "Varmap", skip = 2)
   df <- janitor::clean_names(df)
   df <- janitor::remove_empty(df, which = "rows")
   df <- janitor::remove_empty(df, which = "cols")

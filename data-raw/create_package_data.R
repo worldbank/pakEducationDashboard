@@ -4,15 +4,8 @@ source("./data-raw/cleaning_scripts/utils.R")
 
 
 # Create indicators -------------------------------------------------------
-# varmap <- read_variable_map()
-# TO DELETE ONCE FILE HAS BEEN FIXED IN DDH
-# START DELETE
-varmap_path <- "data-raw/data_input/DD_Pak_metadata_indicators_version2.xlsx"
-varmap <- readxl::read_excel(varmap_path, sheet = "Varmap", skip = 2) %>%
-  janitor::clean_names() %>%
-  janitor::remove_empty(which = "rows") %>%
-  janitor::remove_empty(which = "cols")
-# END DELETE
+varmap <- read_variable_map()
+
 indicator_choices_country <- create_indicator_choices(df = varmap, level = "country")
 indicator_choices_province <- create_indicator_choices(df = varmap, level = "province")
 indicator_choices_district <- create_indicator_choices(df = varmap, level = "district",
@@ -45,7 +38,6 @@ source("./data-raw/cleaning_scripts/data_country.R")
 source("./data-raw/cleaning_scripts/data_province.R")
 # Create district level data
 source("./data-raw/cleaning_scripts/data_district.R")
-
 # Create geodata
 source("./data-raw/cleaning_scripts/geodata.R")
 

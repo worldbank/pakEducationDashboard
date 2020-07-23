@@ -1,4 +1,3 @@
-source("./data-raw/cleaning_scripts/clean_province_level.R")
 
 # Load admin_level_lkup ---------------------------------------------------
 
@@ -7,25 +6,32 @@ province_lkup <- readr::read_csv("data-raw/data_input/admin_level_lkup.csv") %>%
   distinct()
 
 # Clean province level data -----------------------------------------------
-# province_link <- "https://development-data-hub-s3-public.s3.amazonaws.com/ddhfiles/936441/dd_pak_pe_province_version1.dta" 
-province_link <- "data-raw/data_input/DD_Pak_province_level_version2.dta"
+province_link <- "https://development-data-hub-s3-public.s3.amazonaws.com/ddhfiles/936441/dd_pak_pe_province_version1.dta" 
 
 pakeduc_province <- haven::read_stata(province_link) %>%
   mutate(
     province = stringr::str_to_sentence(as.character(forcats::as_factor(province_tag)))
   ) %>%
-  clean_province_level2() %>%
+  clean_raw_data(cols_to_remove = c( "country_tag",
+                                     "province_tag",
+                                     "district_tag",
+                                     "country",
+                                     "district"),
+                 unique_keys    = c("identifier",
+                                    "province",
+                                    "year",
+                                    "dataset"),
+                 dimensions     = c("gender", 
+                                    "wealth quintile", 
+                                    "urban-rural"),
+                 patterns       = c("_boys|boys_|_boys_|_girls|girls_|_girls_", 
+                                    "_wq[1-5]|wq[1-5]_|_wq[1-5]_",
+                                    "_urban|urban_|_urban_|_rural|rural_|_rural_")) %>%
   mutate(
     province = as.factor(province),
     province = forcats::fct_relevel(province, "Punjab", "Sindh", "Kp", "Balochistan", "Other areas")
   ) %>%
   dplyr::left_join(province_lkup)
-
-# indicator_choices_province <- sort(unique(pakeduc_province$indicator)) 
-# indicator_choices_province <- prepare_indicator_choices(indicator_choices_province,
-#                                                         expected_choices = expected_choices,
-#                                                         choices_labels = choice_labels,
-#                                                         labels_order = labels_order)
                                                                          
 # Create weighted dataset -------------------------------------------------
 

@@ -1,11 +1,23 @@
-source("./data-raw/cleaning_scripts/clean_country_level.R")
 
 # Clean country level data ------------------------------------------------
-#country_link <- "https://development-data-hub-s3-public.s3.amazonaws.com/ddhfiles/936441/dd_pak_pe_country_version1.dta"
-country_link <- "data-raw/data_input/DD_Pak_country_level_version2.dta"
+country_link <- "https://development-data-hub-s3-public.s3.amazonaws.com/ddhfiles/936441/dd_pak_pe_country_version1.dta"
 
 pakeduc_country <- haven::read_stata(country_link)  %>%
-  clean_country_level2()
+  clean_raw_data(cols_to_remove = c( "country_tag",
+                                     "province_tag",
+                                     "district_tag",
+                                     "country",
+                                     "province", 
+                                     "district"),
+                 unique_keys    = c("identifier",
+                                    "year",
+                                    "dataset"),
+                 dimensions     = c("gender", 
+                                    "wealth quintile", 
+                                    "urban-rural"),
+                 patterns       = c("_boys|boys_|_boys_|_girls|girls_|_girls_", 
+                                    "_wq[1-5]|wq[1-5]_|_wq[1-5]_",
+                                    "_urban|urban_|_urban_|_rural|rural_|_rural_"))
         
 indicator_choices_country_inv <- names(indicator_choices_country)
 names(indicator_choices_country_inv) <- unname(indicator_choices_country)

@@ -1,4 +1,3 @@
-source("./data-raw/cleaning_scripts/clean_district_level.R")
 
 # Load admin_level_lkup ---------------------------------------------------
 
@@ -12,8 +11,7 @@ admin_level_lkup <- readr::read_csv("data-raw/data_input/admin_level_lkup.csv") 
 
 
 # Clean district level data -----------------------------------------------
-# district_link <- "https://development-data-hub-s3-public.s3.amazonaws.com/ddhfiles/936441/dd_pak_pe_district_version1.dta"
-district_link <- "data-raw/data_input/DD_Pak_district_level_version2.dta"
+district_link <- "https://development-data-hub-s3-public.s3.amazonaws.com/ddhfiles/936441/dd_pak_pe_district_version1.dta"
 
 pakeduc_district <- haven::read_stata(district_link) %>%
   mutate(
@@ -21,16 +19,26 @@ pakeduc_district <- haven::read_stata(district_link) %>%
     district_merge = stringr::str_to_lower(district),
     district_merge = stringr::str_squish(district_merge)
   ) %>%
-  clean_district_level2() %>%
+  clean_raw_data(cols_to_remove = c( "country_tag",
+                                     "province_tag",
+                                     "district_tag",
+                                     "country",
+                                     "province"),
+                 unique_keys    = c("identifier",
+                                    "district",
+                                    "district_merge",
+                                    "year",
+                                    "dataset"),
+                 dimensions     = c("gender", 
+                                    "wealth quintile", 
+                                    "urban-rural"),
+                 patterns       = c("_boys|boys_|_boys_|_girls|girls_|_girls_", 
+                                    "_wq[1-5]|wq[1-5]_|_wq[1-5]_",
+                                    "_urban|urban_|_urban_|_rural|rural_|_rural_")) %>%
   dplyr::left_join(admin_level_lkup, by = c("district_merge" = "district_merge")) %>%
   select(-district_merge)
 
 
-# indicator_choices_district <- sort(unique(pakeduc_district$indicator)) 
-# indicator_choices_district <- prepare_indicator_choices(indicator_choices_district,
-#                                                         expected_choices = expected_choices_district,
-#                                                         choices_labels = choice_labels_district,
-#                                                         labels_order = labels_order_district)
 # Create weighted dataset -------------------------------------------------
 
 
