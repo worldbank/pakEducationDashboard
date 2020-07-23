@@ -43,7 +43,7 @@ mod_district_visuals_server <- function(input,
   ns <- session$ns
   
   output$district_title <- renderText({
-    names(indicator_choices_district)[indicator_choices_district == selection_vars$indicator()]
+    names(unlist(unname(indicator_choices_country)))[unlist(indicator_choices_country) == selection_vars$indicator()]
   })
   
   # Non-weighted data

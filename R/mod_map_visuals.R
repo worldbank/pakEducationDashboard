@@ -34,7 +34,7 @@ mod_map_visuals_server <- function(input,
   ns <- session$ns
   
   output$map_title <- renderText({
-    names(indicator_choices_district)[indicator_choices_district == selection_vars$indicator()]
+    names(unlist(unname(indicator_choices_country)))[unlist(indicator_choices_country) == selection_vars$indicator()]
   })
   
   df <- reactive({

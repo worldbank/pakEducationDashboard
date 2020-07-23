@@ -43,19 +43,13 @@ mod_country_visuals_server <- function(input,
   ns <- session$ns
 
   output$country_title <- renderText({
-    names(indicator_choices_country)[indicator_choices_country == selection_vars$indicator()]
+    names(unlist(unname(indicator_choices_country)))[unlist(indicator_choices_country) == selection_vars$indicator()]
   })
   
   # Non-weighted data
   surveydf <- reactive({
     # Handles potential issues due to missing selection inputs
     req(selection_vars$dataset())
-    
-    # gender_selection <- if(selection_vars$gender()) {
-    #   c("Boy", "Girl")
-    # } else {
-    #   "Both"
-    # }
     
     dplyr::filter(pakeduc_country,
                   indicator %in% !!selection_vars$indicator(),
@@ -66,12 +60,6 @@ mod_country_visuals_server <- function(input,
   
   # Weighted data
   df <- reactive({
-
-    # gender_selection <- if(selection_vars$gender()) {
-    #   c("Boy", "Girl")
-    # } else {
-    #   "Both"
-    # }
 
     dplyr::filter(pakeduc_country_weighted,
                   indicator %in% !!selection_vars$indicator(),

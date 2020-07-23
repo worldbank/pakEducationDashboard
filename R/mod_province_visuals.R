@@ -42,7 +42,7 @@ mod_province_visuals_server <- function(input,
   ns <- session$ns
   
   output$province_title <- renderText({
-    names(indicator_choices_province)[indicator_choices_province == selection_vars$indicator()]
+    names(unlist(unname(indicator_choices_country)))[unlist(indicator_choices_country) == selection_vars$indicator()]
   })
   
   # Non-weigthed 

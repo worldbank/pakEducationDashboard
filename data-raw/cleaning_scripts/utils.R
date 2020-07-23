@@ -149,7 +149,27 @@ create_indicator_choices <- function(df,
   
   out <- out[order(match(out, labels_order))]
   
-  return(out)
+  # Create a list of options with subsections
+  df$age_range <- extract_age_range(df$variable_name)
+  age_ranges <- unique(df$age_range[!is.na(df$age_range)])
+  # reorder vector of age_ranges
+  tmp <- stringr::str_replace(age_ranges, " to ", ".")
+  tmp <- readr::parse_number(tmp)
+  names(tmp) <- age_ranges
+  tmp <- sort(tmp)
+  age_ranges <- names(tmp)
+  
+  out_list <- vector(mode = "list", length = length(age_ranges))
+  age_patterns <- stringr::str_replace(age_ranges, " to ", "_")
+  age_names <- paste0("Age range: ", age_ranges)
+  
+  for (i in seq_along(out_list)) {
+    tmp <- out[str_detect(out, age_patterns[i])]
+    out_list[[i]] <- tmp
+    names(out_list)[i] <- age_names[i]
+  }
+  
+  return(out_list)
 }
 
 
