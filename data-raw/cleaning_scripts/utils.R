@@ -57,7 +57,8 @@ clean_raw_data <- function(df,
     dplyr::mutate(
       pe_percent = dplyr::if_else(stringr::str_detect(indicator, "^egra"),
                                   as.character(round(point_estimate, 1)),
-                                  sprintf("%.1f%%", point_estimate * 100))
+                                  sprintf("%.1f%%", point_estimate * 100)),
+      sample_size_cat = dplyr::if_else(sample_size > 50, 1, 0)
     )
   
   return(out)
@@ -151,7 +152,7 @@ create_indicator_choices <- function(df,
   
   # Create a list of options with subsections
   df$age_range <- extract_age_range(df$variable_name)
-  age_ranges <- unique(df$age_range[!is.na(df$age_range)])
+  age_ranges <- unique(df$age_range)
   # reorder vector of age_ranges
   tmp <- stringr::str_replace(age_ranges, " to ", ".")
   tmp <- readr::parse_number(tmp)
@@ -168,6 +169,9 @@ create_indicator_choices <- function(df,
     out_list[[i]] <- tmp
     names(out_list)[i] <- age_names[i]
   }
+  # Handle indicator that don't have any age range
+  no_age_range_ind <- out[!stringr::str_detect(out, "[0-9]{1,2}_[0-9]{1,2}$")]
+  out_list <- c(out_list, list("Age range: not specified" = no_age_range_ind))
   
   return(out_list)
 }

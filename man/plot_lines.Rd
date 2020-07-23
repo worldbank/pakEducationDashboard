@@ -2,8 +2,8 @@
 % Please edit documentation in R/utils.R
 \name{plot_lines}
 \alias{plot_lines}
-\title{plot_lines
-Common ggplot layers for the line plots}
+\title{plot_lines_weighted
+Common ggplot layers for the line plots using weighted data}
 \usage{
 plot_lines(
   data,
@@ -41,8 +41,10 @@ plot_lines(
 }
 \value{
 
+
+
 }
 \description{
-plot_lines
-Common ggplot layers for the line plots
+plot_lines_weighted
+Common ggplot layers for the line plots using weighted data
 }

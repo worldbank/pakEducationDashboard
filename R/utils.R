@@ -13,56 +13,56 @@
 #' @return
 #' @export
 #'
-plot_lines_weighted <- function(data,
-                                x,
-                                y,
-                                color,
-                                dataset,
-                                group,
-                                year,
-                                tooltip_value,
-                                font_size = 20,
-                                point_size = 6,
-                                line_size = 1.8
-                                ) 
-  {
-  # Adjust scale according to indicator
-  if (stringr::str_detect(unique(data$indicator), "^egra")) {
-    y_scale <- ggplot2::scale_y_continuous(limits = c(0, 100))
-  } else {
-    y_scale <- ggplot2::scale_y_continuous(limits = c(0, 1), labels = scales::percent)
-  }
-  
-  # Adjust for group
-  # scale_values = ifelse(unique(data$group) == "Both", "#F05123", c("#F05123","#97252B"))
-  scale_values <- c("#F05123","#97252B", "#29AFDE", "#6DD6C3", "#EBD197")
-  
-  p <- ggplot2::ggplot(data, ggplot2::aes(x = {{x}}, 
-                                          y = {{y}}, 
-                                          color = {{color}},
-                                          tooltip = paste("Value:", {{tooltip_value}},
-                                                          "<br />Year:", {{year}},
-                                                          "<br />Dataset:", {{dataset}},
-                                                          "<br />Group:", {{group}}))) +
-    ggplot2::geom_line(ggplot2::aes(group = {{group}}),
-                       size = ggplot2::rel(line_size)) +
-    ggiraph::geom_point_interactive(size = ggplot2::rel(point_size)) +
-    y_scale +
-    ggplot2::scale_x_continuous(breaks = integer_breaks()) +
-    ggplot2::scale_color_manual(values = scale_values) +
-    cowplot::theme_cowplot(font_size) +
-    ggplot2::theme(
-      legend.title    = ggplot2::element_blank(),
-      legend.position = "none",
-      panel.background = ggplot2::element_rect(fill = "#ECF0F1")
-    ) +
-    ggplot2::labs(
-      x = "",
-      y = ""
-    ) 
-  
-  return(p)
-}
+# plot_lines_weighted <- function(data,
+#                                 x,
+#                                 y,
+#                                 color,
+#                                 dataset,
+#                                 group,
+#                                 year,
+#                                 tooltip_value,
+#                                 font_size = 20,
+#                                 point_size = 6,
+#                                 line_size = 1.8
+#                                 ) 
+#   {
+#   # Adjust scale according to indicator
+#   if (stringr::str_detect(unique(data$indicator), "^egra")) {
+#     y_scale <- ggplot2::scale_y_continuous(limits = c(0, 100))
+#   } else {
+#     y_scale <- ggplot2::scale_y_continuous(limits = c(0, 1), labels = scales::percent)
+#   }
+#   
+#   # Adjust for group
+#   # scale_values = ifelse(unique(data$group) == "Both", "#F05123", c("#F05123","#97252B"))
+#   scale_values <- c("#F05123","#97252B", "#29AFDE", "#6DD6C3", "#EBD197")
+#   
+#   p <- ggplot2::ggplot(data, ggplot2::aes(x = {{x}}, 
+#                                           y = {{y}}, 
+#                                           color = {{color}},
+#                                           tooltip = paste("Value:", {{tooltip_value}},
+#                                                           "<br />Year:", {{year}},
+#                                                           "<br />Dataset:", {{dataset}},
+#                                                           "<br />Group:", {{group}})))  +
+#     ggplot2::geom_line(ggplot2::aes(group = {{group}}),
+#                        size = ggplot2::rel(line_size)) +
+#     ggiraph::geom_point_interactive(size = ggplot2::rel(point_size)) +
+#     y_scale +
+#     ggplot2::scale_x_continuous(breaks = integer_breaks()) +
+#     ggplot2::scale_color_manual(values = scale_values) +
+#     cowplot::theme_cowplot(font_size) +
+#     ggplot2::theme(
+#       legend.title    = ggplot2::element_blank(),
+#       legend.position = "none",
+#       panel.background = ggplot2::element_rect(fill = "#ECF0F1")
+#     ) +
+#     ggplot2::labs(
+#       x = "",
+#       y = ""
+#     ) 
+#   
+#   return(p)
+# }
 
 #' plot_lines
 #' Common ggplot layers for the line plots
@@ -111,17 +111,15 @@ plot_lines <- function(data,
   shps <- setNames( c(0, 1, 2, 5, 6, 15, 16), c("Weighted mix","aser", "hies", "pslm",
                                                 "mics", "dhs", "egra"))
   
-  p <- ggplot2::ggplot(data, ggplot2::aes(x = {{x}}, 
-                                          y = {{y}}, 
-                                          color = {{color}},
-                                          tooltip = paste("Value:", {{tooltip_value}},
-                                                          "<br />Year:", {{year}},
-                                                          "<br />Dataset:", {{dataset}},
-                                                          "<br />Group:", {{group}}))) 
-  
   
   if (!is.null(wght_data)) {
-    p <- p +
+    p <- ggplot2::ggplot(data, ggplot2::aes(x = {{x}}, 
+                                            y = {{y}}, 
+                                            color = {{color}},
+                                            tooltip = paste("Value:", {{tooltip_value}},
+                                                            "<br />Year:", {{year}},
+                                                            "<br />Dataset:", {{dataset}},
+                                                            "<br />Group:", {{group}})))  +
       ggplot2::geom_line(ggplot2::aes(group = interaction({{dataset}}, {{group}}), 
                                       linetype = {{dataset}}),
                          color = "grey",
@@ -131,16 +129,24 @@ plot_lines <- function(data,
                                       color = "grey",
                                       alpha = .6)
   } else {
-    p <- p +
+    p <- ggplot2::ggplot(data, ggplot2::aes(x = {{x}}, 
+                                            y = {{y}}, 
+                                            color = {{color}},
+                                            alpha = sample_size,
+                                            tooltip = paste("Value:", {{tooltip_value}},
+                                                            "<br />Year:", {{year}},
+                                                            "<br />Dataset:", {{dataset}},
+                                                            "<br />Group:", {{group}},
+                                                            "<br />Sample size:", sample_size))) +
       ggplot2::geom_line(ggplot2::aes(group = interaction({{dataset}}, {{group}}), 
                                       linetype = {{dataset}}),
-                         size = ggplot2::rel(line_size),
-                         alpha = 1 ) +
-      ggiraph::geom_point_interactive(size = ggplot2::rel(point_size), alpha = 1)
+                         size = ggplot2::rel(line_size)) +
+      ggiraph::geom_point_interactive(size = ggplot2::rel(point_size))
   }
   
   p <- p +
     ggplot2::scale_shape_manual(values = shps) +
+    #ggplot2::scale_alpha_continuous(breaks = 30, )
     y_scale +
     ggplot2::scale_x_continuous(breaks = integer_breaks()) +
     ggplot2::scale_color_manual(values = scale_values) +

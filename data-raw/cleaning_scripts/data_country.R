@@ -22,7 +22,7 @@ pakeduc_country <- haven::read_stata(country_link)  %>%
 indicator_choices_country_inv <- names(indicator_choices_country)
 names(indicator_choices_country_inv) <- unname(indicator_choices_country)
 
-assertthat::assert_that(all(sort(unique(pakeduc_country$indicator)) %in% sort(unname(indicator_choices_country)) ))
+assertthat::assert_that(all(sort(unique(pakeduc_country$indicator)) %in% sort(unname(unlist(indicator_choices_country)))))
 
 # Create weighted dataset -------------------------------------------------
 
