@@ -150,28 +150,27 @@ create_indicator_choices <- function(df,
   
   out <- out[order(match(out, labels_order))]
   
-  # Create a list of options with subsections
-  df$age_range <- extract_age_range(df$variable_name)
-  age_ranges <- unique(df$age_range)
-  # reorder vector of age_ranges
-  tmp <- stringr::str_replace(age_ranges, " to ", ".")
-  tmp <- readr::parse_number(tmp)
-  names(tmp) <- age_ranges
-  tmp <- sort(tmp)
-  age_ranges <- names(tmp)
+  # # Create a list of options with subsections
+  # df$age_range <- extract_age_range(df$variable_name)
+  # age_ranges <- unique(df$age_range)
+  # # reorder vector of age_ranges
+  # tmp <- stringr::str_replace(age_ranges, " to ", ".")
+  # tmp <- readr::parse_number(tmp)
+  # names(tmp) <- age_ranges
+  # tmp <- sort(tmp)
+  # age_ranges <- names(tmp)
   
-  out_list <- vector(mode = "list", length = length(age_ranges))
-  age_patterns <- stringr::str_replace(age_ranges, " to ", "_")
-  age_names <- paste0("Age range: ", age_ranges)
+  indicator_list <- unique(extract_indicator_list(out))
+  
+  out_list <- vector(mode = "list", length = length(indicator_list))
+  indicator_patterns <- indicator_list
+  indicator_names <- paste0("Indicator: ", indicator_list)
   
   for (i in seq_along(out_list)) {
-    tmp <- out[str_detect(out, age_patterns[i])]
+    tmp <- out[stringr::str_detect(out, indicator_patterns[i])]
     out_list[[i]] <- tmp
-    names(out_list)[i] <- age_names[i]
+    names(out_list)[i] <- indicator_names[i]
   }
-  # Handle indicator that don't have any age range
-  no_age_range_ind <- out[!stringr::str_detect(out, "[0-9]{1,2}_[0-9]{1,2}$")]
-  out_list <- c(out_list, list("Age range: not specified" = no_age_range_ind))
   
   return(out_list)
 }
@@ -388,4 +387,26 @@ extract_dimension_levels <- function(col, dim_col, dimensions) {
   #       stringr::str_detect(dim_col, ur_dim)] <- "Urban and Rural combined"
   
   return(out)
+}
+
+#' extract_indicator_list
+#' Retrieve indicator names (without age range) from column names
+#' @param col character: Character vector of column names from which indicator
+#' names need to be extracted
+#'
+#' @return character
+#' @export
+#'
+extract_indicator_list <- function(col,
+                                   age_range_pattern = "_[0-9]{1,2}_[0-9]{1,2}"
+                                   ) {
+  # CHECK inputs
+  assertthat::assert_that(class(col) == "character")
+  age_range_pattern <- "_[0-9]{1,2}_[0-9]{1,2}"
+  
+  col <- stringr::str_remove(col, pattern = age_range_pattern) 
+  col <- stringr::str_remove(col, "^_")
+  col <- stringr::str_remove(col, "_$")
+  
+  return(col)
 }
