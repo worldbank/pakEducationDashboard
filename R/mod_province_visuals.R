@@ -42,7 +42,7 @@ mod_province_visuals_server <- function(input,
   ns <- session$ns
   
   output$province_title <- renderText({
-    names(indicator_choices_province)[indicator_choices_province == selection_vars$indicator()]
+    names(unlist(unname(indicator_choices_country)))[unlist(indicator_choices_country) == selection_vars$indicator()]
   })
   
   # Non-weigthed 
@@ -50,27 +50,16 @@ mod_province_visuals_server <- function(input,
     # Handles potential issues due to missing selection inputs
     req(selection_vars$dataset())
     
-    gender_selection <- if(selection_vars$gender()) {
-      c("Boy", "Girl")
-    } else {
-      "Both"
-    }
-    
     dplyr::filter(pakeduc_province,
                   indicator %in% !!selection_vars$indicator(),
                   province %in% !!selection_vars$province(),
-                  gender %in% !!gender_selection, 
+                  dimensions %in% !!selection_vars$dimension(), 
                   dataset %in% !!selection_vars$dataset(),
                   !is.na(point_estimate)) 
   })
   
   # weighted data
   df <- reactive({
-    gender_selection <- if(selection_vars$gender()) {
-      c("Boy", "Girl")
-    } else {
-      "Both"
-    }
    
     ## Disable "Disaggregate by gender" option if for that combintation of indicator,
     ## select, year there is no "Boy" or "Girl"
@@ -78,7 +67,7 @@ mod_province_visuals_server <- function(input,
                   indicator == !!selection_vars$indicator(),
                   province %in% !!selection_vars$province(),
                   !is.na(point_estimate),
-                  gender %in% !!gender_selection) 
+                  dimensions %in% !!selection_vars$dimension()) 
   })
   
   
@@ -107,9 +96,9 @@ mod_province_visuals_server <- function(input,
                       wght_data = df(),
                       x = year,
                       y = point_estimate,
-                      color = gender,
+                      color = dimension_levels,
                       dataset = dataset,
-                      gender = gender,
+                      group = dimension_levels,
                       year = year,
                       tooltip_value = pe_percent,
                       font_size = 18)
@@ -117,9 +106,9 @@ mod_province_visuals_server <- function(input,
       p <- plot_lines(data = surveydf(),
                       x = year,
                       y = point_estimate,
-                      color = gender,
+                      color = dimension_levels,
                       dataset = dataset,
-                      gender = gender,
+                      group = dimension_levels,
                       year = year,
                       tooltip_value = pe_percent,
                       font_size = 18)

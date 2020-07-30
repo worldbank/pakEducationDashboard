@@ -1,0 +1,12 @@
+name: pakeducationdashboard_stg
+title: pakEducationDashboard_STG
+username: tonyfujs
+account: tonyfujs
+server: w0lxopshyprd1b.worldbank.org
+hostUrl: http://w0lxopshyprd1b.worldbank.org:3939/__api__
+appId: 577
+bundleId: 9358
+url: http://w0lxopshyprd1b.worldbank.org:3939/content/577/
+when: 1595229317.7369
+asMultiple: FALSE
+asStatic: FALSE

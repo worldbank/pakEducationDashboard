@@ -43,7 +43,7 @@ mod_country_visuals_server <- function(input,
   ns <- session$ns
 
   output$country_title <- renderText({
-    names(indicator_choices_country)[indicator_choices_country == selection_vars$indicator()]
+    names(unlist(unname(indicator_choices_country)))[unlist(indicator_choices_country) == selection_vars$indicator()]
   })
   
   # Non-weighted data
@@ -51,15 +51,9 @@ mod_country_visuals_server <- function(input,
     # Handles potential issues due to missing selection inputs
     req(selection_vars$dataset())
     
-    gender_selection <- if(selection_vars$gender()) {
-      c("Boy", "Girl")
-    } else {
-      "Both"
-    }
-    
     dplyr::filter(pakeduc_country,
                   indicator %in% !!selection_vars$indicator(),
-                  gender %in% !!gender_selection, 
+                  dimensions %in% !!selection_vars$dimension(), 
                   dataset %in% !!selection_vars$dataset(),
                   !is.na(point_estimate)) 
   })
@@ -67,16 +61,10 @@ mod_country_visuals_server <- function(input,
   # Weighted data
   df <- reactive({
 
-    gender_selection <- if(selection_vars$gender()) {
-      c("Boy", "Girl")
-    } else {
-      "Both"
-    }
-
     dplyr::filter(pakeduc_country_weighted,
                   indicator %in% !!selection_vars$indicator(),
                   !is.na(point_estimate),
-                  gender %in% !!gender_selection)
+                  dimensions %in% !!selection_vars$dimension())
   })
   
   output$country_ind_description <- renderText({
@@ -97,18 +85,18 @@ mod_country_visuals_server <- function(input,
                       wght_data = df(),
                       x = year,
                       y = point_estimate,
-                      color = gender,
+                      color = dimension_levels,
                       dataset = dataset,
-                      gender = gender,
+                      group = dimension_levels,
                       year = year,
                       tooltip_value = pe_percent)
     } else {
       p <- plot_lines(data = surveydf(),
                       x = year,
                       y = point_estimate,
-                      color = gender,
+                      color = dimension_levels,
                       dataset = dataset,
-                      gender = gender,
+                      group = dimension_levels,
                       year = year,
                       tooltip_value = pe_percent)
     }

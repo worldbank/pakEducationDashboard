@@ -43,7 +43,7 @@ mod_district_visuals_server <- function(input,
   ns <- session$ns
   
   output$district_title <- renderText({
-    names(indicator_choices_district)[indicator_choices_district == selection_vars$indicator()]
+    names(unlist(unname(indicator_choices_country)))[unlist(indicator_choices_country) == selection_vars$indicator()]
   })
   
   # Non-weighted data
@@ -51,35 +51,23 @@ mod_district_visuals_server <- function(input,
     # Handles potential issues due to missing selection inputs
     req(selection_vars$dataset())
     
-    gender_selection <- if(selection_vars$gender()) {
-      c("Boy", "Girl")
-    } else {
-      "Both"
-    }
-    
     dplyr::filter(pakeduc_district,
                   indicator %in% !!selection_vars$indicator(),
-                  gender %in% !!gender_selection, 
-                  dist_nm %in% !!selection_vars$district(),
+                  dimensions %in% !!selection_vars$dimension(),
+                  district %in% !!selection_vars$district(),
                   dataset %in% !!selection_vars$dataset(),
                   !is.na(point_estimate)) 
   })
   
   # Weighted data
   df <- reactive({
-    
-    gender_selection <- if(selection_vars$gender()) {
-      c("Boy", "Girl")
-    } else {
-      "Both"
-    }
   
     dplyr::filter(pakeduc_district_weighted,
                   indicator == !!selection_vars$indicator(),
                   province %in% !!selection_vars$province(),
-                  dist_nm %in% !!selection_vars$district(),
+                  district %in% !!selection_vars$district(),
                   !is.na(point_estimate),
-                  gender %in% !!gender_selection) 
+                  dimensions %in% !!selection_vars$dimension()) 
   })
   
   
@@ -110,25 +98,25 @@ mod_district_visuals_server <- function(input,
                         wght_data = df(),
                         x = year,
                         y = point_estimate,
-                        color = gender,
+                        color = dimension_levels,
                         dataset = dataset,
-                        gender = gender,
+                        group = dimension_levels,
                         year = year,
                         tooltip_value = pe_percent)
       } else {
         p <- plot_lines(data = surveydf(),
                         x = year,
                         y = point_estimate,
-                        color = gender,
+                        color = dimension_levels,
                         dataset = dataset,
-                        gender = gender,
+                        group = dimension_levels,
                         year = year,
                         tooltip_value = pe_percent)
       }
       
-      facet_rows <- ((length(unique(surveydf()$dist_nm)) - 1) %/% 4) + 1    
+      facet_rows <- ((length(unique(surveydf()$district)) - 1) %/% 4) + 1    
       p <- p +
-        ggplot2::facet_wrap(~dist_nm, nrow = facet_rows) +
+        ggplot2::facet_wrap(~district, nrow = facet_rows) +
         ggplot2::theme(
           strip.text       = ggplot2::element_text(color = "#009DA7", family = "Arial",
                                                    face = "bold", size = 30),

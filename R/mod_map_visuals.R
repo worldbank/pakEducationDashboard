@@ -34,32 +34,25 @@ mod_map_visuals_server <- function(input,
   ns <- session$ns
   
   output$map_title <- renderText({
-    names(indicator_choices_district)[indicator_choices_district == selection_vars$indicator()]
+    names(unlist(unname(indicator_choices_country)))[unlist(indicator_choices_country) == selection_vars$indicator()]
   })
   
   df <- reactive({
     # Handles potential issues due to missing selection inputs
     req(selection_vars$year())
     
-    
-    # gender_selection <- if(selection_vars$gender()) {
-    #   c("Boy", "Girl")
-    # } else {
-    #   "Both"
-    # }
-    
     out <- dplyr::filter(pakeduc_district_weighted,
                          indicator == !!selection_vars$indicator())
     out <- dplyr::filter(out,
-                         #gender %in% !!gender_selection,
+                         # dimensions %in% !!selection_vars$dimension(), 
                          year == !!selection_vars$year(),
                          # year == max(year, na.rm = TRUE),
                          # Add only both
-                         gender == "Both")
+                         dimensions == "aggregate")
     out <- dplyr::distinct(out)
     
     out <- pakgeo_district %>%
-      dplyr::left_join(out, by = c("dist_key" = "dist_key"))
+      dplyr::left_join(out, by = c("dist_key" = "identifier"))
   })
   
   output$warning_message <- renderText({
@@ -74,7 +67,7 @@ mod_map_visuals_server <- function(input,
     if (nrow(df()) > 0) {
       p <- plot_map(data = df(),
                     fill = point_estimate,
-                    data_id = dist_nm,
+                    data_id = district,
                     year = year,
                     tooltip_region_header = "District:",
                     tooltip_region_value = DISTRICT,

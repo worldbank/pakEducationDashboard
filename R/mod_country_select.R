@@ -22,10 +22,14 @@ mod_country_select_ui <- function(id){
                 choices = indicator_choices_country,
                 selectize = TRUE,
                 selected = c("reading_9_11")),
-    # Trigger gender disaggregation
-    checkboxInput(inputId = ns("gender"),
-                  label = "Disaggregate by gender",
-                  value = FALSE),
+    # Trigger disaggregation
+    radioButtons(inputId = ns("dimension"),
+                 label = "Disaggregate by:",
+                 choices = c("Gender" = "gender",
+                             "Urban - Rural" = "urban-rural",
+                             "Wealth quintile" = "wealth quintile",
+                             "No disaggregation" = "aggregate"),
+                 selected = "aggregate"),
     
     # Trigger display of weighted average trend line
     checkboxInput(inputId = ns("weighted_mix"),
@@ -55,11 +59,11 @@ mod_country_select_server <- function(input, output, session){
   # Only display data sets based on inputs for non-weighted
   datasets <- reactive({
     
-    g <- ifelse(input$gender, c("Boy","Girl"), "Both")
+    dim <- ifelse(!is.null(input$dimension), input$dimension, "aggregate")
     
     d <- pakeduc_country[which(pakeduc_country$indicator == input$indicator &
                                  !is.na(pakeduc_country$point_estimate) &
-                                 pakeduc_country$gender %in% g), "dataset"]
+                                 pakeduc_country$dimensions %in% dim), "dataset"]
     
     if (nrow(d) > 0) {return(d[["dataset"]])} else {return("")}
   })
@@ -86,7 +90,7 @@ mod_country_select_server <- function(input, output, session){
   return(
     list(
       indicator     = reactive({ input$indicator }),
-      gender        = reactive({ input$gender }),
+      dimension     = reactive({ input$dimension }),
       dataset       = reactive({ input$dataset }),
       weighted_mix  = reactive({ input$weighted_mix})
       

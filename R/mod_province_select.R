@@ -33,10 +33,16 @@ mod_province_select_ui <- function(id){
                 multiple = TRUE,
                 selectize = TRUE,
                 selected = sort(unique(pakeduc_province[["province"]]))),
-    # Trigger gender disaggregation
-    checkboxInput(inputId = ns("gender"),
-                  label = "Disaggregate by gender",
-                  value = FALSE),
+    
+    # Trigger disaggregation
+    radioButtons(inputId = ns("dimension"),
+                 label = "Disaggregate by:",
+                 choices = c("Gender" = "gender",
+                             "Urban - Rural" = "urban-rural",
+                             "Wealth quintile" = "wealth quintile",
+                             "No disaggregation" = "aggregate"),
+                 selected = "aggregate"),
+    
     # Trigger display of weighted average trend line
     checkboxInput(inputId = ns("weighted_mix"),
                   label = "Show weighted average trend line",
@@ -76,12 +82,12 @@ mod_province_select_server <- function(input, output, session){
   # Only display datasets based on inputs for non-weighted
   datasets <- reactive({
    
-    g <- ifelse(input$gender, c("Boy","Girl"), "Both")
+    dim <- ifelse(!is.null(input$dimension), input$dimension, "aggregate")
     
     d <- pakeduc_province[which(pakeduc_province$province %in% input$province &
                                   pakeduc_province$indicator == input$indicator &
                                   !is.na(pakeduc_province$point_estimate) &
-                                pakeduc_province$gender %in% g), "dataset"]
+                                pakeduc_province$dimensions %in% dim), "dataset"]
 
     if (nrow(d) > 0) {return(d[["dataset"]])} else {return("")}
   })
@@ -95,26 +101,6 @@ mod_province_select_server <- function(input, output, session){
                 selected = c("pslm", "aser", "hies", "egra", "dhs"))
   })
   
-  # Only display years based on inputs for either weighted or non-weighted
-  # years <- reactive({
-  #   # Assuming that years only effect map
-  #   pakeduc_province_weighted[which(pakeduc_province_weighted$province %in% input$province & 
-  #                              pakeduc_province_weighted$indicator == input$indicator &
-  #                              !is.na(pakeduc_province_weighted$point_estimate)), "year"]
-  # })
-  
-  # output$tmp_year <- 
-  #   renderUI({
-  #     
-  #     shinyWidgets::sliderTextInput(inputId  = ns("year"), 
-  #                                   label    = "Select a year",
-  #                                   choices  = sort(unlist(unique(years()))),
-  #                                   selected = max(years(), na.rm = TRUE),
-  #                                   to_min   = min(years(), na.rm = TRUE),
-  #                                   to_max   = max(years(), na.rm = TRUE) 
-  #                                               )
-  # })
-  
   output$data_src_description <- renderUI({data_sources_description})
   # if clciked show survey descriptions
   observeEvent(
@@ -126,7 +112,7 @@ mod_province_select_server <- function(input, output, session){
   return(
     list(
       indicator     = reactive({ input$indicator }),
-      gender        = reactive({ input$gender }),
+      dimension     = reactive({ input$dimension }),
       dataset       = reactive({ input$dataset }),
       province      = reactive({ input$province }),
       weighted_mix  = reactive({ input$weighted_mix})#,

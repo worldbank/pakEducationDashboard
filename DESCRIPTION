@@ -23,7 +23,7 @@ Imports:
     cowplot,
     shinythemes,
     pkgload,
-    sf (>= 0.8.0),
+    sf (>= 0.9.5),
     ggiraph,
     shinycssloaders,
     shinyWidgets,
