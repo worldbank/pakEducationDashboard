@@ -5,9 +5,9 @@ account: tonyfujs
 server: w0lxpjekins05.worldbank.org
 hostUrl: http://w0lxpjekins05.worldbank.org:3939/__api__
 appId: 575
-bundleId: 4190
+bundleId: 4381
 url: http://w0lxpjekins05.worldbank.org:3939/data_depot_DEV/
-when: 1592315670.71195
-lastSyncTime: 1592315670.71195
+when: 1595250348.82252
 asMultiple: FALSE
 asStatic: FALSE
+ignoredFiles: .Rprofile|TEMP.R
