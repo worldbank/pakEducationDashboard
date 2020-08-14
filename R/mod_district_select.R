@@ -44,7 +44,7 @@ mod_district_select_ui <- function(id){
                  label = "Disaggregate by:",
                  choices = c("Gender" = "gender",
                              "Urban - Rural" = "urban-rural",
-                             "Wealth quintile" = "wealth quintile",
+                             # "Wealth quintile" = "wealth quintile",
                              "No disaggregation" = "aggregate"),
                  selected = "aggregate"),
     
