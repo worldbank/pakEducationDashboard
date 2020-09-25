@@ -1,6 +1,6 @@
 {
   "R": {
-    "Version": "3.5.1",
+    "Version": "4.0.2",
     "Repositories": [
       {
         "Name": "CRAN",
@@ -348,9 +348,11 @@
     "ggiraph": {
       "Package": "ggiraph",
       "Version": "0.7.0",
-      "Source": "Repository",
-      "Repository": "CRAN",
-      "Hash": "11000dfc1a49c34bc2105d6fcf3e52ef"
+      "Source": "URL",
+      "Repository": "RSPM",
+      "RemoteType": "url",
+      "RemoteUrl": "https://packagemanager.rstudio.com/all/latest/src/contrib/Archive/ggiraph/ggiraph_0.7.0.tar.gz",
+      "Hash": "0a80e66e73ab4ed769194a4010162845"
     },
     "ggplot2": {
       "Package": "ggplot2",
@@ -858,10 +860,10 @@
     },
     "sf": {
       "Package": "sf",
-      "Version": "0.9-5",
+      "Version": "0.9-6",
       "Source": "Repository",
       "Repository": "CRAN",
-      "Hash": "5b23b3b72c0d9962a59c57b110076f9a"
+      "Hash": "bf0ef23231efe31576e08d69772892ef"
     },
     "shiny": {
       "Package": "shiny",
@@ -914,10 +916,10 @@
     },
     "stringi": {
       "Package": "stringi",
-      "Version": "1.4.6",
+      "Version": "1.5.3",
       "Source": "Repository",
       "Repository": "CRAN",
-      "Hash": "e99d8d656980d2dd416a962ae55aec90"
+      "Hash": "a063ebea753c92910a4cca7b18bc1f05"
     },
     "stringr": {
       "Package": "stringr",
