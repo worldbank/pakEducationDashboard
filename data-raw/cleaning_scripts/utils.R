@@ -58,7 +58,8 @@ clean_raw_data <- function(df,
       pe_percent = dplyr::if_else(stringr::str_detect(indicator, "^egra"),
                                   as.character(round(point_estimate, 1)),
                                   sprintf("%.1f%%", point_estimate * 100)),
-      sample_size_cat = dplyr::if_else(sample_size > 50, 1, 0)
+      sample_size_cat = dplyr::if_else(sample_size > 50, 1, 0),
+      identifier = as.character(identifier)
     )
   
   return(out)

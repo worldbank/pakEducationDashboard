@@ -21,7 +21,8 @@ mod_map_select_ui <- function(id){
                 selected = "reading_9_11"),
 
     # Dynamically chooses dataset based on inputs
-    # uiOutput(ns("tmp_dataset")),
+    uiOutput(ns("tmp_dataset")),
+
     # Dynamically chooses year based on inputs
     uiOutput(ns("tmp_year")),
     # Hide and Show button for data sources description
@@ -76,14 +77,14 @@ mod_map_select_server <- function(input, output, session){
     if (nrow(d) > 0) {return(d[["dataset"]])} else {return("")}
   })
   
-  # output$tmp_dataset<-  renderUI({
-  #   selectInput(inputId = ns("dataset"),
-  #               label = "Choose one or more survey(s)",
-  #               choices = sort(unlist(unique(datasets()))),
-  #               selectize = TRUE,
-  #               multiple = TRUE,
-  #               selected = c("pslm", "aser", "hies", "egra", "dhs"))
-  # })
+  output$tmp_dataset <-  renderUI({
+    selectInput(inputId = ns("dataset"),
+                label = "Choose one survey(s)",
+                choices = c("weighted_average", sort(unlist(unique(datasets())))),
+                selectize = TRUE,
+                multiple = FALSE,
+                selected = "weighted_average")
+  })
   
   output$data_src_description <- renderUI({data_sources_description})
   # if clicked show survey descriptions

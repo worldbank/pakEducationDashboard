@@ -41,18 +41,27 @@ mod_map_visuals_server <- function(input,
     # Handles potential issues due to missing selection inputs
     req(selection_vars$year())
     
-    out <- dplyr::filter(pakeduc_district_weighted,
-                         indicator == !!selection_vars$indicator())
-    out <- dplyr::filter(out,
-                         # dimensions %in% !!selection_vars$dimension(), 
-                         year == !!selection_vars$year(),
-                         # year == max(year, na.rm = TRUE),
-                         # Add only both
-                         dimensions == "aggregate")
-    out <- dplyr::distinct(out)
-    
-    out <- pakgeo_district %>%
-      dplyr::left_join(out, by = c("dist_key" = "identifier"))
+    if (selection_vars$dataset() == "weighted_average") {
+      
+      out <- dplyr::filter(pakeduc_district_weighted,
+                           indicator == !!selection_vars$indicator(),
+                           year == !!selection_vars$year(),
+                           dimensions == "aggregate") %>%
+        dplyr::distinct()
+      
+      out <- pakgeo_district %>%
+        dplyr::left_join(out, by = c("dist_key" = "identifier"))
+    } else {
+      out <- dplyr::filter(pakeduc_district,
+                           dataset == !!selection_vars$dataset(),
+                           indicator == !!selection_vars$indicator(),
+                           year == !!selection_vars$year(),
+                           dimensions == "aggregate") %>%
+        dplyr::distinct()
+      
+      out <- pakgeo_district %>%
+        dplyr::left_join(out, by = c("dist_key" = "identifier"))
+    }
   })
   
   output$warning_message <- renderText({
