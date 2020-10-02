@@ -74,7 +74,9 @@ mod_map_visuals_server <- function(input,
   
   output$district_map <- ggiraph::renderggiraph({
     if (nrow(df()) > 0) {
-      p <- plot_map(data = df(),
+      map_data <- df()
+      sf::st_crs(map_data) <- 4326
+      p <- plot_map(data = map_data,
                     fill = point_estimate,
                     data_id = district,
                     year = year,

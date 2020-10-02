@@ -139,7 +139,9 @@ plot_map <- function(data,
                      font_size = 20
 ) 
 {
-  
+  sf::st_crs(dashed_border) <- 4326
+  sf::st_crs(dotted_border) <- 4326
+  sf::st_crs(plain_border)  <- 4326
   # Adjust scale according to indicator
   if (stringr::str_detect(unique(data$indicator), "^egra") & !is.na(unique(data$indicator))) {
     #fill_scale <- ggplot2::scale_fill_viridis_c(limits = c(0, 100), guide = FALSE)
