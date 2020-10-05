@@ -1,11 +1,5 @@
-# my_title <- tags$a(tags$img(src = "www/logo.png", height = "60", width = "163",
-#                             height = "70",
-#                             width = "190",
-#                             style = "position: fixed; right: 10px; top: 0px;"))
-
-# my_title <- img(src="www/logo_green.png",
-#                 style="margin-top: -19px; padding-right:5px;padding-bottom:5px", 
-#                 height = 63)
+# img <- png::readPNG("inst/app/www/logo.png")
+# g_pic <- grid::rasterGrob(img, interpolate = TRUE)
 
 #' @import shiny
 app_ui <- function() {

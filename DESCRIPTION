@@ -29,7 +29,10 @@ Imports:
     shinyWidgets,
     shinyjs,
     config,
-    magrittr
+    magrittr,
+    forcats,
+    grid,
+    png
 RoxygenNote: 7.1.1
 Suggests: 
     testthat

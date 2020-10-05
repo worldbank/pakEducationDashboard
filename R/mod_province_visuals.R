@@ -115,8 +115,10 @@ mod_province_visuals_server <- function(input,
     }
     
     p <- p +
-      ggplot2::facet_wrap(~province, ncol = 5, 
-                          labeller = ggplot2::labeller(indicator = indicator_choices_country_inv)) +
+      ggplot2::facet_wrap(~ forcats::fct_relevel(province, "Other areas", after = Inf),
+                                                ncol = 5, 
+                                                labeller = ggplot2::label_wrap_gen(width = 10)) +
+                          # labeller = ggplot2::labeller(indicator = indicator_choices_country_inv)) +
       ggplot2::theme(
         strip.text       = ggplot2::element_text(color = "#009DA7", family = "Arial",
                                                  face = "bold", size = 30),

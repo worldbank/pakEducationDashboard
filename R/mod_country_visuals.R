@@ -104,6 +104,13 @@ mod_country_visuals_server <- function(input,
     #Only return plot if filtered dataframe has rows
     if(nrow(surveydf()) > 0) {
       
+      # p <- p +
+      #   ggplot2::annotation_custom(g_pic, 
+      #                              xmin = max(surveydf()$year)) - 1, 
+      #                              xmax = Inf, 
+      #                              ymin = -Inf, 
+      #                              ymax = 0.08)
+      
       ggiraph::girafe(ggobj = p,
                       pointsize = 16,
                       width_svg = 18,
