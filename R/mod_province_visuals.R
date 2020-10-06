@@ -16,8 +16,8 @@
 mod_province_visuals_ui <- function(id){
   ns <- NS(id)
   tagList(
-    h3(textOutput(ns("province_title"))),
-    p(textOutput(ns("province_ind_description"))),
+    # h3(textOutput(ns("province_title"))),
+    # p(textOutput(ns("province_ind_description"))),
     shinycssloaders::withSpinner(
       ggiraph::ggiraphOutput(outputId = ns("province_plot"), 
                              width = "100%", 
@@ -41,7 +41,7 @@ mod_province_visuals_server <- function(input,
                                         selection_vars){
   ns <- session$ns
   
-  output$province_title <- renderText({
+  province_title <- reactive({
     names(unlist(unname(indicator_choices_country)))[unlist(indicator_choices_country) == selection_vars$indicator()]
   })
   
@@ -71,7 +71,7 @@ mod_province_visuals_server <- function(input,
   })
   
   
-  output$province_ind_description <- renderText({
+  province_ind_description <- reactive({
     unique(df()$indicator_definition)
   })
   
@@ -101,7 +101,9 @@ mod_province_visuals_server <- function(input,
                       group = dimension_levels,
                       year = year,
                       tooltip_value = pe_percent,
-                      font_size = 18)
+                      font_size = 18,
+                      title = province_title(),
+                      subtitle = province_ind_description())
     } else {
       p <- plot_lines(data = surveydf(),
                       x = year,
@@ -111,7 +113,9 @@ mod_province_visuals_server <- function(input,
                       group = dimension_levels,
                       year = year,
                       tooltip_value = pe_percent,
-                      font_size = 18)
+                      font_size = 18,
+                      title = province_title(),
+                      subtitle = province_ind_description())
     }
     
     p <- p +
@@ -124,6 +128,9 @@ mod_province_visuals_server <- function(input,
                                                  face = "bold", size = 30),
         strip.background = ggplot2::element_rect(color = "white", fill = "white")
       )
+    
+    p <- finalise_plot(p) + 
+      theme_wb()
     
       ggiraph::girafe(ggobj = p,
                       pointsize = 16,

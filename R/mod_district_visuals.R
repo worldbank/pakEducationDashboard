@@ -16,8 +16,8 @@
 mod_district_visuals_ui <- function(id){
   ns <- NS(id)
   tagList(
-    h3(textOutput(ns("district_title"))),
-    p(textOutput(ns("district_ind_description"))),
+    # h3(textOutput(ns("district_title"))),
+    # p(textOutput(ns("district_ind_description"))),
     shinycssloaders::withSpinner(
       ggiraph::ggiraphOutput(outputId = ns("district_plot"),
                              width = "100%", 
@@ -42,7 +42,7 @@ mod_district_visuals_server <- function(input,
                                         selection_vars) {
   ns <- session$ns
   
-  output$district_title <- renderText({
+  district_title <- reactive({
     names(unlist(unname(indicator_choices_country)))[unlist(indicator_choices_country) == selection_vars$indicator()]
   })
   
@@ -71,7 +71,7 @@ mod_district_visuals_server <- function(input,
   })
   
   
-  output$district_ind_description <- renderText({
+  district_ind_description <- reactive({
     unique(df()$indicator_definition[!is.na(df()$indicator_definition)])
   })
   
@@ -102,7 +102,9 @@ mod_district_visuals_server <- function(input,
                         dataset = dataset,
                         group = dimension_levels,
                         year = year,
-                        tooltip_value = pe_percent)
+                        tooltip_value = pe_percent,
+                        title = district_title(),
+                        subtitle = district_ind_description())
       } else {
         p <- plot_lines(data = surveydf(),
                         x = year,
@@ -111,7 +113,9 @@ mod_district_visuals_server <- function(input,
                         dataset = dataset,
                         group = dimension_levels,
                         year = year,
-                        tooltip_value = pe_percent)
+                        tooltip_value = pe_percent,
+                        title = district_title(),
+                        subtitle = district_ind_description())
       }
       
       facet_rows <- ((length(unique(surveydf()$district)) - 1) %/% 4) + 1    
@@ -124,6 +128,8 @@ mod_district_visuals_server <- function(input,
         )
       
       #Only return plot if filtered dataframe has rows
+      p <- finalise_plot(p) + 
+        theme_wb()
       
       ggiraph::girafe(ggobj = p,
                       width_svg = 22,

@@ -1,5 +1,6 @@
 # img <- png::readPNG("inst/app/www/logo.png")
 # g_pic <- grid::rasterGrob(img, interpolate = TRUE)
+logo <- system.file("app/www", "logo.png", package = "pakEducationDashboard")
 
 #' @import shiny
 app_ui <- function() {

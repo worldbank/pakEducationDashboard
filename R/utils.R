@@ -25,9 +25,12 @@ plot_lines <- function(data,
                        tooltip_value,
                        font_size = 20,
                        point_size = 5,
-                       line_size = 1.6
+                       line_size = 1.6,
+                       title,
+                       subtitle
 ) 
 {
+  subtitle <- stringr::str_wrap(subtitle, width = 160)
   
   # Adjust scale according to indicator
   if (stringr::str_detect(unique(data$indicator), "^egra")) {
@@ -91,6 +94,8 @@ plot_lines <- function(data,
       panel.background = ggplot2::element_rect(fill = "#ECF0F1")
     ) +
     ggplot2::labs(
+      title = title,
+      subtitle = subtitle,
       x = "",
       y = ""
     ) 
@@ -136,9 +141,13 @@ plot_map <- function(data,
                      tooltip_region_value,
                      tooltip_value,
                      tooltip_dataset,
-                     font_size = 20
+                     font_size = 20,
+                     title,
+                     subtitle
 ) 
 {
+  subtitle <- stringr::str_wrap(subtitle, width = 90)
+  
   sf::st_crs(dashed_border) <- 4326
   sf::st_crs(dotted_border) <- 4326
   sf::st_crs(plain_border)  <- 4326
@@ -175,6 +184,8 @@ plot_map <- function(data,
     #ggplot2::annotate("text", x = 32.06, y = 68.99, label = "Top-left") +
     ggthemes::theme_map(base_size = font_size) +
     ggplot2::labs(
+      title = title,
+      subtitle = subtitle,
       fill = ""
     )
   
@@ -189,4 +200,99 @@ integer_breaks <- function(n = 5, ...) {
     breaks
   }
   return(fxn)
+}
+
+#' create_footer
+#' From https://github.com/bbc/bbplot/blob/master/R/finalise_plot.R
+#'
+#' @param source_name character: data source
+#' @param logo_image_path 
+#'
+#' @return
+#' @export
+#'
+create_footer <- function (source_name, logo_image_path) {
+  #Make the footer
+  footer <- grid::grobTree(#grid::linesGrob(x = grid::unit(c(0, 1), "npc"), y = grid::unit(1.1, "npc")),
+                           grid::textGrob(source_name,
+                                          x = 0.004, hjust = 0, gp = grid::gpar(fontsize=16)),
+                           grid::rasterGrob(png::readPNG(logo_image_path), x = 0.944))
+  return(footer)
+  
+}
+
+#' left_align
+#' From https://github.com/bbc/bbplot/blob/master/R/finalise_plot.R
+#'
+#' @param plot_name ggplot: Plot name
+#' @param pieces character: Plot elements to be left aligned
+#'
+#' @return grob
+#' @export
+#'
+left_align <- function(plot_name, pieces){
+  grob <- ggplot2::ggplotGrob(plot_name)
+  n <- length(pieces)
+  grob$layout$l[grob$layout$name %in% pieces] <- 2
+  return(grob)
+}
+
+#' Arrange alignment and add logo
+#' From https://github.com/bbc/bbplot/blob/master/R/finalise_plot.R
+#' It will left align your title, subtitle and source, add the logo at the bottom right
+#' @param plot_name The variable name of the plot you have created that you want to format
+#' @param source_name The text you want to come after the text 'Source:' in the bottom left hand side of your side
+#' @param width_pixels Width in pixels that you want to save your chart to - defaults to 640
+#' @param height_pixels Height in pixels that you want to save your chart to - defaults to 450
+#' @param logo_image_path File path for the logo image you want to use in the right hand side of your chart,
+#'  which needs to be a PNG file - defaults to BBC blocks image that sits within the data folder of your package
+#' @return (invisibly) an updated ggplot object.
+
+#' @examples
+#' finalise_plot(plot_name = myplot,
+#' source = "The source for my data",
+#' width_pixels = 640,
+#' height_pixels = 450,
+#' logo_image_path = "logo_image_filepath.png"
+#' )
+#'
+#' @export
+finalise_plot <- function(plot_name,
+                          source_name = "Source = World Bank",
+                          width_pixels=640,
+                          height_pixels=450,
+                          logo_image_path = system.file("app/www", "logo.png", package = "pakEducationDashboard")) {
+  
+  footer <- create_footer(source_name, logo_image_path)
+  
+  #Draw your left-aligned grid
+  plot_left_aligned <- left_align(plot_name, c("subtitle", "title", "caption"))
+  plot_grid <- ggpubr::ggarrange(plot_left_aligned, footer,
+                                 ncol = 1, nrow = 2,
+                                 heights = c(1, 0.045/(height_pixels/450)))
+  
+  ## Return (invisibly) a copy of the graph. Can be assigned to a
+  ## variable or silently ignored.
+  invisible(plot_grid)
+}
+
+#' Add WB theme to ggplot chart
+#'
+#' @export
+
+theme_wb <- function() {
+  font <- "calibri"
+  
+  ggplot2::theme(
+    
+    #Text format:
+    #This sets the font, size, type and colour of text for the chart's title
+    plot.title = ggplot2::element_text(family = font,
+                                       face = "bold"),
+    #This sets the font, size, type and colour of text for the chart's subtitle, as well as setting a margin between the title and the subtitle
+    plot.subtitle = ggplot2::element_text(family = font,
+                                          margin = ggplot2::margin(9, 0, 9, 0)),
+    plot.caption = ggplot2::element_blank()
+    #This leaves the caption text element empty, because it is set elsewhere in the finalise plot function
+  )
 }

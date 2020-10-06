@@ -32,7 +32,8 @@ Imports:
     magrittr,
     forcats,
     grid,
-    png
+    png,
+    ggpubr
 RoxygenNote: 7.1.1
 Suggests: 
     testthat
