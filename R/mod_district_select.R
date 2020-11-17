@@ -28,10 +28,11 @@ mod_district_select_ui <- function(id){
                 selected = "reading_9_11"),
     selectInput(inputId = ns("province"),
                 label = "Choose one or more province(s)",
-                choices = sort(unique(pakeduc_province[["province"]])),
+                choices = pakeduc_province_selection,
                 multiple = TRUE,
                 selectize = TRUE,
-                selected = sort(unique(pakeduc_province[["province"]]))),
+                selected = pakeduc_province_selection
+    ),
     selectInput(inputId = ns("district"),
                 label = "Choose one or more district(s)",
                 choices = sort(unique(pakeduc_district[["district"]])),

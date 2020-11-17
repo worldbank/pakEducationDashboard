@@ -14,7 +14,9 @@ plot_map(
   tooltip_region_value,
   tooltip_value,
   tooltip_dataset,
-  font_size = 20
+  font_size = 20,
+  title,
+  subtitle
 )
 }
 \arguments{

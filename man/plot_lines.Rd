@@ -17,7 +17,9 @@ plot_lines(
   tooltip_value,
   font_size = 20,
   point_size = 5,
-  line_size = 1.6
+  line_size = 1.6,
+  title,
+  subtitle
 )
 }
 \arguments{

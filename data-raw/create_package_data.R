@@ -92,11 +92,19 @@ data_sources_description <- tagList(
 
 
 
+# Create selection menu variables -----------------------------------------
+
+pakeduc_province_selection <- as.character(forcats::fct_unique(forcats::fct_relevel(
+  sort(unique(pakeduc_province[["province"]])),
+  "Other areas",
+  after = Inf)))
+
 usethis::use_data(pakeduc_country,
                   pakeduc_country_weighted,
                   indicator_choices_country,
                   pakeduc_province,
                   pakeduc_province_weighted,
+                  pakeduc_province_selection,
                   indicator_choices_province,
                   pakeduc_district,
                   pakeduc_district_weighted,

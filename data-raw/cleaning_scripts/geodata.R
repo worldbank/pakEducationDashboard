@@ -122,6 +122,15 @@ pakgeo_province <- pakgeo_province %>%
   bind_rows(to_keep) #%>%
   #bind_rows(to_modify)
 
+
+# Handle projection -------------------------------------------------------
+# Reference: https://stackoverflow.com/questions/61286108
+st_crs(pakgeo_district) <- 4326
+st_crs(pakgeo_province) <- 4326
+st_crs(dashed_border) <- 4326
+st_crs(dotted_border) <- 4326
+st_crs(plain_border) <- 4326
+
 # Save data ---------------------------------------------------------------
 
 usethis::use_data(pakgeo_district,

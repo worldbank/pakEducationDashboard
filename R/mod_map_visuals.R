@@ -10,8 +10,8 @@
 mod_map_visuals_ui <- function(id){
   ns <- NS(id)
   tagList(
-    h3(textOutput(ns("map_title"))),
-    p(textOutput(ns("map_ind_description"))),
+    # h3(textOutput(ns("map_title"))),
+    # p(textOutput(ns("map_ind_description"))),
     shinycssloaders::withSpinner(
       ggiraph::ggiraphOutput(outputId = ns("district_map"),
                              width = "100%", 
@@ -33,7 +33,7 @@ mod_map_visuals_server <- function(input,
                                    selection_vars){
   ns <- session$ns
   
-  output$map_title <- renderText({
+  map_title <- reactive({
     names(unlist(unname(indicator_choices_country)))[unlist(indicator_choices_country) == selection_vars$indicator()]
   })
   
@@ -41,39 +41,55 @@ mod_map_visuals_server <- function(input,
     # Handles potential issues due to missing selection inputs
     req(selection_vars$year())
     
-    out <- dplyr::filter(pakeduc_district_weighted,
-                         indicator == !!selection_vars$indicator())
-    out <- dplyr::filter(out,
-                         # dimensions %in% !!selection_vars$dimension(), 
-                         year == !!selection_vars$year(),
-                         # year == max(year, na.rm = TRUE),
-                         # Add only both
-                         dimensions == "aggregate")
-    out <- dplyr::distinct(out)
-    
-    out <- pakgeo_district %>%
-      dplyr::left_join(out, by = c("dist_key" = "identifier"))
+    if (selection_vars$dataset() == "weighted_average") {
+      
+      out <- dplyr::filter(pakeduc_district_weighted,
+                           indicator == !!selection_vars$indicator(),
+                           year == !!selection_vars$year(),
+                           dimensions == "aggregate") %>%
+        dplyr::distinct()
+      
+      out <- pakgeo_district %>%
+        dplyr::left_join(out, by = c("dist_key" = "identifier"))
+    } else {
+      out <- dplyr::filter(pakeduc_district,
+                           dataset == !!selection_vars$dataset(),
+                           indicator == !!selection_vars$indicator(),
+                           year == !!selection_vars$year(),
+                           dimensions == "aggregate") %>%
+        dplyr::distinct()
+      
+      out <- pakgeo_district %>%
+        dplyr::left_join(out, by = c("dist_key" = "identifier"))
+    }
   })
   
   output$warning_message <- renderText({
     if (nrow(df()) == 0) {"No data available. Please make a new selection"}
   })
   
-  output$map_ind_description <- renderText({
+  map_ind_description <- reactive({
     unique(df()$indicator_definition[!is.na(df()$indicator_definition)])
   })
   
   output$district_map <- ggiraph::renderggiraph({
     if (nrow(df()) > 0) {
-      p <- plot_map(data = df(),
+      map_data <- df()
+      sf::st_crs(map_data) <- 4326
+      p <- plot_map(data = map_data,
                     fill = point_estimate,
                     data_id = district,
                     year = year,
                     tooltip_region_header = "District:",
                     tooltip_region_value = DISTRICT,
                     tooltip_value = pe_percent,
-                    tooltip_dataset = dataset) #+
+                    tooltip_dataset = dataset,
+                    title = map_title(),
+                    subtitle = map_ind_description()) #+
       #ggplot2::facet_wrap(~gender)
+      
+      p <- finalise_plot(p) +
+        theme_wb()
       
       ggiraph::girafe(ggobj = p, 
                       width_svg = 12, 

@@ -16,8 +16,8 @@
 mod_country_visuals_ui <- function(id){
   ns <- NS(id)
   tagList(
-    h3(textOutput(ns("country_title"))),
-    p(textOutput(ns("country_ind_description"))),
+    # h3(textOutput(ns("country_title"))),
+    # p(textOutput(ns("country_ind_description"))),
     shinycssloaders::withSpinner(
       ggiraph::ggiraphOutput(outputId = ns("country_plot"), 
                              width = "100%", 
@@ -42,7 +42,11 @@ mod_country_visuals_server <- function(input,
                                        selection_vars){
   ns <- session$ns
 
-  output$country_title <- renderText({
+  # output$country_title <- renderText({
+  #   names(unlist(unname(indicator_choices_country)))[unlist(indicator_choices_country) == selection_vars$indicator()]
+  # })
+  
+  country_title <- reactive({
     names(unlist(unname(indicator_choices_country)))[unlist(indicator_choices_country) == selection_vars$indicator()]
   })
   
@@ -67,9 +71,13 @@ mod_country_visuals_server <- function(input,
                   dimensions %in% !!selection_vars$dimension())
   })
   
-  output$country_ind_description <- renderText({
+  # output$country_ind_description <- renderText({
+  #   unique(surveydf()$indicator_definition)
+  # })
+  
+  country_ind_description <- reactive({
     unique(surveydf()$indicator_definition)
-  })
+    })
   
   output$warning_message <- renderText({
     # TODO: GET CONTACT EMAIL FROM KOEN
@@ -89,7 +97,9 @@ mod_country_visuals_server <- function(input,
                       dataset = dataset,
                       group = dimension_levels,
                       year = year,
-                      tooltip_value = pe_percent)
+                      tooltip_value = pe_percent,
+                      title = country_title(),
+                      subtitle = country_ind_description())
     } else {
       p <- plot_lines(data = surveydf(),
                       x = year,
@@ -98,11 +108,16 @@ mod_country_visuals_server <- function(input,
                       dataset = dataset,
                       group = dimension_levels,
                       year = year,
-                      tooltip_value = pe_percent)
+                      tooltip_value = pe_percent,
+                      title = country_title(),
+                      subtitle = country_ind_description())
     }
     
     #Only return plot if filtered dataframe has rows
     if(nrow(surveydf()) > 0) {
+      
+      p <- finalise_plot(p) +
+        theme_wb()
       
       ggiraph::girafe(ggobj = p,
                       pointsize = 16,

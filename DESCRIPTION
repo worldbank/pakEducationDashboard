@@ -28,7 +28,12 @@ Imports:
     shinycssloaders,
     shinyWidgets,
     shinyjs,
-    config
+    config,
+    magrittr,
+    forcats,
+    grid,
+    png,
+    ggpubr
 RoxygenNote: 7.1.1
 Suggests: 
     testthat

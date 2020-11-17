@@ -29,7 +29,8 @@ pakeduc_province <- haven::read_stata(province_link) %>%
                                     "_urban|urban_|_urban_|_rural|rural_|_rural_")) %>%
   mutate(
     province = as.factor(province),
-    province = forcats::fct_relevel(province, "Punjab", "Sindh", "Kp", "Balochistan", "Other areas")
+    province = forcats::fct_relevel(province, "Punjab", "Sindh", "Kp", "Balochistan", "Other areas"),
+    province = forcats::fct_recode(province, "Khyber Pakhtunkhwa" = "Kp")
   ) %>%
   dplyr::left_join(province_lkup)
                                                                          
